@@ -1,0 +1,15 @@
+
+
+SharedCode
+misc shared code files - this is specific to a couple of projects
+this may have issues if used in any more projects
+
+ShCommonCode
+First attempt to fix the shared project setup
+says "common code" but is still to "non-common"
+
+ShCommCode
+this needs to be only code that every / any project will / may need
+
+ShCode
+this will hold code used by every project that subscribes to this SH project

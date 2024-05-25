@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Configurations>Debug;Release;DbgTests;DbgCreate;DbgScan</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs" Link=".Linked\CsExtensions.cs" />
+    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsUtilities.cs" Link=".Linked\CsUtilities.cs" />
+    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsXmlUtilities.cs" Link=".Linked\CsXmlUtilities.cs" />
+    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\FilePath\V3.1\CsFilePath.cs" Link=".Linked\CsFilePath.cs" />
+    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.4\SettingsMgr.cs" Link=".Linked\SettingsMgr.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include=".Linked\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.3.1" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="itext.bouncy-castle-adapter" Version="8.0.4" />
+    <PackageReference Include="itext7" Version="8.0.4" />
+    <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.4" />
+  </ItemGroup>
+
+  <Import Project="..\SharedCode\SharedCode.projitems" Label="Shared" />
+
+</Project>

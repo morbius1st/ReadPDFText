@@ -1,0 +1,41 @@
+﻿
+
+SheetDataManager:
+	helper interface to Settings manager
+	> includes
+		Read() - to read the sheet data then convert
+		Write() - to convert the sheet data then write
+
+Settings\SheetMetricDataSet
+	the collections of sheets which has the collections of rectangles
+
+(voided)
+SheetMetricA (.cs)
+	alternate to Settings\SheetMetricDataSet
+	needed because the primary data set will not serialize
+
+SheetMetricId (.cs)
+	enum of for all rectangles
+
+SheetMetricSupport (.cs)
+	various helper methods
+	> includes 
+		conversion routines to alternate rectangle
+		routines to show the information
+		* collections for 
+			primary rectangles
+			optional rectangles
+
+SheetRectData (.cs)
+	all of the rectangle properties
+
+SheetRects (.cs)
+	the prior SheetRectData
+
+SheetRectType (.cs)
+	enum for all rectangle types (text or link or box, etc.)
+
+
+
+
+

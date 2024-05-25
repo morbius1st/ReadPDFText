@@ -1,0 +1,60 @@
+﻿text extraction cases
+
+
+A  begin text
+
+C  single character											"?" 
+D  single space												" "
+E  two+ characters / space+ / char							" ?"
+F  two characters / char / space							"? "
+G  two characters / char / char								"??"
+H  two characters / space / space							"  "
+I  multiple characters / space / chars + spaces / char		" ?...??"
+J  multiple characters / char / chars + spaces / space		"??...? "
+K  multiple characters / char / chars + spaces / char 		"??...??"
+L  end text
+
+
+
+adjust to check for distance break between sequences
+
+
+A -> start text (assume here that never get a start without a end first - except for the very first time)
+	ri = null
+	ristart = null
+	riprior = null
+	text = null
+
+C ->	riprior == null -> c_start_seq
+		riprior != null -> c_cont_seq (check for break)
+
+D ->	riprior == null -> d_start_seq
+		riprior != null -> d_end_seq (ristart = null)
+
+E ->	riprior == null -> e_start_seq (remove starting space(s) first)
+		riprior != null -> 
+			step 1 -> e_end_sequence
+			step 2 -> e_start_seq (remove starting space(s) first)
+
+F ->	riprior == null -> f_start_end (treat as a single character word)
+		riprior != null -> f_cont + f_end
+
+G ->	riprior == null -> f_start_seq
+		riprior != null -> f_cont_seq
+
+H ->	riprior == null -> h_ignore
+		riprior != null -> h_end_start_seq
+
+I ->	riprior == null -> i_start_seq (remove starting space(s) first)
+		riprior != null -> 
+			step 1 -> i_end_sequence
+			step 2 -> i_start_seq (remove starting space(s) first)
+
+J ->	riprior == null -> j_start_end_seq
+		riprior != null -> j_end_start_seq
+
+K ->	riprior == null -> k_start_end_seq
+		riprior != null -> k_end_start_seq
+
+L ->	end text -> end_text_seq
+		

@@ -1,0 +1,115 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadPDFText", "ReadPDFText\ReadPDFText.csproj", "{65516FA1-5FD7-4A36-AAAD-EB9E3FBCE4D8}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedCode", "SharedCode\SharedCode.shproj", "{F1568726-A0A3-4A04-95EF-4729A782D6E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadPDFManager", "ReadPDFManager\ReadPDFManager.csproj", "{251D5E27-1658-4A72-B1D6-5CE6485CABDC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadPDFTextTests", "ReadPDFTextTests\ReadPDFTextTests.csproj", "{1A7D67E6-93D7-4438-B3F6-14FD3325EDE7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtractPdfText", "ExtractPdfText\ExtractPdfText.csproj", "{83345014-2A99-4F87-8E5B-8B4E5F1DF557}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreatePDFBoxes", "CreatePDFBoxes\CreatePDFBoxes.csproj", "{7914C10F-AEC2-45DE-ABCF-ED0A2130FE71}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ShCommonCode", "ShCommonCode\ShCommonCode.shproj", "{DA2AE234-5184-477B-B4F1-B3DAC356CBD3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanPDFBoxes", "ScanPDFBoxes\ScanPDFBoxes.csproj", "{F71FBF70-5E1A-4F86-B4E0-F1F062593293}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C9B2649F-B29C-4438-9695-86CEBDDF840C}"
+	ProjectSection(SolutionItems) = preProject
+		Sh Project Usage.txt = Sh Project Usage.txt
+	EndProjectSection
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ShItextCode", "ShItextCode\ShItextCode.shproj", "{2331E34C-D552-465A-89C0-66597782543E}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ShSheetDataA", "ShSheetDataA\ShSheetDataA.shproj", "{F346511A-73DB-4543-99BD-2CC82AD1A142}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ShCode", "ShCode\ShCode.shproj", "{67DC48C5-9469-40E5-95AF-76315AEBFC58}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		DbgCreate|Any CPU = DbgCreate|Any CPU
+		DbgScan|Any CPU = DbgScan|Any CPU
+		DbgTests|Any CPU = DbgTests|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65516FA1-5FD7-4A36-AAAD-EB9E3FBCE4D8}.DbgCreate|Any CPU.ActiveCfg = Debug|Any CPU
+		{65516FA1-5FD7-4A36-AAAD-EB9E3FBCE4D8}.DbgScan|Any CPU.ActiveCfg = Debug|Any CPU
+		{65516FA1-5FD7-4A36-AAAD-EB9E3FBCE4D8}.DbgTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{65516FA1-5FD7-4A36-AAAD-EB9E3FBCE4D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65516FA1-5FD7-4A36-AAAD-EB9E3FBCE4D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65516FA1-5FD7-4A36-AAAD-EB9E3FBCE4D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65516FA1-5FD7-4A36-AAAD-EB9E3FBCE4D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{251D5E27-1658-4A72-B1D6-5CE6485CABDC}.DbgCreate|Any CPU.ActiveCfg = Debug|Any CPU
+		{251D5E27-1658-4A72-B1D6-5CE6485CABDC}.DbgScan|Any CPU.ActiveCfg = Debug|Any CPU
+		{251D5E27-1658-4A72-B1D6-5CE6485CABDC}.DbgTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{251D5E27-1658-4A72-B1D6-5CE6485CABDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{251D5E27-1658-4A72-B1D6-5CE6485CABDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{251D5E27-1658-4A72-B1D6-5CE6485CABDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{251D5E27-1658-4A72-B1D6-5CE6485CABDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A7D67E6-93D7-4438-B3F6-14FD3325EDE7}.DbgCreate|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A7D67E6-93D7-4438-B3F6-14FD3325EDE7}.DbgScan|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A7D67E6-93D7-4438-B3F6-14FD3325EDE7}.DbgTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A7D67E6-93D7-4438-B3F6-14FD3325EDE7}.DbgTests|Any CPU.Build.0 = Debug|Any CPU
+		{1A7D67E6-93D7-4438-B3F6-14FD3325EDE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A7D67E6-93D7-4438-B3F6-14FD3325EDE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A7D67E6-93D7-4438-B3F6-14FD3325EDE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A7D67E6-93D7-4438-B3F6-14FD3325EDE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83345014-2A99-4F87-8E5B-8B4E5F1DF557}.DbgCreate|Any CPU.ActiveCfg = Debug|Any CPU
+		{83345014-2A99-4F87-8E5B-8B4E5F1DF557}.DbgScan|Any CPU.ActiveCfg = Debug|Any CPU
+		{83345014-2A99-4F87-8E5B-8B4E5F1DF557}.DbgTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{83345014-2A99-4F87-8E5B-8B4E5F1DF557}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83345014-2A99-4F87-8E5B-8B4E5F1DF557}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83345014-2A99-4F87-8E5B-8B4E5F1DF557}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83345014-2A99-4F87-8E5B-8B4E5F1DF557}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7914C10F-AEC2-45DE-ABCF-ED0A2130FE71}.DbgCreate|Any CPU.ActiveCfg = Debug|Any CPU
+		{7914C10F-AEC2-45DE-ABCF-ED0A2130FE71}.DbgCreate|Any CPU.Build.0 = Debug|Any CPU
+		{7914C10F-AEC2-45DE-ABCF-ED0A2130FE71}.DbgScan|Any CPU.ActiveCfg = Debug|Any CPU
+		{7914C10F-AEC2-45DE-ABCF-ED0A2130FE71}.DbgTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{7914C10F-AEC2-45DE-ABCF-ED0A2130FE71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7914C10F-AEC2-45DE-ABCF-ED0A2130FE71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7914C10F-AEC2-45DE-ABCF-ED0A2130FE71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7914C10F-AEC2-45DE-ABCF-ED0A2130FE71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F71FBF70-5E1A-4F86-B4E0-F1F062593293}.DbgCreate|Any CPU.ActiveCfg = Debug|Any CPU
+		{F71FBF70-5E1A-4F86-B4E0-F1F062593293}.DbgScan|Any CPU.ActiveCfg = Debug|Any CPU
+		{F71FBF70-5E1A-4F86-B4E0-F1F062593293}.DbgScan|Any CPU.Build.0 = Debug|Any CPU
+		{F71FBF70-5E1A-4F86-B4E0-F1F062593293}.DbgTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{F71FBF70-5E1A-4F86-B4E0-F1F062593293}.DbgTests|Any CPU.Build.0 = Debug|Any CPU
+		{F71FBF70-5E1A-4F86-B4E0-F1F062593293}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F71FBF70-5E1A-4F86-B4E0-F1F062593293}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F71FBF70-5E1A-4F86-B4E0-F1F062593293}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F71FBF70-5E1A-4F86-B4E0-F1F062593293}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8ABC32C9-D744-4629-8475-CA4C837C44B2}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SharedCode\SharedCode.projitems*{1a7d67e6-93d7-4438-b3f6-14fd3325ede7}*SharedItemsImports = 5
+		ShCode\ShCode.projitems*{1a7d67e6-93d7-4438-b3f6-14fd3325ede7}*SharedItemsImports = 5
+		ShCommonCode\ShCommonCode.projitems*{1a7d67e6-93d7-4438-b3f6-14fd3325ede7}*SharedItemsImports = 5
+		ShSheetDataA\ShSheetDataA.projitems*{1a7d67e6-93d7-4438-b3f6-14fd3325ede7}*SharedItemsImports = 5
+		ShItextCode\ShItextCode.projitems*{2331e34c-d552-465a-89c0-66597782543e}*SharedItemsImports = 13
+		SharedCode\SharedCode.projitems*{251d5e27-1658-4a72-b1d6-5ce6485cabdc}*SharedItemsImports = 4
+		SharedCode\SharedCode.projitems*{65516fa1-5fd7-4a36-aaad-eb9e3fbce4d8}*SharedItemsImports = 4
+		ShCode\ShCode.projitems*{67dc48c5-9469-40e5-95af-76315aebfc58}*SharedItemsImports = 13
+		SharedCode\SharedCode.projitems*{7914c10f-aec2-45de-abcf-ed0a2130fe71}*SharedItemsImports = 5
+		ShCommonCode\ShCommonCode.projitems*{7914c10f-aec2-45de-abcf-ed0a2130fe71}*SharedItemsImports = 5
+		ShSheetDataA\ShSheetDataA.projitems*{7914c10f-aec2-45de-abcf-ed0a2130fe71}*SharedItemsImports = 5
+		SharedCode\SharedCode.projitems*{83345014-2a99-4f87-8e5b-8b4e5f1df557}*SharedItemsImports = 5
+		ShCommonCode\ShCommonCode.projitems*{da2ae234-5184-477b-b4f1-b3dac356cbd3}*SharedItemsImports = 13
+		SharedCode\SharedCode.projitems*{f1568726-a0a3-4a04-95ef-4729a782d6e4}*SharedItemsImports = 13
+		ShSheetDataA\ShSheetDataA.projitems*{f346511a-73db-4543-99bd-2cc82ad1a142}*SharedItemsImports = 13
+		ShCode\ShCode.projitems*{f71fbf70-5e1a-4f86-b4e0-f1f062593293}*SharedItemsImports = 5
+		ShItextCode\ShItextCode.projitems*{f71fbf70-5e1a-4f86-b4e0-f1f062593293}*SharedItemsImports = 5
+		ShSheetDataA\ShSheetDataA.projitems*{f71fbf70-5e1a-4f86-b4e0-f1f062593293}*SharedItemsImports = 5
+	EndGlobalSection
+EndGlobal

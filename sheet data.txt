@@ -1,0 +1,96 @@
+primary boxes: 36x48
+margins primary: relative to sheet
+L: 0.70 T: 1.1485 R: 0.70 B: 0.50
+
+margins: content: relative to margins
+L: 0 T: 0 R: 0 B: 2.72
+
+title block: relative to BL margin box
+X: 0  Y: 0: w: 34.60  h: 2.5
+
+
+
+
+below: same for each title block format
+
+footer: relative to sht TL corner
+X: 5/72  Y: -0.12  w: 0.0868  h: 3.00
+
+disclaimer: relative to TR content area
+x: 0  Y: +0.20  H: 0.20  w: -3.375
+
+producer: relative to BR title block area
+x: -0.16"  y: 0.25"  w: -1.85" h: 2.125"
+
+
+banner BR vert: relative to BL margin box
+x: 0 y: -0.375 w: 16.00 h: 0.375
+
+banner BR horizontal: relative to BL margin box
+x: -.0375 y: 0 w: 0.375 h: 16.00
+
+banner TR vert: relative to BR margin box
+x: -16.0 y: -0.375 w: 16.00 h: 0.375
+
+banner TR horizontal: relative to BR margin box
+x: 0 y: 0 w: 0.375 h: 16.00
+
+
+
+
+sheet number:
+
+package:
+
+search area: relative to BL margin
+x: 0  Y: 0  w: 1.25  H 2.50
+
+fill area: relative to BL margin
+x: 5/72  y: 5/72  w: 83/72  h: 170/72
+
+
+
+not package:
+
+search area: relative to BL margin
+x: 0  Y: 0  w: 2.25  H 2.50
+
+fill area: relative to BL margin
+x: 5/72  y: 5/72  w: 157/72  h: 170/72
+
+
+
+primary boxes: 30x42
+margins primary: relative to sheet
+L: 0.575 T: 1.3672 R: 0.575 B: 0.50
+
+margins: content: relative to sheet
+L: 0.575 T: 1.3672 R: 0.575 B: 3.22
+
+title block: relative to BL margin box
+X: 0  Y: 0: w: 28.85  h: 2.5
+
+
+
+primary boxes: 30x42
+margins primary: relative to sheet
+L: 0.575 T: 1.3672 R: 0.575 B: 0.50
+
+margins: content: relative to margins
+L: 0 T: 0 R: 0 B: 2.72
+
+title block: relative to BL margin box
+X: 0  Y: 0: w: 28.85  h: 2.5
+
+
+
+primary boxes: 24x36
+margins primary: relative to sheet
+L: 0.45 T: 1.5860 R: 0.45 B: 0.50
+
+margins: content: relative to margins
+L: 0 T: 0 R: 0 B: 2.72
+
+title block: relative to BL margin box
+X: 0  Y: 0: w: 23.1  h: 2.5
+

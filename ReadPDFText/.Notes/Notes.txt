@@ -1,0 +1,302 @@
+﻿
+
+element placement onto a PDF information - for pages that may or may not be rotated
+
+definitions
+sheet coordinates - based on taking a zero rotation, landscape page and
+measuring coordinates from the lower-left corner
+
+page coordinates - based on extracting coordinates from text which
+may be rotated
+
+coordinate types
+
+1. text extraction via rectangle (is a sheet coordinate but is special)
+2. rectangle at sheet coordinate
+3. link at sheet coordinate
+4. polygon at sheet coordinate
+5. text at a sheet coordinate
+6. rectangle at page coordinate
+7. rectangle link at page coordinate
+8. poly link at page coordinates
+9. text at page coordinate (not used at the moment per se)
+
+rotation types / 
+
+rotate rectangle type v1
+* rotates so that the rectangle origin is the lower-left corner
+* this rotation creates / uses negative heights or widths
+
+rotate rectangle type v2
+* straight rotation - rectangle origin ends up as per rotation
+* does not have negative widths or heights
+
+rotate coordinates
+* straignt rotation - widths and heights do not apply
+
+rotateTextOrientation
+* adjust the text rotation based on the page rotation
+
+coordinate type notes
+
+type 1:
+the rectangle must be rotated - however, this must be done to prevent negative width or height
+* uses rotate rectangle type v2
+
+type 2 and type 3
+the rectangle is rotated using rotate rectangle v1
+
+type 4:
+coordinates must be rotated using rotate coordinates
+draw each side one coordinate at a time
+
+type 5:
+text origin must be rotated using rotate coordinates
+text rotation gets adjusted per rotateTextOrientation
+
+
+types 6 through 9 - no rotation
+
+
+------------------
+
+rotation routines - all for sheet coordinates
+* intent is to provide sheet coordinates to the routine and
+    the routine adjusts / rotates as needed
+
+
+
+
+
+rotated text information
+
+rotation           run1   rise1   run2    rise 2    w       h       angle                          
+a      0 deg        +       0       0       +       +       +       0 (run2==0 && run1==+)         
+b      45 deg       +       +   +   -       +   -   +       +       0 -> 90 (run1==+ && run2==-)   + / -
+c      90 deg       0       +       -       0       -       +       90 (run1==0 && run2==-)        
+d      135 deg      -       +   -   -       -   +   +       +                                      - / -
+e      180 deg      -       0       0       +       -       -       180 (run2 == 0 && run1==-)     
+f      225 deg      -       -   +   +       -   -   +       +                                      - / +
+g      270 deg      0       -       +       0       +       -       270 (run1==0 && run2==+)       
+h      315 deg      +       -   -   +       +   +   +       +                                      + / +
+
+margin math
+ 
+  \    /
+   \  /
+    + A  /
+ \ /    /
+B +    /
+   \  /
+  C +
+ 
+° = rotation angle
+m = margin width
+pt a = anchor
+pt b
+Cx = ax + (sin° - cos°) * m
+Cy = ay - (sin° + cos°) * m
+
+
+
+need rotation?
+annotations and links
+
+*** note - revised to have sheet data to include both rotation sets of numbers
+for sheet rectangles, calculating the rotated rectangle is not needed.
+just use [1] for the pre-rotated values.
+
+list of what is provided
+
+// these do not need to be adjusted for sheet rotation
+sheet xref links
+sheet xref rect
+
+// some of these need to be adjusted for sheet rotation
+vert banner text
+vert banner white rect
+horiz banner text
+horiz banner white rect
+
+author link
+author rect
+
+return link
+return rect
+
+footer text
+
+disclaimer text
+disclaimer rect
+disclaimer link
+
+
+
+addPageAnnotations : add the annotation text
+        placeVertBanner  : (does rotate if needed)
+        placeHorizBanner : (does rotate if needed)
+        placeDisclaimer  : missing rotation ------- note: rotation preset to 270
+        placeFooter      : missing rotation ------- note: rotation preset to 0
+
+addPageLinks : add the links for some of the above annotations
+        addDisclaimerLink  : (no rotation) -> placeUrlLinkOnLayer : link rectangle (does rotate if needed) / anno (no rotation)
+        addAuthorLink      : (no rotation) -> placeUrlLinkOnLayer : link rectangle (does rotate if needed) / anno (no rotation)
+        placeReturnLink    : link anno (does rotate if needed) / link rectangle (does rotate if needed)
+
+// the below does not need to "rotate if needed" because the actual page coordinates are
+// read from the page when the sheet xref is found
+addSheetRefLinks : add the sheet xrefs - links & link rectangles
+        placeShtRefLink   : link anno -> makeLinkAnnotation  (no rotation) -> placeLinkRectangle (no rotation)
+
+
+show info
+
+
+*** show sample data ***
+
+type| PT_BRANCH     | pg|   1 |              | General                                                |               |                                           | ST_NA        
+type| PT_BRANCH     | pg|   1 |              | General                                                | Cover Sheet   |                                           | ST_NA        
+type| PT_LEAF       | pg|   1 | pg cnt|   1  | CS - COVER SHEET.pdf                                   | CS            | COVER SHEET                               | ST_AO_36X48  | h-links?| False| banner?| True| author?| True| disclaimer?| True
+type| PT_BRANCH     | pg|   2 |              | General                                                | Title Sheets  |                                           | ST_NA        
+type| PT_LEAF       | pg|   2 | pg cnt|   1  | T1.0-0 - TITLE SHEET.pdf                               | T1.0-0        | TITLE SHEET                               | ST_AO_36X48  | h-links?| False| banner?| True| author?| True| disclaimer?| True
+type| PT_LEAF       | pg|   3 | pg cnt|   1  | T2.0 - GENERAL CONTRACTOR'S NOTES.pdf                  | T2.0          | GENERAL CONTRACTOR'S NOTES                | ST_AO_36X48  | h-links?| False| banner?| True| author?| True| disclaimer?| True
+type| PT_LEAF       | pg|   4 | pg cnt|   1  | T2.1 - GENERAL CONTRACTORS NOTES.pdf                   | T2.1          | GENERAL CONTRACTORS NOTES                 | ST_AO_36X48  | h-links?| False| banner?| True| author?| True| disclaimer?| True
+type| PT_NODE_FILE  | pg|   5 | pg cnt|   3  | Green Sheets                                           |               | T5 Series.pdf                             | ST_AO_36X48  | h-links?| False| banner?| True| author?| True| disclaimer?| True
+type| PT_NODE       | pg|   5 | pg cnt|   1  | CALGREEN CHECKLIST                                     |               |                                           | ST_NA        
+type| PT_NODE       | pg|   6 | pg cnt|   1  | T5.1 - CALGREEN CHECKLIST                              | T5.1          | CALGREEN CHECKLIST                        | ST_NA        
+type| PT_NODE       | pg|   7 | pg cnt|   1  | T5.2 - CALGREEN CHECKLIST                              | T5.2          | CALGREEN CHECKLIST                        | ST_NA        
+type| PT_BRANCH     | pg|   8 |              | Odd Sized Sheets                                       |               |                                           | ST_NA        
+type| PT_LEAF       | pg|   8 | pg cnt|   1  | Cx01 - Cover Sheet.pdf                                 | Cx01          | Cover Sheet                               | ST_CS_11X17  | h-links?| False| banner?| False| author?| False| disclaimer?| False
+type| PT_LEAF       | pg|   9 | pg cnt|   1  | Cx02 - Demolition Plan.pdf                             | Cx02          | Demolition Plan                           | ST_CS_11X17  | h-links?| False| banner?| False| author?| False| disclaimer?| False
+type| PT_LEAF       | pg|  10 | pg cnt|   1  | Cx03 - Site Plan.pdf                                   | Cx03          | Site Plan                                 | ST_CS_11X17  | h-links?| False| banner?| False| author?| False| disclaimer?| False
+type| PT_BRANCH     | pg|  11 |              | Architectural Sheets                                   |               |                                           | ST_NA        
+type| PT_BRANCH     | pg|  11 |              | Architectural Sheets                                   | Floor Plans   |                                           | ST_NA        
+type| PT_LEAF       | pg|  11 | pg cnt|   1  | A2.2-G - LEVEL G - OVERALL FLOOR PLAN.pdf              | A2.2-G        | LEVEL G - OVERALL FLOOR PLAN              | ST_AO_36X48  | h-links?| True| banner?| True| author?| True| disclaimer?| True
+type| PT_LEAF       | pg|  12 | pg cnt|   1  | A2.2-GN - LEVEL G - FLOOR PLAN - NORTH.pdf             | A2.2-GN       | LEVEL G - FLOOR PLAN - NORTH              | ST_AO_36X48  | h-links?| True| banner?| True| author?| True| disclaimer?| True
+type| PT_LEAF       | pg|  13 | pg cnt|   1  | A2.2-GS - LEVEL G - FLOOR PLAN - SOUTH.pdf             | A2.2-GS       | LEVEL G - FLOOR PLAN - SOUTH              | ST_AO_36X48  | h-links?| True| banner?| True| author?| True| disclaimer?| True
+type| PT_BRANCH     | pg|  14 |              | Architectural Sheets                                   | VT Sheets     |                                           | ST_NA        
+type| PT_LEAF       | pg|  14 | pg cnt|   1  | A5.0-1 - STAIR A07 - ENLARGED FLOOR PLANS.pdf          | A5.0-1        | STAIR A07 - ENLARGED FLOOR PLANS          | ST_AO_36X48  | h-links?| True| banner?| True| author?| True| disclaimer?| True
+type| PT_LEAF       | pg|  15 | pg cnt|   1  | A5.0-2 - STAIR A11 & A12 -ENLARGED FLOOR PLANS.pdf     | A5.0-2        | STAIR A11 & A12 -ENLARGED FLOOR           | ST_AO_36X48  | h-links?| True| banner?| True| author?| True| disclaimer?| True
+type| PT_LEAF       | pg|  16 | pg cnt|   1  | A5.0-3 - STAIR F01 - ENLARGED FLOOR PLANS.pdf          | A5.0-3        | STAIR F01 - ENLARGED FLOOR PLANS          | ST_AO_36X48  | h-links?| True| banner?| True| author?| True| disclaimer?| True
+*** show sample data done ***
+
+adding branch|| General 
+adding branch|| Cover Sheet 
+adding leaf  | CS - COVER SHEET
+adding branch|| Title Sheets 
+adding leaf  | T1.0-0 - TITLE SHEET
+adding leaf  | T2.0 - GENERAL CONTRACTOR'S NOTES
+adding leaf  | T2.1 - GENERAL CONTRACTORS NOTES
+adding node_f| Green Sheets
+adding node  | CALGREEN CHECKLIST
+adding node  | T5.1 - CALGREEN CHECKLIST
+adding node  | T5.2 - CALGREEN CHECKLIST
+adding branch|| Odd Sized Sheets 
+adding leaf  | Cx01 - Cover Sheet
+adding leaf  | Cx02 - Demolition Plan
+adding leaf  | Cx03 - Site Plan
+adding branch|| Architectural Sheets 
+adding branch|| Floor Plans 
+adding leaf  | A2.2-G - LEVEL G - OVERALL FLOOR PLAN
+adding leaf  | A2.2-GN - LEVEL G - FLOOR PLAN - NORTH
+adding leaf  | A2.2-GS - LEVEL G - FLOOR PLAN - SOUTH
+adding branch|| VT Sheets 
+adding leaf  | A5.0-1 - STAIR A07 - ENLARGED FLOOR PLANS
+adding leaf  | A5.0-2 - STAIR A11 & A12 -ENLARGED FLOOR
+adding leaf  | A5.0-3 - STAIR F01 - ENLARGED FLOOR PLANS
+
+
+*** show pdf node tree ***
+B  level| 1  | ->  1   General
+B  level| 2  | ->  1       Cover Sheet
+L       |    | pg| 1           CS - COVER SHEET                           | pg cnt| 1  | file| CS - COVER SHEET.pdf
+B  level| 2  | ->  2       Title Sheets
+L       |    | pg| 2           T1.0-0 - TITLE SHEET                       | pg cnt| 1  | file| T1.0-0 - TITLE SHEET.pdf
+L       |    | pg| 3           T2.0 - GENERAL CONTRACTOR'S NOTES          | pg cnt| 1  | file| T2.0 - GENERAL CONTRACTOR'S NOTES.pdf
+L       |    | pg| 4           T2.1 - GENERAL CONTRACTORS NOTES           | pg cnt| 1  | file| T2.1 - GENERAL CONTRACTORS NOTES.pdf
+F  level| 1  | ->  5   Green Sheets                                       | pg cnt| 3  | file| T5 Series.pdf
+N       |    | pg| 5       - 
+N       |    | pg| 6      T5.1 - CALGREEN CHECKLIST
+N       |    | pg| 7      T5.2 - CALGREEN CHECKLIST
+B  level| 1  | ->  8   Odd Sized Sheets
+L       |    | pg| 8         Cx01 - Cover Sheet                           | pg cnt| 1  | file| Cx01 - Cover Sheet.pdf
+L       |    | pg| 9         Cx02 - Demolition Plan                       | pg cnt| 1  | file| Cx02 - Demolition Plan.pdf
+L       |    | pg| 10        Cx03 - Site Plan                             | pg cnt| 1  | file| Cx03 - Site Plan.pdf
+B  level| 1  | ->  11  Architectural Sheets
+B  level| 2  | ->  11      Floor Plans
+L       |    | pg| 11          A2.2-G - LEVEL G - OVERALL FLOOR PLAN      | pg cnt| 1  | file| A2.2-G - LEVEL G - OVERALL FLOOR PLAN.pdf
+L       |    | pg| 12          A2.2-GN - LEVEL G - FLOOR PLAN - NORTH     | pg cnt| 1  | file| A2.2-GN - LEVEL G - FLOOR PLAN - NORTH.pdf
+L       |    | pg| 13          A2.2-GS - LEVEL G - FLOOR PLAN - SOUTH     | pg cnt| 1  | file| A2.2-GS - LEVEL G - FLOOR PLAN - SOUTH.pdf
+B  level| 2  | ->  14      VT Sheets
+L       |    | pg| 14          A5.0-1 - STAIR A07 - ENLARGED FLOOR PLANS  | pg cnt| 1  | file| A5.0-1 - STAIR A07 - ENLARGED FLOOR PLANS.pdf
+L       |    | pg| 15          A5.0-2 - STAIR A11 & A12 -ENLARGED FLOOR   | pg cnt| 1  | file| A5.0-2 - STAIR A11 & A12 -ENLARGED FLOOR PLANS.pdf
+L       |    | pg| 16          A5.0-3 - STAIR F01 - ENLARGED FLOOR PLANS  | pg cnt| 1  | file| A5.0-3 - STAIR F01 - ENLARGED FLOOR PLANS.pdf
+*** show pdf node tree done ***
+
+
+*** show pdf node tree ***
+A type| PT_BRANCH     | ->  1  | list count|  2|               bkmrk| General
+A type| PT_BRANCH     | ->  1  | list count|  1|               bkmrk| Cover Sheet
+B type| PT_LEAF       | pg| 1  | list count|  0| pg count|  1| bkmrk| CS - COVER SHEET
+A type| PT_BRANCH     | ->  2  | list count|  3|               bkmrk| Title Sheets
+B type| PT_LEAF       | pg| 2  | list count|  0| pg count|  1| bkmrk| T1.0-0 - TITLE SHEET
+B type| PT_LEAF       | pg| 3  | list count|  0| pg count|  1| bkmrk| T2.0 - GENERAL CONTRACTOR'S NOTES
+B type| PT_LEAF       | pg| 4  | list count|  0| pg count|  1| bkmrk| T2.1 - GENERAL CONTRACTORS NOTES
+F type| PT_NODE_FILE  | ->  5  | list count|  3| pg count|  3| bkmrk| Green Sheets
+E type| PT_NODE       | pg| 5  | list count|  0| * est pg bkmk | bkmrk|  -   ( - )
+E type| PT_NODE       | pg| 6  | list count|  0| * est pg bkmk | bkmrk| T5.1 - CALGREEN CHECKLIST  (T5.1 - CALGREEN CHECKLIST)
+E type| PT_NODE       | pg| 7  | list count|  0| * est pg bkmk | bkmrk| T5.2 - CALGREEN CHECKLIST  (T5.2 - CALGREEN CHECKLIST)
+A type| PT_BRANCH     | ->  8  | list count|  3|               bkmrk| Odd Sized Sheets
+B type| PT_LEAF       | pg| 8  | list count|  0| pg count|  1| bkmrk| Cx01 - Cover Sheet
+B type| PT_LEAF       | pg| 9  | list count|  0| pg count|  1| bkmrk| Cx02 - Demolition Plan
+B type| PT_LEAF       | pg| 10 | list count|  0| pg count|  1| bkmrk| Cx03 - Site Plan
+A type| PT_BRANCH     | ->  11 | list count|  2|               bkmrk| Architectural Sheets
+A type| PT_BRANCH     | ->  11 | list count|  3|               bkmrk| Floor Plans
+B type| PT_LEAF       | pg| 11 | list count|  0| pg count|  1| bkmrk| A2.2-G - LEVEL G - OVERALL FLOOR PLAN
+B type| PT_LEAF       | pg| 12 | list count|  0| pg count|  1| bkmrk| A2.2-GN - LEVEL G - FLOOR PLAN - NORTH
+B type| PT_LEAF       | pg| 13 | list count|  0| pg count|  1| bkmrk| A2.2-GS - LEVEL G - FLOOR PLAN - SOUTH
+A type| PT_BRANCH     | ->  14 | list count|  3|               bkmrk| VT Sheets
+B type| PT_LEAF       | pg| 14 | list count|  0| pg count|  1| bkmrk| A5.0-1 - STAIR A07 - ENLARGED FLOOR PLANS
+B type| PT_LEAF       | pg| 15 | list count|  0| pg count|  1| bkmrk| A5.0-2 - STAIR A11 & A12 -ENLARGED FLOOR
+B type| PT_LEAF       | pg| 16 | list count|  0| pg count|  1| bkmrk| A5.0-3 - STAIR F01 - ENLARGED FLOOR PLANS
+*** show pdf node tree done ***
+
+
+
+*** show pdf node tree in order ***
+
+root
+  General
+  Green Sheets
+  Odd Sized Sheets
+  Architectural Sheets
+General
+    Cover Sheet
+    Title Sheets
+Cover Sheet
+      CS - COVER SHEET
+Title Sheets
+      T1.0-0 - TITLE SHEET
+      T2.0 - GENERAL CONTRACTOR'S NOTES
+      T2.1 - GENERAL CONTRACTORS NOTES
+Green Sheets
+     - 
+    T5.1 - CALGREEN CHECKLIST
+    T5.2 - CALGREEN CHECKLIST
+Odd Sized Sheets
+    Cx01 - Cover Sheet
+    Cx02 - Demolition Plan
+    Cx03 - Site Plan
+Architectural Sheets
+    Floor Plans
+    VT Sheets
+Floor Plans
+      A2.2-G - LEVEL G - OVERALL FLOOR PLAN
+      A2.2-GN - LEVEL G - FLOOR PLAN - NORTH
+      A2.2-GS - LEVEL G - FLOOR PLAN - SOUTH
+VT Sheets
+      A5.0-1 - STAIR A07 - ENLARGED FLOOR PLANS
+      A5.0-2 - STAIR A11 & A12 -ENLARGED FLOOR
+      A5.0-3 - STAIR F01 - ENLARGED FLOOR PLANS
+
+*** show pdf node tree in order done ***
