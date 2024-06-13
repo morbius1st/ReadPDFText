@@ -5,7 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Configurations>Debug;Release;DbgTests;DbgCreate;DbgScan</Configurations>
+    <Configurations>Debug;Release;DbgTests;DbgCreate;DbgScan;DbgReadText</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

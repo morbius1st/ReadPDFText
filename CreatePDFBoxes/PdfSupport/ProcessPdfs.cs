@@ -1,6 +1,7 @@
 ﻿#region + Using Directives
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using CreatePDFBoxes.SheetData;
 using Settings;
 using SettingsManager;
 using ShCommonCode.ShSheetData;
+using UtilityLibrary;
 
 #endregion
 
@@ -22,52 +24,58 @@ namespace CreatePDFBoxes.PdfSupport
 
 		private string exampleToCreate = "TestBoxes";
 
-
 		private CreatePdfSample createPdfSample;
 
 		private SheetRects? sheetRects;
 
 		private string pdfFilePath;
 
-		public void Process()
-		{
-			pdfFilePath = SheetDataSetConsts.SHEET_DATA_FOLDER+PDF_FILE_NAME;
+		public string DataFilePath { get; private set; }
 
-			if (!getSampleRects()) return;
+		
+		public bool Process(string datafilepath)
+		{
+			DataFilePath= datafilepath;
+
+			initData();
+
+			pdfFilePath = SheetDataSetConsts.SHEET_DATA_FOLDER+PDF_FILE_NAME;
 
 			createPdfSample = new CreatePdfSample(pdfFilePath);
 
-			if (!createSample()) return;
+			createPdfSample.BeginSample();
 
-		}
+			foreach (KeyValuePair<string, SheetRects> kvp in SheetDataManager.Data!.SheetRectangles)
+			{
+				sheetRects= kvp.Value;
 
-		private bool getSampleRects()
-		{
-			bool result;
+				createPdfSample.AppendSample(sheetRects);
+			}
 
-			ProcessRects pr = new ProcessRects();
-			pr.Process();
-
-			sheetRects = pr.GetSheetRects(exampleToCreate);
-
-			if (sheetRects == null) return false;
+			createPdfSample.CompleteSample();
 
 			return true;
 		}
 
-		private bool createSample()
+		private void initData()
 		{
-			bool result = true;
+			SheetDataManager.Init(new FilePath<FileNameSimple>(DataFilePath));
 
-			result = createPdfSample.CreateSample(sheetRects);
+			SheetDataManager.Read();
 
-			return result;
+			showStatus("@read rects");
 		}
-
 
 		public override string ToString()
 		{
 			return $"this is {nameof(ProcessPdfs)}";
+		}
+
+		public static void showStatus(string msg)
+		{
+			string qty = $"{SheetDataManager.SheetsCount}";
+
+			Debug.WriteLine($"sheet count| {qty} | ({msg})");
 		}
 	}
 }

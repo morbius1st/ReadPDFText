@@ -1,0 +1,115 @@
+
+box usage / formatting info
+str_na                == always ignore (e.g. sheet size)
+
+samp.
+                     o
+                 a   r   t
+                 l   i o i
+  s s            t o g r t   x
+s r r          a   r   i l   r
+r t r          l b i b g e   e
+t _ _          t o g o       f
+_ t l            r   r t t l 
+b e i          b d b d e e i b
+o x n          o e o e x x n o
+x t k          x r x r t t k x
+                                 box usage / formatting info
+                                 str_na                == always ignore (e.g. sheet size)
+                                 
+x - -  ......................... srt_box               == the perimeter of a box - no text / no link  (e.g. sheet number)
+                                 	what to save for this box
+                                 		> basic information (name / type / rectangle) (typical)
+                                 	srt_box  for sample - what to produce
+               - * * - - * - -				black, dashed border, fill per original, text title at lower-left corner
+                                 	srt_box  for final - what to produce
+               - - - - - - - x				border & fill per sheet xref
+                                 
+- x -  ......................... str_text              == where to place some text (e.g. watermark)
+                                 	what to save for this box
+                                 		> basic info
+                                 		> the extra text string
+                                 		> text formatting info
+               - - - - * - - -		str_text  for sample - what to produce
+                                 		> match original text
+                                 		> no text title
+               - - - - x - - -     str_text  for final - what to produce
+                                 		> match original text
+                                 		
+x x -  ......................... str_text_n_box        == where to place some text in a box (e.g. footer / banner) - ** special processing
+                                 	what to save for this box
+                                 		> basic info
+                                 		> the extra text string
+                                 		> text formatting info
+                                 		> box formatting info
+               					for sample - what to produce
+               - * * - * - - -			if "special processing"
+                                 			> black, dashed border, fill per original, text per text formatting
+               - - * * * - - -			if not "special processing"  (none thus far)
+                                 			> per original
+               					for final - what to produce
+               - - x - x - - -			if "special processing"
+                                 			> per original, except no border
+               - - x x x - - -			if not "special processing" (none thus far)
+                                 			> per original
+                                 
+                                 
+x x x  ......................... str_text_link_n_box   == where to place text in a box that has a link  (e.g. disclaimer)
+                                 	what to save for this box
+                                 		> basic info
+                                 		> the extra text string
+                                 		> the link text string
+                                 		> text formatting info
+                                 		> box formatting info
+               					for sample - what to produce
+               - * * - * - * -			if "special processing"
+                                 			> black, dashed border, fill per original, text per text formatting
+                                 			> add link ?
+               - - * * * - * -			if not "special processing"  (none thus far)
+                                 			> per original
+                                 			> add link ?
+               					for final - what to produce
+               - - x - x - x -			if "special processing"
+                                 			> per original, except no border
+                                 			> add link
+               - - x x x - x -			if not "special processing" (none thus far)
+                                 			> per original
+                                 			> add link
+                                 
+                                 
+x - x  ......................... srt_link_n_box        == where to place a box with a link (no text) (e.g. author)
+                                 	what to save for this box
+                                 		> basic info
+                                 		> the link text string
+                                 		> box formatting info
+               					for sample - what to produce
+               - * * - - * * -			if "special processing"
+                                 			> black, dashed border, fill per original
+                                 			> text title at lower-left corner
+                                 			> add link ?
+               - - * * - * * -			if not "special processing"  (none thus far)
+                                 			> per original
+                                 			> text title at lower-left corner
+                                 			> add link ?
+               					for final - what to produce
+               - - x - x - x -			if "special processing"
+                                 			> per original, except no border
+                                 			> add link
+               - - x x x - x -			if not "special processing" (none thus far)
+                                 			> per original
+                                 			> add link
+                                 
+- - -  ......................... str_location          == box to provide a location
+                                 	what to save for this box
+                                 		> basic info
+               - * * - - * - -		for sample - what to produce
+                                 		> black, dashed border, fill per original, text title at lower-left corner
+               - - - - - - - -		for final
+                             		> ignore - location only
+
+
+
+
+
+special processing
+ when the border is black and the fill is white

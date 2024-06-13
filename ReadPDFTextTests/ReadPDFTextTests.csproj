@@ -5,10 +5,12 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Configurations>Debug;Release;DbgCreate;DbgScan</Configurations>
+    <Configurations>Debug;Release;DbgCreate;DbgScan;DbgReadText</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DbgReadText|AnyCPU'" />
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DbgScan|AnyCPU'" />
 

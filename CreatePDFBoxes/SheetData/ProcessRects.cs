@@ -1,9 +1,11 @@
 ﻿#region + Using Directives
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CreatePDFBoxes.PdfSupport;
 using Settings;
 using SettingsManager;
 using ShCommonCode.ShSheetData;
@@ -16,31 +18,25 @@ using UtilityLibrary;
 
 namespace CreatePDFBoxes.SheetData
 {
+	/*
 	public class ProcessRects
 	{
-		private ReadData rd;
-
-
-		public void Process()
+		public void Process(string datafilepath)
 		{
-			SheetRectSupport.FilePath = new FilePath<FileNameSimple>(SheetDataSetConsts.DataFilePath);
-
-			SheetDataManager.Init(SheetRectSupport.FilePath);
+			SheetDataManager.Init(new FilePath<FileNameSimple>(datafilepath));
 
 			ReadRects();
 		}
 
 		private void ReadRects()
 		{
-			rd=new ReadData();
+			SheetDataManager.Read();
 
-			rd.Read();
+			ProcessPdfs.showStatus("@read rects");
 		}
 
 		public SheetRects? GetSheetRects(string sheetName)
 		{
-			if (!SheetDataManager.Initialized) return null;
-
 			bool result;
 			SheetRects? sheetRects;
 
@@ -57,4 +53,5 @@ namespace CreatePDFBoxes.SheetData
 			return $"this is {nameof(ProcessRects)}";
 		}
 	}
+	*/
 }

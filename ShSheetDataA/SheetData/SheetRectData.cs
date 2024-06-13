@@ -3,18 +3,17 @@
 // File:             ShtRectData.cs
 // Created:      2024-05-16 (8:07 PM)
 
-using System.Diagnostics;
+// using SharedCode.ShDataSupport;
+// using SharedCode.ShPdfSupport;
+
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
-using iText.IO.Font.Constants;
 using iText.Kernel.Colors;
 using iText.Kernel.Geom;
+using iText.Kernel.Pdf;
 using iText.Layout.Properties;
-// using SharedCode.ShDataSupport;
-// using SharedCode.ShPdfSupport;
-using ColorA = System.Drawing.Color;
-using Path = iText.Kernel.Geom.Path;
+using UtilityLibrary;
 
 namespace ShCommonCode.ShSheetData
 {
@@ -48,7 +47,7 @@ namespace ShCommonCode.ShSheetData
 	}
 
 	[DataContract(Namespace = "")]
-	public class SheetRectData<T>
+	public class SheetRectData<T> : ICloneable
 	{
 		private float[] fillColor;
 		private float[] bdrColor;
@@ -89,11 +88,13 @@ namespace ShCommonCode.ShSheetData
 			Reset();
 		}
 
+
 		[DataMember(Order =  0)]
 		public SheetRectType Type { get; private set; }
 
 		[DataMember(Order =  1)]
 		public T Id { get; private set; }
+
 		// bounding box info ...
 		// box location and dimensions
 
@@ -122,6 +123,21 @@ namespace ShCommonCode.ShSheetData
 			set => rectangleA = value;
 		}
 
+		[IgnoreDataMember]
+		public bool SpecialBorder
+		{
+			get
+			{
+				if (
+					Type == SheetRectType.SRT_TEXT_N_BOX ||
+					Type == SheetRectType.SRT_LINK_N_BOX ||
+					Type == SheetRectType.SRT_TEXT_LINK_N_BOX &&
+					TextColor.Equals(DeviceRgb.BLACK) && 
+					FillColor.Equals(DeviceRgb.WHITE)) return true;
+
+				return false;
+			}
+		}
 
 
 		[DataMember(Order =  11)]
@@ -131,15 +147,13 @@ namespace ShCommonCode.ShSheetData
 		public string UrlLink { get; set; }
 
 
-
 		[DataMember(Order =  21)]
-		public float Rotation { get; set; }
-
+		public float TextBoxRotation { get; set; }
 
 
 		[JsonIgnore]
 		[IgnoreDataMember]
-		public Color? FillColor
+		public Color FillColor
 		{
 			get => Color.CreateColorWithColorSpace(fillColor);
 			set => fillColor = value?.GetColorValue() ?? new [] { 0f, 1f, 1f };
@@ -156,14 +170,12 @@ namespace ShCommonCode.ShSheetData
 		public float FillOpacity { get; set; }
 
 
-
-
 		[DataMember(Order =  41)]
 		public float BdrWidth { get; set; }
 
 		[JsonIgnore]
 		[IgnoreDataMember]
-		public Color? BdrColor
+		public Color BdrColor
 		{
 			get => Color.CreateColorWithColorSpace(bdrColor);
 			set => bdrColor = value?.GetColorValue() ?? new [] { 0f, 0f, 1f };
@@ -184,8 +196,6 @@ namespace ShCommonCode.ShSheetData
 		public float[] BdrDashPattern { get; set; }
 
 
-
-
 		// text info ...
 		[DataMember(Order =  51)]
 		public string FontFamily { get; set; }
@@ -197,17 +207,17 @@ namespace ShCommonCode.ShSheetData
 		public float TextSize { get; set; }
 
 		[DataMember(Order =  54)]
-		public TextAlignment TextHorizAlignment { get; set; }
+		public HorizontalAlignment TextHorizAlignment { get; set; }
 
 		[DataMember(Order =  55)]
 		public VerticalAlignment TextVertAlignment { get; set; }
 
 		[DataMember(Order =  61)]
 		public int TextWeight { get; set; } = iText.IO.Font.Constants.FontWeights.NORMAL;
-		
+
 		[JsonIgnore]
 		[IgnoreDataMember]
-		public Color? TextColor
+		public Color TextColor
 		{
 			get => Color.CreateColorWithColorSpace(textColor);
 			set => textColor = value?.GetColorValue() ?? new [] { 0f, 0f, 0f };
@@ -235,7 +245,7 @@ namespace ShCommonCode.ShSheetData
 			InfoText = null;
 			UrlLink = null;
 
-			Rotation = 0;
+			TextBoxRotation = 0;
 
 			FillColor = null;
 			FillOpacity = 1f;
@@ -246,12 +256,12 @@ namespace ShCommonCode.ShSheetData
 			BdrDashPattern = null;
 
 			FontFamily = "Arial";
-			FontStyle = iText.IO.Font.Constants.FontStyles.NORMAL;
+			FontStyle = iText.IO.Font.Constants.FontStyles.NORMAL;  // 1 = bold // 2 = italic
 
 			TextSize = 12f;
 
-			TextHorizAlignment = TextAlignment.LEFT;
-			TextVertAlignment = VerticalAlignment.MIDDLE;
+			TextHorizAlignment = HorizontalAlignment.LEFT;
+			TextVertAlignment = VerticalAlignment.TOP; // must be top as this is a PDF default
 
 			TextWeight = iText.IO.Font.Constants.FontWeights.NORMAL;
 			TextDecoration = TextDecorations.NORMAL;
@@ -259,9 +269,45 @@ namespace ShCommonCode.ShSheetData
 			TextOpacity = 1f;
 		}
 
+		public float GetAdjTextRotation(float pageAdjust)
+		{
+			return FloatOps.ToRad(TextBoxRotation + pageAdjust);
+		}
+
 		public bool HasType(SheetRectType test)
 		{
 			return (Type & test) != 0;
+		}
+
+		public object Clone()
+		{
+			SheetRectData<T> copy = new SheetRectData<T>(Type, Id, Rect);
+
+			copy.InfoText = InfoText;
+			copy.UrlLink = UrlLink;
+			copy.TextBoxRotation = TextBoxRotation;
+			copy.FillColor = FillColor;
+			copy.FillOpacity = FillOpacity;
+			copy.BdrWidth = BdrWidth;
+			copy.BdrColor = BdrColor;
+			copy.BdrOpacity = BdrOpacity;
+			copy.BdrDashPattern = (float[]) BdrDashPattern?.Clone() ?? null;
+			copy.FontFamily = FontFamily;
+			copy.FontStyle = FontStyle;
+			copy.TextSize = TextSize;
+			copy.TextHorizAlignment = TextHorizAlignment;
+			copy.TextVertAlignment = TextVertAlignment;
+			copy.TextWeight = TextWeight;
+			copy.TextColor = TextColor;
+			copy.TextOpacity = TextOpacity;
+			copy.TextDecoration = TextDecoration;
+
+			return copy;
+		}
+
+		public SheetRectData<T> Clone2()
+		{
+			return (SheetRectData<T>) Clone();
 		}
 	}
 }

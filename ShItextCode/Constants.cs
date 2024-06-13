@@ -37,12 +37,11 @@ namespace SharedCode
 			return deg / Math.PI * 180;
 		}
 
-		public static Tuple<string, TextAlignment>[] TextHorzAlignment = new []
+		public static Tuple<string, HorizontalAlignment>[] TextHorzAlignment = new []
 		{
-			new Tuple<string, TextAlignment>("justified", TextAlignment.JUSTIFIED),
-			new Tuple<string, TextAlignment>("left", TextAlignment.LEFT),
-			new Tuple<string, TextAlignment>("right", TextAlignment.RIGHT),
-			new Tuple<string, TextAlignment>("center", TextAlignment.CENTER),
+			new Tuple<string, HorizontalAlignment>("left", HorizontalAlignment.LEFT),
+			new Tuple<string, HorizontalAlignment>("right", HorizontalAlignment.RIGHT),
+			new Tuple<string, HorizontalAlignment>("center", HorizontalAlignment.CENTER),
 		};
 
 		public static Tuple<string, VerticalAlignment>[] TextVertAlignment = new []

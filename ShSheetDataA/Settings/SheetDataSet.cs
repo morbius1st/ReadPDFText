@@ -10,6 +10,7 @@
 // the meaning of all three are up to you, however, the dataclass version
 // is used to determine if the dataset has been revised and needs an upgrade
 
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using SettingsManager;
 using ShCommonCode.ShSheetData;

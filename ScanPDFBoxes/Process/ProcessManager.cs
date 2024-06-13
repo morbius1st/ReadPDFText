@@ -8,8 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using iText.Kernel.Geom;
+using ShCode.ShDebugInfo;
 using ShCommonCode.ShSheetData;
 using UtilityLibrary;
+
+using Path = System.IO.Path;
 
 #endregion
 
@@ -18,11 +21,27 @@ using UtilityLibrary;
 
 namespace ScanPDFBoxes.Process
 {
+	public enum ErrorLevel
+	{
+		WARNING,
+		ERROR_MAYBE_FATAL,
+		ERROR_IS_FATAL
+	}
+
+
 	public class ProcessManager
 	{
-		public List<Tuple<string, string, Rectangle>> duplicates { get; private set; }
-		public List<Tuple<string, string, Rectangle>> extras { get; private set; }
-		public List<Tuple<string?, string?, Rectangle?>> fails { get; private set; }
+		private static int cpm = SheetDataManager.SheetsCount;
+
+		int startDupCount;
+		int startExtraCount;
+
+		int dupsAdded;
+		int extrasAdded;
+
+		public List<Tuple<string, string, Rectangle>> duplicateRects { get; private set; }
+		public List<Tuple<string, string, Rectangle>> extraRects { get; private set; }
+		public List<Tuple<string?, string?, ErrorLevel>> errors { get; private set; }
 
 		public ProcessManager(FilePath<FileNameSimple> dataFile)
 		{
@@ -31,94 +50,236 @@ namespace ScanPDFBoxes.Process
 
 		public FilePath<FileNameSimple> DataFilePath { get; set; }
 
+		public bool HasFatalErrors {get; set; }
 
-		public void ResetSheetData()
+		// public void InitSheetData()
+		// {
+		// 	SheetDataManager.Init(DataFilePath);
+		//
+		// 	SheetDataManager.Write();
+		// }
+
+
+		// config
+
+		private void ResetSheetData()
 		{
-			SheetDataManager.Init(DataFilePath);
-
-			SheetDataManager.Write();
+			SheetDataManager.Admin!.Reset();
 		}
 
-		private void configSheetData()
+		public void ConfigSheetData()
 		{
 			if (!SheetDataManager.Initialized)
 			{
-				ResetSheetData();
+				SheetDataManager.Init(DataFilePath);
 			}
 
 			SheetDataManager.Read();
 		}
 
+		// setup
+
+		public bool ScanSheets(string[] sheets)
+		{
+			// ShowSheetRectInfo.showStatus(ShowWhere.DEBUG, "@21");
+
+			HasFatalErrors = false;
+
+			duplicateRects = new List<Tuple<string, string, Rectangle>>();
+			extraRects = new List<Tuple<string, string, Rectangle>>();
+			errors = new List<Tuple<string?, string?, ErrorLevel>>();
+
+			ConfigSheetData();
+
+			// ShowSheetRectInfo.showStatus(ShowWhere.DEBUG, "@22");
+
+			int count = SheetDataManager.SheetsCount;
+
+			scanSheets(sheets);
+
+			Console.WriteLine(" done\n");
+
+			ShowSheetRectInfo.showScanReport(this);
+
+			// ShowSheetRectInfo.showStatus(ShowWhere.DEBUG, "@23");
+
+			if (errors.Count == 0)
+			{
+				writeData();
+
+				Console.WriteLine("\nData Written");
+			}
+			else
+			{
+				Console.WriteLine("\nDue to errors, the changes will not be saved");
+
+				SheetDataManager.Read();
+			}
+
+			// ShowSheetRectInfo.showStatus(ShowWhere.DEBUG, "@29");
+
+			return SheetDataManager.SheetsCount - count > 0 && errors.Count == 0 && !HasFatalErrors;
+		}
+
 		public bool RemoveSheets(string[] sheets)
 		{
+			// ShowSheetRectInfo.showStatus(ShowWhere.DEBUG, "@31");
+
 			int initCount = SheetDataManager.SheetsCount;
 
-			fails = new List<Tuple<string?, string?, Rectangle?>>();
+			HasFatalErrors = false;
 
-			configSheetData();
+			errors = new List<Tuple<string?, string?, ErrorLevel>>();
+
+			ConfigSheetData();
+
+			// ShowSheetRectInfo.showStatus(ShowWhere.DEBUG, "@32");
 
 			for (var i = 0; i < sheets.Length; i++)
 			{
 				removeSheet(sheets[i]);
 			}
 
-			if (true)
-			{
-				ProcessResults pr = new ProcessResults(this);
+			ShowSheetRectInfo.ShowRemoveReport(this, initCount);
 
-				pr.ProcessRemove(initCount);
+			// ShowSheetRectInfo.showStatus(ShowWhere.DEBUG, "@33");
+
+			if (errors.Count == 0)
+			{
+				writeData();
+
+				Console.WriteLine("\nData Written");
+			}
+			else
+			{
+				Console.WriteLine("\nDue to errors, the changes will not be saved");
+
+				SheetDataManager.Read();
 			}
 
-			return fails.Count > 0;
+			// ShowSheetRectInfo.showStatus(ShowWhere.DEBUG, "@39");
+
+			return errors.Count > 0 && !HasFatalErrors;
 		}
 
-		public bool ScanSheets(string[] sheets)
+		public void QuerySheets(string[] sheets)
 		{
-			// Debug.WriteLine($"@1 {(SheetDataManager.Data?.SheetRectangles?.Count.ToString() ?? "null")}");
+			Process.QuerySheets qs = new QuerySheets();
 
-			duplicates = new List<Tuple<string, string, Rectangle>>();
-			extras = new List<Tuple<string, string, Rectangle>>();
+			qs.Process(sheets);
 
-			configSheetData();
-
-			int count = SheetDataManager.SheetsCount;
-
-			scanSheets(sheets);
-
-			// Debug.WriteLine($"@9 {(SheetDataManager.Data?.SheetRectangles?.Count.ToString() ?? "null")}");
-
-			Console.WriteLine(" done\n");
-
-			writeData();
-
-			if (true)
-			{
-				ProcessResults pr = new ProcessResults(this);
-
-				pr.ShowBasicRects = true;
-				pr.ShowRectValues = false;
-				pr.ShowReport=true;
-
-				pr.ProcessAdd();
-			}
-
-			return SheetDataManager.SheetsCount - count > 0;
+			PdfShowInfo.ShowPdfInfoBasic(qs.Docs);
 		}
+
+		// action
 
 		private void scanSheets(string[] sheets)
 		{
+			string fileName;
+
 			ScanSheet ss = new ScanSheet(this);
 
 			for (var i = 0; i < sheets.Length; i++)
 			{
+				startDupCount = duplicateRects.Count;
+				startExtraCount = extraRects.Count;
+
 				Console.Write(".");
 
-				// Debug.WriteLine($"@11 {(SheetDataManager.Data?.SheetRectangles?.Count.ToString() ?? "null")}");
+				fileName = Path.GetFileNameWithoutExtension(sheets[i]);
+
+				if (!checkFileExists(sheets[i], fileName)) continue;
+
+				if (!checkDuplicateFile(fileName)) continue;
 
 				ss.ProcessSheet(sheets[i]);
 
-				// Debug.WriteLine($"@19 {(SheetDataManager.Data?.SheetRectangles?.Count.ToString() ?? "null")}");
+				checkForDupsAndExtras(fileName);
+
 			}
+		}
+
+		private void removeSheet(string sheet)
+		{
+			string fileName = Path.GetFileNameWithoutExtension(sheet);
+
+			if (!File.Exists(sheet))
+			{
+				errors.Add(new Tuple<string?, string?, ErrorLevel>(
+					Path.GetFileName(sheet), "Sheet type not found", ErrorLevel.ERROR_MAYBE_FATAL));
+
+				return;
+			}
+
+			bool result = SheetDataManager.Data!.SheetRectangles.Remove(fileName);
+
+			if (!result)
+			{
+				errors.Add(new Tuple<string?, string?, ErrorLevel>
+					(Path.GetFileName(sheet), "Could not find / remove sheet", ErrorLevel.ERROR_IS_FATAL));
+
+				HasFatalErrors = true;
+			}
+		}
+
+
+		// util
+
+		private void checkForDupsAndExtras(string fileName)
+		{
+			dupsAdded =  duplicateRects.Count - startDupCount;
+			extrasAdded =  extraRects.Count - startExtraCount;
+
+			if (dupsAdded > 0)
+			{
+				errors.Add(new Tuple<string?, string?, ErrorLevel>(
+					fileName, $"{dupsAdded} duplicate {getRectangleQtyDesc(dupsAdded)} found", ErrorLevel.ERROR_IS_FATAL));
+			}
+
+			if (extrasAdded > 0)
+			{
+				errors.Add(new Tuple<string?, string?, ErrorLevel>(
+					fileName, $"{extrasAdded} extra {getRectangleQtyDesc(extrasAdded)} found", ErrorLevel.ERROR_IS_FATAL));
+			}
+
+		}
+
+		private string getRectangleQtyDesc(int qty)
+		{
+			if (qty == 1)
+			{
+				return "rectangle";
+			}
+
+			return "rectangles";
+		}
+
+		private bool checkFileExists(string fullFilePath, string fname)
+		{
+			if (!File.Exists(fullFilePath))
+			{
+				errors.Add(new Tuple<string?, string?, ErrorLevel>(
+					fname, "Sheet type found", ErrorLevel.ERROR_IS_FATAL));
+
+				HasFatalErrors = true;
+
+				return false;
+			}
+
+			return true;
+		}
+
+		private bool checkDuplicateFile(string fname)
+		{
+			if (SheetDataManager.Data.SheetRectangles.ContainsKey(fname))
+			{
+				errors.Add(new Tuple<string?, string?, ErrorLevel>(
+					fname, "Sheet already saved (duplicate)", ErrorLevel.ERROR_MAYBE_FATAL));
+
+				return false;
+			}
+
+			return true;
 		}
 
 		private bool writeData()
@@ -130,14 +291,6 @@ namespace ScanPDFBoxes.Process
 			return result;
 		}
 
-		private void removeSheet(string sheet)
-		{
-			bool result = SheetDataManager.Data!.SheetRectangles.Remove(sheet);
 
-			if (result) return;
-
-			fails.Add(new Tuple<string?, string?, Rectangle?>(sheet, "Could not find / remove sheet", null));
-
-		}
 	}
 }

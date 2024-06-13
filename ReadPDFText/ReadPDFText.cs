@@ -968,6 +968,7 @@ namespace SharedCode.ShDataSupport
 				// test files (5 total)
 				// 6
 				baseFolder = @"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Test4\";
+				pdfFolderName = "PDF Files";
 				sheetFileName = "Sheet List.xlsx";
 				destFileName = "Combined-6.pdf";
 			}
@@ -979,6 +980,7 @@ namespace SharedCode.ShDataSupport
 				// test files (3 total)
 				// 7
 				baseFolder = @"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Test5\";
+				pdfFolderName = "PDF Files";
 				sheetFileName = "Sheet List.xlsx";
 				destFileName = "Combined-7.pdf";
 			}

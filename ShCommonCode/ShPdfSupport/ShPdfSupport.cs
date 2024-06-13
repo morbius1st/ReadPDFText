@@ -8,7 +8,7 @@ using iText.Kernel.Colors;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf.Canvas;
 using iText.Kernel.Pdf.Extgstate;
-using ShCode.ShDebugShow;
+using ShCode.ShDebugInfo;
 using ShCommonCode.ShSheetData;
 
 #endregion
@@ -18,7 +18,7 @@ using ShCommonCode.ShSheetData;
 
 namespace ShCommonCode.ShPdfSupport
 {
-	public struct PdfRectParams
+	public struct PdfRectParams2
 	{
 		public Rectangle R { get; set; }
 		public Color? StrokeColor { get; set; }
@@ -32,6 +32,7 @@ namespace ShCommonCode.ShPdfSupport
 	public class ShPdfSupport
 	{
 		public float PageRotation { get; set; }
+
 		public Rectangle PageSizeWithRotation { get; set; }
 
 		// public void PlaceSheetRectangle2(PdfCanvas pdfCanvas,
@@ -63,7 +64,7 @@ namespace ShCommonCode.ShPdfSupport
 		{
 			Rectangle r= rotatSheetRectangleIfNeeded(srd.Rect);
 
-			DebugShowInfo.ShowRectParams(srd);
+			PdfShowInfo.ShowRectParams(srd);
 
 			pdfCanvas.SaveState();
 

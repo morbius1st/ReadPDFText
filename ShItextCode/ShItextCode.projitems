@@ -13,7 +13,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PdfFreeTextSupport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateSupport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateRectangle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PdfFreeTextRead.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PdfInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PdfMath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PdfShowInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfSupport.cs" />
   </ItemGroup>
 </Project>

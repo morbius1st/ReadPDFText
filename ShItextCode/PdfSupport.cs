@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using iText.Kernel.Colors;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Annot;
 using iText.Kernel.Pdf.Colorspace;
 
 
@@ -39,9 +40,9 @@ namespace SharedCode.ShPdfSupport
 			if (h == null) return null;
 
 			float[] c = new float[3];
-			c[0] = Int32.Parse(h.Substring(1, 2), NumberStyles.AllowHexSpecifier);
-			c[1] = Int32.Parse(h.Substring(3, 2), NumberStyles.AllowHexSpecifier);
-			c[2] = Int32.Parse(h.Substring(5, 2), NumberStyles.AllowHexSpecifier);
+			c[0] = Int32.Parse(h.Substring(1, 2), NumberStyles.AllowHexSpecifier)/255f;
+			c[1] = Int32.Parse(h.Substring(3, 2), NumberStyles.AllowHexSpecifier)/255f;
+			c[2] = Int32.Parse(h.Substring(5, 2), NumberStyles.AllowHexSpecifier)/255f;
 
 			return Color.CreateColorWithColorSpace(c);
 		}
@@ -83,6 +84,33 @@ namespace SharedCode.ShPdfSupport
 			return new Rectangle(x, y, w, h);
 
 		}
+
+		public static PdfArray GetBBoxFromAnnotation(PdfAnnotation pa)
+		{
+			PdfArray pax;
+
+			try
+			{
+				PdfDictionary pd = pa.GetAppearanceDictionary();
+				PdfObject po1 = pd.Get(PdfName.N);
+				PdfIndirectReference pir = po1.GetIndirectReference();
+				PdfObject po2 = pir.GetRefersTo();
+				PdfStream ps1 = (PdfStream) po2;
+				PdfObject po3 = ps1.Get(PdfName.BBox);
+				pax = (PdfArray) po3;
+
+			}
+			catch
+			{
+				return null;
+			}
+
+			return pax;
+		}
+
+
+
+
 
 		/*
 

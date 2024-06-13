@@ -9,6 +9,7 @@ using iText.Kernel.Colors;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Annot;
+using iText.Layout;
 using iText.Layout.Properties;
 
 using ShCommonCode.ShSheetData;
@@ -21,7 +22,9 @@ using static SharedCode.Constants;
 
 namespace SharedCode.ShPdfSupport
 {
-	public class PdfFreeTextSupport
+
+	// to extract information from a PDF
+	public class PdfFreeTextRead
 	{
 		private PdfSupport pSupport = new PdfSupport();
 
@@ -31,6 +34,8 @@ namespace SharedCode.ShPdfSupport
 		private PdfFreeTextAnnotation pfa;
 		private SheetRectData<SheetRectId> srd;
 
+		private SheetRectId id;
+
 		private SheetRectType type;
 
 		// set info to default before running
@@ -39,6 +44,21 @@ namespace SharedCode.ShPdfSupport
 		public void ExtractPfaData(PdfFreeTextAnnotation pfa, SheetRectData<SheetRectId> srdx)
 		{
 			this.srd = srdx;
+
+			double rt = srdx.TextBoxRotation;
+
+			if (rt != 0 && rt != 90 && rt != 270)
+			{
+				PdfArray pa = PdfSupport.GetBBoxFromAnnotation(pfa);
+
+				if (pa != null)
+				{
+					Rectangle rx = pa.ToRectangle();
+					srd.Rect = new Rectangle(srd.Rect.GetX(), srd.Rect.GetY(), rx.GetWidth(), rx.GetHeight());
+				}
+			}
+
+			id = srd.Id;
 
 			type = srd.Type;
 
@@ -50,9 +70,10 @@ namespace SharedCode.ShPdfSupport
 			p = pfa.GetPdfObject();
 			subType = pfa.GetSubtype().GetValue();
 
+			if (srd.HasType(SheetRectType.SRT_BOX)) getBoxData();	// must be first
 			if (srd.HasType(SheetRectType.SRT_TEXT)) getTextData();
 			if (srd.HasType(SheetRectType.SRT_LINK)) getUrlText();
-			if (srd.HasType(SheetRectType.SRT_BOX)) getBoxData();
+
 		}
 
 
@@ -95,13 +116,15 @@ namespace SharedCode.ShPdfSupport
 
 		private void getTextStyleValues()
 		{
+			SheetRectId idx = id;
+
 			PdfString ps = p.GetAsString(PdfName.RC);
 
 			string[] ss = ps.GetValue().Split(new [] { '"', '<', '>', '=', ';' });
 			string[] s2;
 
 			// for now, I do not see that they are independent;
-			srd.TextOpacity = srd.BdrOpacity;
+			srd.TextOpacity = pfa.GetStrokingOpacity();
 
 			foreach (string s1 in ss)
 			{
@@ -307,7 +330,7 @@ namespace SharedCode.ShPdfSupport
 
 		public override string ToString()
 		{
-			return $"working on type| {type}";
+			return $"working on type| {id} | {type}";
 		}
 	}
 }

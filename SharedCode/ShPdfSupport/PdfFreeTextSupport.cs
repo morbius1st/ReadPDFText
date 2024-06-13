@@ -9,6 +9,7 @@ using iText.Kernel.Colors;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Annot;
+using iText.Kernel.Geom;
 using iText.Layout.Properties;
 // using ReadPDFTextTests.SheetData;
 using SharedCode.ShDataSupport;

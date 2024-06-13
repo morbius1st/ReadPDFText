@@ -20,7 +20,7 @@ using Path = iText.Kernel.Geom.Path;
 
 namespace ShCommonCode.ShSheetData
 {
-	public class TextDecorations
+	public class TextDecorations2
 	{
 		public static int NORMAL { get; } = 0;
 		public static int UNDERLINE { get; } = 1 << 1;
@@ -50,7 +50,7 @@ namespace ShCommonCode.ShSheetData
 	}
 
 	[DataContract(Namespace = "")]
-	public class SheetRectData<T>
+	public class SheetRectData2<T>
 	{
 		private float[] fillColor;
 		private float[] bdrColor;
@@ -65,7 +65,7 @@ namespace ShCommonCode.ShSheetData
 		private static PropertyInfo? c;
 		private static MethodInfo? c1;
 
-		static SheetRectData()
+		static SheetRectData2()
 		{
 			if (me == null) me = new SheetRectData<T>();
 			me.Type = SheetRectType.SRT_NA;
@@ -78,12 +78,12 @@ namespace ShCommonCode.ShSheetData
 			c1 = me.GetType().GetMethod(nameof(formatFloat2));
 		}
 
-		private SheetRectData()
+		private SheetRectData2()
 		{
 			Reset();
 		}
 
-		public SheetRectData(SheetRectType type, T id)
+		public SheetRectData2(SheetRectType type, T id)
 		{
 			Type = type;
 			Id = id;
@@ -92,7 +92,7 @@ namespace ShCommonCode.ShSheetData
 			Reset();
 		}
 
-		public SheetRectData(SheetRectType type, T id, Rectangle rect)
+		public SheetRectData2(SheetRectType type, T id, Rectangle rect)
 		{
 			Type = type;
 			Id = id;
@@ -101,7 +101,7 @@ namespace ShCommonCode.ShSheetData
 			Reset();
 		}
 
-		public SheetRectData(string name, T id, Rectangle rect)
+		public SheetRectData2(string name, T id, Rectangle rect)
 		{
 
 			Id = id;

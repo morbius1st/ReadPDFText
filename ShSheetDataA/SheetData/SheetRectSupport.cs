@@ -1,4 +1,7 @@
 ﻿#region + Using Directives
+
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using iText.Kernel.Geom;
 
@@ -50,6 +53,7 @@ namespace ShCommonCode.ShSheetData
 		SM_WATERMARK1          ,
 		SM_WATERMARK2          ,
 
+		SM_OPT0                ,
 		SM_OPT1                ,
 		SM_OPT2                ,
 		SM_OPT3                ,
@@ -59,6 +63,8 @@ namespace ShCommonCode.ShSheetData
 		SM_OPT7                ,
 		SM_OPT8                ,
 		SM_OPT9                ,
+
+		SM_PAGE_TITLE			// to add a lable on a created page
 	}
 
 	public class SheetRectInfo<T>
@@ -104,7 +110,7 @@ namespace ShCommonCode.ShSheetData
 			return ShtRectIdXref[name].Id;
 		}
 
-		public static string? GetShtRectName(SheetRectId id)
+		public static string GetShtRectName(SheetRectId id)
 		{
 			foreach (KeyValuePair<string, SheetRectInfo<SheetRectId>> kvp in ShtRectIdXref)
 			{
@@ -121,24 +127,27 @@ namespace ShCommonCode.ShSheetData
 			return ShtRectIdXref[name].Type;
 		}
 
-		public static Dictionary<string, SheetRectInfo<SheetRectId>> ShtRectIdXref { get; } = new ()
-		{
-			{ "Not Available"    , new (SheetRectType.SRT_NA, SheetRectId.SM_NA) }                    ,  // default / not configured
-			{ "Sheet Boundary"   , new (SheetRectType.SRT_NA, SheetRectId.SM_SHT) }                    , // size of sheet
-			{ "SHEET XREF"       , new (SheetRectType.SRT_LOCATION, SheetRectId.SM_XREF) }             , // the box style for sheet xrefs
-			{ "SHEET NUMBER FIND", new (SheetRectType.SRT_LOCATION, SheetRectId.SM_SHT_NUM_FIND) }     , // limits to find the sheet number
-			{ "SHEET TITLE"      , new (SheetRectType.SRT_LOCATION, SheetRectId.SM_SHT_TITLE) }        , // where to find the title of the sheet
 
-			{ "SHEET NUMBER"     , new (SheetRectType.SRT_BOX, SheetRectId.SM_SHT_NUM) }               , // where to place the sheet number box
-			{ "AUTHOR"           , new (SheetRectType.SRT_LINK_N_BOX, SheetRectId.SM_AUTHOR) }         , // the information for the author box
-			{ "DISCLAIMER"       , new (SheetRectType.SRT_TEXT_LINK_N_BOX, SheetRectId.SM_DISCLAIMER) }, // the information for the disclaimer
-			{ "FOOTER"           , new (SheetRectType.SRT_TEXT_N_BOX, SheetRectId.SM_FOOTER) }         , // the information for the footer
-			{ "FIRST BANNER"     , new (SheetRectType.SRT_TEXT_N_BOX, SheetRectId.SM_BANNER_1ST) }     , // the information for the banner
-			{ "SECOND BANNER"    , new (SheetRectType.SRT_TEXT_N_BOX, SheetRectId.SM_BANNER_2ND) }     , // ditto
-			{ "THIRD BANNER"     , new (SheetRectType.SRT_TEXT_N_BOX, SheetRectId.SM_BANNER_3RD) }     , // ditto
-			{ "FOURTH BANNER"    , new (SheetRectType.SRT_TEXT_N_BOX, SheetRectId.SM_BANNER_4TH) }     , // ditto
-			{ "WATERMARK1"       , new (SheetRectType.SRT_TEXT, SheetRectId.SM_WATERMARK1) }           , // the information for the main watermark
-			{ "WATERMARK2"       , new (SheetRectType.SRT_TEXT, SheetRectId.SM_WATERMARK2) }           , // the information for the title block watermark
+		 
+
+		public static Dictionary<string, SheetRectInfo<SheetRectId>> ShtRectIdXref { get; } = new Dictionary<string, SheetRectInfo<SheetRectId>>()
+		{
+			{ "Not Available"    , new SheetRectInfo<SheetRectId>(SRT_NA,SM_NA) }                    ,  // default / not configured
+			{ "Sheet Boundary"   , new SheetRectInfo<SheetRectId>(SRT_NA,SM_SHT) }                    , // size of sheet
+			{ "SHEET XREF"       , new SheetRectInfo<SheetRectId>(SRT_LOCATION,SM_XREF) }             , // the box style for sheet xrefs
+			{ "SHEET NUMBER FIND", new SheetRectInfo<SheetRectId>(SRT_LOCATION,SM_SHT_NUM_FIND) }     , // limits to find the sheet number
+			{ "SHEET TITLE"      , new SheetRectInfo<SheetRectId>(SRT_LOCATION,SM_SHT_TITLE) }        , // where to find the title of the sheet
+
+			{ "SHEET NUMBER"     , new SheetRectInfo<SheetRectId>(SRT_BOX,SM_SHT_NUM) }               , // where to place the sheet number box
+			{ "AUTHOR"           , new SheetRectInfo<SheetRectId>(SRT_LINK_N_BOX,SM_AUTHOR) }         , // the information for the author box
+			{ "DISCLAIMER"       , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_DISCLAIMER) }, // the information for the disclaimer
+			{ "FOOTER"           , new SheetRectInfo<SheetRectId>(SRT_TEXT_N_BOX,SM_FOOTER) }         , // the information for the footer
+			{ "FIRST BANNER"     , new SheetRectInfo<SheetRectId>(SRT_TEXT_N_BOX,SM_BANNER_1ST) }     , // the information for the banner
+			{ "SECOND BANNER"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_N_BOX,SM_BANNER_2ND) }     , // ditto
+			{ "THIRD BANNER"     , new SheetRectInfo<SheetRectId>(SRT_TEXT_N_BOX,SM_BANNER_3RD) }     , // ditto
+			{ "FOURTH BANNER"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_N_BOX,SM_BANNER_4TH) }     , // ditto
+			{ "WATERMARK1"       , new SheetRectInfo<SheetRectId>(SRT_TEXT,SM_WATERMARK1) }           , // the information for the main watermark
+			{ "WATERMARK2"       , new SheetRectInfo<SheetRectId>(SRT_TEXT,SM_WATERMARK2) }           , // the information for the title block watermark
 		};
 
 		/*
@@ -205,12 +214,12 @@ namespace ShCommonCode.ShSheetData
 
 		public static SheetRectId GetOptRectId(string name)
 		{
-			if (!OptRectIdXref.ContainsKey(name)) return SheetRectId.SM_NA;
+			if (!OptRectIdXref.ContainsKey(name)) return SM_NA;
 
 			return OptRectIdXref[name].Id;
 		}
 
-		public static string? GetOptRectName(SheetRectId id)
+		public static string GetOptRectName(SheetRectId id)
 		{
 			foreach (KeyValuePair<string, SheetRectInfo<SheetRectId>> kvp in OptRectIdXref)
 			{
@@ -227,18 +236,19 @@ namespace ShCommonCode.ShSheetData
 			return OptRectIdXref[name].Type;
 		}
 
-		public static Dictionary<string, SheetRectInfo<SheetRectId>> OptRectIdXref { get; } = new ()
+		public static Dictionary<string, SheetRectInfo<SheetRectId>> OptRectIdXref { get; } = new Dictionary<string, SheetRectInfo<SheetRectId>>()
 		{
-			{ "Not Available" , new (SheetRectType.SRT_NA, SheetRectId.SM_NA) }               , // default / not configured
-			{ "OPTIONAL 1"    , new (SheetRectType.SRT_TEXT_LINK_N_BOX, SheetRectId.SM_OPT1) }, // the information for an optional box
-			{ "OPTIONAL 2"    , new (SheetRectType.SRT_TEXT_LINK_N_BOX, SheetRectId.SM_OPT2) }, // ditto
-			{ "OPTIONAL 3"    , new (SheetRectType.SRT_TEXT_LINK_N_BOX, SheetRectId.SM_OPT3) }, // ditto
-			{ "OPTIONAL 4"    , new (SheetRectType.SRT_TEXT_LINK_N_BOX, SheetRectId.SM_OPT4) }, // ditto
-			{ "OPTIONAL 5"    , new (SheetRectType.SRT_TEXT_LINK_N_BOX, SheetRectId.SM_OPT5) }, // ditto
-			{ "OPTIONAL 6"    , new (SheetRectType.SRT_TEXT_LINK_N_BOX, SheetRectId.SM_OPT6) }, // ditto
-			{ "OPTIONAL 7"    , new (SheetRectType.SRT_TEXT_LINK_N_BOX, SheetRectId.SM_OPT7) }, // ditto
-			{ "OPTIONAL 8"    , new (SheetRectType.SRT_TEXT_LINK_N_BOX, SheetRectId.SM_OPT8) }, // ditto
-			{ "OPTIONAL 9"    , new (SheetRectType.SRT_TEXT_LINK_N_BOX, SheetRectId.SM_OPT9) }, // ditto
+			{ "Not Available" , new SheetRectInfo<SheetRectId>(SRT_NA,SM_NA) }               , // default / not configured
+			{ "OPTIONAL 0"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT0) }, // the information for an optional box
+			{ "OPTIONAL 1"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT1) }, // ditto
+			{ "OPTIONAL 2"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT2) }, // ditto
+			{ "OPTIONAL 3"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT3) }, // ditto
+			{ "OPTIONAL 4"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT4) }, // ditto
+			{ "OPTIONAL 5"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT5) }, // ditto
+			{ "OPTIONAL 6"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT6) }, // ditto
+			{ "OPTIONAL 7"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT7) }, // ditto
+			{ "OPTIONAL 8"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT8) }, // ditto
+			{ "OPTIONAL 9"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT9) }, // ditto
 		};
 
 		/*
