@@ -3,15 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using CommonPdfCodeShCode;
 using UtilityLibrary;
 
 using static SharedCode.ShDataSupport.SheetBorderType;
 using static CommonPdfCodeShCode.PdfTreeItemType;
-using static iText.Signatures.LtvVerification;
 
 #endregion
 

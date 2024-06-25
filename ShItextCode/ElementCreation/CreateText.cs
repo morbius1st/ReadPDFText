@@ -1,46 +1,24 @@
 ﻿#region + Using Directives
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Text;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 // using System.Drawing;
 // using System.Drawing.Text;
 // using CreatePDFBoxes.PdfSupport;
-using iText.IO.Font;
-using iText.IO.Font.Constants;
 using iText.Kernel.Font;
-using iText.Kernel.Geom;
 using iText.Kernel.Pdf.Canvas;
 using iText.Layout;
 using iText.Layout.Element;
-using iText.Layout.Font;
-using iText.Layout.Properties;
 using UtilityLibrary;
 using Rectangle = iText.Kernel.Geom.Rectangle;
-using System.Windows;
-
-using iText.Kernel.Colors;
-using iText.Kernel.Pdf.Extgstate;
-using Org.BouncyCastle.Math.EC;
 // using System.Windows.Media.Converters;
-using SharedCode;
-using Vector = iText.Kernel.Geom.Vector;
 using Style = iText.Layout.Style;
 using TextAlignment = iText.Layout.Properties.TextAlignment;
-using ShCommonCode.ShSheetData;
-using HorizontalAlignment = iText.Layout.Properties.HorizontalAlignment;
 // using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using TextDecorations = ShCommonCode.ShSheetData.TextDecorations;
+using TextDecorations = ShSheetData.SheetData.TextDecorations;
 using VerticalAlignment = iText.Layout.Properties.VerticalAlignment;
-using Org.BouncyCastle.X509;
-using Color = iText.Kernel.Colors.Color;
-
-// using CreatePDFBoxes.PdfSupport;
+using ShItextCode.PdfCalculations;
+using ShSheetData.SheetData;
 
 #endregion
 
@@ -49,6 +27,144 @@ using Color = iText.Kernel.Colors.Color;
 
 namespace ShItextCode.ElementCreation
 {
+	// revised - use this:
+
+	// ha
+	// left   = 0 => 0.0
+	// center = 1 => 0.5
+	// right  = 2 => 1.0
+
+	// va
+	// top    = 0 => 1.0
+	// middle = 1 => 0.5
+	// bottom = 2 => 0.0
+
+	public class CreateText2
+	{
+		private string rectname;
+
+		public PdfCanvas pdfCanvas { get; set; }
+
+		public CreateText2(PdfCanvas pdfCanvas)
+		{
+			this.pdfCanvas = pdfCanvas;
+		}
+
+		public void CreateSrdText(Document doc, int pageNum,
+			SheetRectData<SheetRectId> srd)
+		{
+			rectname = srd.Id.ToString();
+
+			float rotation;
+
+			rotation = FloatOps.ToRad(srd.TextBoxRotation);
+			rotation = srd.GetAdjTextRotation(srd.SheetRotation);
+
+			float x ;
+			float y ;
+
+			// x & y = box's LB corner (which for NEWS boxes, may not be its "origin")
+			PdfCalcTbOrigin.show = false;
+			PdfCalcTbOrigin.GetTextBoxOrigin(srd, srd.SheetRotation, out x, out y);
+
+			srd.TbOriginX = x;
+			srd.TbOriginY = y;
+
+
+			// if (rectname.Equals("SM_OPT7") || rectname.Equals("SM_OPT1") || rectname.Equals("SM_OPT2"))
+			// if (rectname.Equals("SM_OPT2"))
+			if (rectname.Equals("SM_OPT10"))
+			{
+				// correct answer is: 500.50 x 499.50
+				PdfCalcTxOrigin.GetTextOrigin(srd, out x, out y);
+			}
+			else
+			{
+				PdfCalcTxOrigin.GetTextOrigin(srd, out x, out y);
+			}
+
+			string text = $"{srd.Id.ToString()} @ {x:F2} {y:F2} | {srd.TextBoxRotation:F2} | {srd.TextHorizAlignment.ToString()[0]}-{srd.TextVertAlignment.ToString()[0]}";
+
+			CreateTextRaw(text, doc, pageNum, srd, x, y, rotation);
+		}
+
+		public void CreateTextRaw(string text, 
+			Document doc, int pageNum, SheetRectData<SheetRectId> srd, 
+			float x, float y, float rotation)
+		{
+			Style s = setTextStyle(srd);
+
+			TextAlignment ta = (TextAlignment) (int) srd.TextHorizAlignment;
+			VerticalAlignment va = srd.TextVertAlignment;
+
+			CreateElement.PlaceDatum(x, y, pdfCanvas, 3);
+
+			Paragraph p1 = new Paragraph(text);
+
+			p1.AddStyle(s);
+
+			doc.ShowTextAligned(p1, x, y, pageNum,
+				ta, va, rotation);
+		}
+
+		private Style setTextStyle(SheetRectData<SheetRectId> srd)
+		{
+			PdfFont pf = getPdfFont(srd);
+
+			Style s = new Style();
+
+			s.SetFont(pf);
+			s.SetOpacity(srd.TextOpacity);
+			s.SetFontColor(srd.TextColor);
+			s.SetWidth(srd.TextWeight * 72);
+			s.SetFontSize(srd.TextSize /2 );
+
+			if (srd.FontStyle == 1 || srd.FontStyle == 3)
+			{
+				s.SetBold();
+			}
+			else if (srd.FontStyle == 2 || srd.FontStyle == 3)
+			{
+				s.SetItalic();
+			}
+
+			if (TextDecorations.HasLinethrough(srd.TextDecoration) )
+			{
+				s.SetLineThrough();
+			}
+
+			if (TextDecorations.HasUnderline(srd.TextDecoration))
+			{
+				s.SetUnderline();
+			}
+
+			return s;
+		}
+
+		private PdfFont getPdfFont(SheetRectData<SheetRectId> srd)
+		{
+			string fontPath;
+			PdfFont pf ;
+
+			if (srd.FontFamily.IsVoid() ||
+				srd.FontFamily.Equals("default"))
+			{
+				pf = CreateSupport.DefaultFont;
+			}
+			else
+			{
+				fontPath = CsWindowHelpers.GetFontFilePath(srd.FontFamily);
+				pf = PdfFontFactory.CreateFont(fontPath);
+			}
+
+			return pf;
+		}
+
+
+	}
+
+
+
 	public class CreateText
 	{
 		private static int count = 0;
@@ -60,7 +176,7 @@ namespace ShItextCode.ElementCreation
 		{
 			cr = new CreateRectangle();
 			
-			pdfCanvas = pdfCanvas;
+			this.pdfCanvas = pdfCanvas;
 		}
 
 		public void PlaceSheetText(Document doc, int pageNum,
@@ -73,7 +189,7 @@ namespace ShItextCode.ElementCreation
 			TextAlignment ta = (TextAlignment) (int) srd.TextHorizAlignment;
 			VerticalAlignment va = srd.TextVertAlignment;
 
-			name=$"{srd.Id}";
+			rectname=$"{srd.Id}";
 
 			string s1 = $"{srd.Id.ToString()}";
 			string s2;
@@ -83,23 +199,19 @@ namespace ShItextCode.ElementCreation
 			Debug.WriteLine($" | {ta.ToString()[0]}-{va.ToString()[0]} | sheet rotation | initial {sheetRotation,4:F0} | adjusted {(rotation/Math.PI)*180,4:F0} | tb rotation {srd.TextBoxRotation,8:F2} ");
 			Debug.WriteLine($"before rect | x {srd.Rect.GetX(),8:F2} y {srd.Rect.GetY(),8:F2} w {srd.Rect.GetWidth(),8:F2} h {srd.Rect.GetHeight(),8:F2})");
 
-			Rectangle r = getTextOriginPerAlignment4(srd, sheetRotation);
+
+			Rectangle r = srd.Rect;
+
+			// if (!rectname.Equals("SM_OPT3") || !rectname.Equals("SM_OPT4") || !rectname.Equals("SM_OPT6"))
+			// {
+			// 	r = getTextOriginPerAlignment4(srd, sheetRotation);
+			// }
+
+			r = getTextOrigin(srd, sheetRotation);
 
 			Debug.WriteLine($" after rect | x {r.GetX(),8:F2} y {r.GetY(),8:F2} w {r.GetWidth(),8:F2} h {r.GetHeight(),8:F2})\n");
 
 			CreateElement.PlaceDatum(r.GetX(), r.GetY(), pdfCanvas, 3);
-
-
-			
-
-			// s1 += $" {ta.ToString()[0]}-{va.ToString()[0]} -> ({srd.TextHorizAlignment.ToString()[0]}-{srd.TextVertAlignment.ToString()[0]}) | ({(rotation/Math.PI)*180:F2})";
-			//
-			// Debug.Write($"box| {s1,-45}");
-			//
-			// string s2 = $" {r.GetX():F0}, {r.GetY():F0} ({r.GetWidth():F0}, {r.GetHeight():F0})";
-			// Debug.Write($" | {s2}");
-			
-
 
 
 			Paragraph p1 = new Paragraph(s1);
@@ -178,15 +290,11 @@ namespace ShItextCode.ElementCreation
 			return pf;
 		}
 
-		private string name;
-
+		private string rectname;
 
 		private string wStrType;
 
-
 		private string hStrType;
-
-
 
 		private string xStart;
 		private string wStrValue;
@@ -220,6 +328,25 @@ namespace ShItextCode.ElementCreation
 		private string yFinal;
 
 
+		private Rectangle getTextOrigin(SheetRectData<SheetRectId> srd,
+			float sheetRotation)
+		{
+			float x = srd.Rect.GetX();
+			float y = srd.Rect.GetY();
+			float w = srd.Rect.GetWidth();
+			float h = srd.Rect.GetHeight();
+
+			float tbRotationRad = FloatOps.ToRad(sheetRotation + srd.TextBoxRotation);
+
+			float sinTbRot = (float) Math.Sin(tbRotationRad);
+			float cosTbRot = (float) Math.Cos(tbRotationRad);
+
+			PdfCalcTbOrigin.show = false;
+			PdfCalcTbOrigin.GetTextBoxOrigin(srd, sheetRotation, out x, out y);
+
+			return new Rectangle(x, y, w, h);
+		}
+
 		private Rectangle getTextOriginPerAlignment4(SheetRectData<SheetRectId> srd,
 			float sheetRotation)
 		{
@@ -245,19 +372,15 @@ namespace ShItextCode.ElementCreation
 
 			float tbRotationRad = FloatOps.ToRad(sheetRotation + srd.TextBoxRotation);
 
-			float sinTbRot = MathF.Sin(tbRotationRad);
-			float cosTbRot = MathF.Cos(tbRotationRad);
+			float sinTbRot = (float) Math.Sin(tbRotationRad);
+			float cosTbRot = (float) Math.Cos(tbRotationRad);
 
 			float x;
 			float y;
 
-			if (srd.TextBoxRotation % 90 != 0)
-			{
-				int a = 1;
-			}
+			PdfCalcTbOrigin.show = false;
+			PdfCalcTbOrigin.GetTextBoxOrigin(srd, sheetRotation, out x, out y);
 
-			
-			adjTextBoxOrigin(srd, sheetRotation, out x, out y);
 
 			// adjusted origin worked out
 			// w & h need to be re-adjusted
@@ -265,7 +388,7 @@ namespace ShItextCode.ElementCreation
 			float w= srd.Rect.GetWidth();
 			float h= srd.Rect.GetHeight();
 
-			// cirst "correct" the height / widht
+			// first "correct" the height / width
 			if (sheetRotation == 0)
 			{
 				if (srd.TextBoxRotation == 90) (w,h) = (h,w);
@@ -307,10 +430,6 @@ namespace ShItextCode.ElementCreation
 
 			x = x + xwAdj + xhAdj;
 			xFinal = x.ToString("F2");
-
-
-
-
 
 			yStart = y.ToString("F2");
 
@@ -381,8 +500,6 @@ namespace ShItextCode.ElementCreation
 		private string yADj2;
 		private string yOrigFinal;
 
-
-
 		private void adjTextBoxOrigin(SheetRectData<SheetRectId> srd,
 			float sheetRotation, out float x, out float y)
 		{
@@ -404,20 +521,18 @@ namespace ShItextCode.ElementCreation
 
 			float tbRotationRad = FloatOps.ToRad(srd.TextBoxRotation);
 
-			float trigX = MathF.Sin(tbRotationRad);
-			float trigYcos = MathF.Cos(tbRotationRad);
-			float trigYsin = MathF.Sin(tbRotationRad);
+			float trigX = (float) Math.Sin(tbRotationRad);
+			float trigYcos = (float) Math.Cos(tbRotationRad);
+			float trigYsin = (float) Math.Sin(tbRotationRad);
 
 
 			xInitBasis = w.ToString("F2");
 			yInitBasis = h.ToString("F2");
 
-
-
 			Debug.WriteLine($"adjust origin");
 			Debug.WriteLine($"initial  | x {x,8:F2} y {y,8:F2} w {xInitBasis,8:F2} h {yInitBasis,8:F2} ");
 			
-			string n = name;
+			string n = rectname;
 
 			if (sheetRotation == 0)
 			{
@@ -499,8 +614,6 @@ namespace ShItextCode.ElementCreation
 			Debug.WriteLine(
 				$"y origin adjust {yStart,8} {yFinalBasis1,8} {yAdjA1,8} {yAdjB1,8} {yADj1,8}, {yFinalBasis2,8} {yAdjA2,8} {yAdjB2,8} {yADj2,8}  {yOrigFinal,8}" );
 		}
-
-
 
 		private Rectangle getTextOriginPerAlignment3(SheetRectData<SheetRectId> srd, 
 			float sheetRotation)
@@ -694,8 +807,8 @@ namespace ShItextCode.ElementCreation
 			{
 				float angRad = FloatOps.ToRad(textBoxRotation);
 
-				xAdj2 = xAdj * MathF.Cos(angRad) - yAdj * MathF.Sin(angRad);
-				yAdj2 = xAdj * MathF.Sin(angRad) + yAdj * MathF.Cos(angRad);
+				xAdj2 = xAdj * (float) Math.Cos(angRad) - yAdj * (float) Math.Sin(angRad);
+				yAdj2 = xAdj * (float) Math.Sin(angRad) + yAdj * (float) Math.Cos(angRad);
 			}
 
 
@@ -827,8 +940,8 @@ namespace ShItextCode.ElementCreation
 					xAdj = w * ha; // a
 					yAdj = h * va; // b
 
-					angAdjA = MathF.Cos(angRad);
-					angAdjB = MathF.Sin(angRad);
+					angAdjA = (float) Math.Cos(angRad);
+					angAdjB = (float) Math.Sin(angRad);
 				}
 				else
 				{
@@ -836,8 +949,8 @@ namespace ShItextCode.ElementCreation
 					xAdj = w * va; // c
 					yAdj = h * ha; // d
 			
-					angAdjB = MathF.Cos(angRad);
-					angAdjA = MathF.Sin(angRad);
+					angAdjB = (float) Math.Cos(angRad);
+					angAdjA = (float) Math.Sin(angRad);
 				}
 			}
 			else if (sheetRotation == 90)
@@ -848,8 +961,8 @@ namespace ShItextCode.ElementCreation
 					xAdj = w * va; // c
 					yAdj = h * ha; // d
 			
-					angAdjB = MathF.Cos(angRad);
-					angAdjA = MathF.Sin(angRad);
+					angAdjB = (float) Math.Cos(angRad);
+					angAdjA = (float) Math.Sin(angRad);
 				}
 				else
 				{
@@ -857,8 +970,8 @@ namespace ShItextCode.ElementCreation
 					xAdj = w * ha; // a
 					yAdj = h * va; // b
 
-					angAdjA = MathF.Cos(angRad);
-					angAdjB = MathF.Sin(angRad);
+					angAdjA = (float) Math.Cos(angRad);
+					angAdjB = (float) Math.Sin(angRad);
 				}
 			}
 			else // 270
@@ -869,8 +982,8 @@ namespace ShItextCode.ElementCreation
 					xAdj = w * va; // c
 					yAdj = h * ha; // d
 			
-					angAdjB = MathF.Cos(angRad);
-					angAdjA = MathF.Sin(angRad);
+					angAdjB = (float) Math.Cos(angRad);
+					angAdjA = (float) Math.Sin(angRad);
 				}
 				else
 				{
@@ -878,17 +991,10 @@ namespace ShItextCode.ElementCreation
 					xAdj = w * ha; // a
 					yAdj = h * va; // b
 
-					angAdjA = MathF.Cos(angRad);
-					angAdjB = MathF.Sin(angRad);
+					angAdjA = (float) Math.Cos(angRad);
+					angAdjB = (float) Math.Sin(angRad);
 				}
 			}
-
-
-
-
-
-
-
 
 			float xax = xAdj * angAdjA;
 			float xay = yAdj * angAdjB;

@@ -5,8 +5,6 @@ using System.Diagnostics;
 using static System.Drawing.Color;
 using CommonPdfCodeShCode;
 using iText.Kernel.Colors;
-using iText.Kernel.Crypto.Securityhandler;
-using iText.Kernel.Font;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Action;
 using iText.Kernel.Pdf.Annot;
@@ -26,9 +24,6 @@ using ReadPDFText.PdfSupport;
 using UtilityLibrary;
 
 using static SharedCode.ShDataSupport.ReadPDFText;
-using static iText.Svg.SvgConstants;
-
-
 
 #endregion
 

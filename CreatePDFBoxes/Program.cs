@@ -1,12 +1,7 @@
-﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using CreatePDFBoxes.PdfSupport;
-using CreatePDFBoxes.SheetData;
+﻿using CreatePDFBoxes.PdfSupport;
 using Settings;
-using System.Drawing;
-using iText.Forms.Util;
-using iText.Layout.Properties;
-using ShCommonCode.ShSheetData;
+using ShItextCode;
+
 
 namespace CreatePDFBoxes
 {

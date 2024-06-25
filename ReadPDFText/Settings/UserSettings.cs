@@ -1,6 +1,5 @@
 ﻿using System.Runtime.Serialization;
 using iText.Kernel.Colors;
-using static SettingsManager.RGB;
 
 
 // User settings (per user) 

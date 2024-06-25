@@ -1,14 +1,7 @@
 ﻿#region + Using Directives
-using System;
-using System.Collections.Generic;
+
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using iText.Forms.Fields;
-using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
-using iText.Kernel.XMP;
 using ShItextCode;
 using Path = System.IO.Path;
 
@@ -83,7 +76,6 @@ namespace ScanPDFBoxes.Process
 
 			doc.Close();
 		}
-
 
 		public override string ToString()
 		{

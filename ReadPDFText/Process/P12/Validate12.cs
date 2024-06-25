@@ -5,20 +5,13 @@ using iText.Kernel.Pdf.Canvas.Parser.Filter;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf;
-using iText.StyledXmlParser.Jsoup.Parser;
 using SharedCode.ShDataSupport.PdfSupport;
 using SharedCode.ShDataSupport;
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 using iText.Kernel.Geom;
-using static System.Windows.Forms.AxHost;
 using ReadPDFText.PdfSupport;
 
 #endregion

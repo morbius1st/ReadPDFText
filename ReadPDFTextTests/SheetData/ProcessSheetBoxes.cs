@@ -1,19 +1,12 @@
 ﻿#region + Using Directives
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using iText.Kernel.Geom;
-using SettingsManager;
-using SharedCode.ShDataSupport;
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Diagnostics;
+using iText.Kernel.Geom;
 using Settings;
-using ShCommonCode.ShSheetData;
+using ShCode;
+using ShSheetData.SheetData;
 using UtilityLibrary;
+using ShItextCode;
 
 #endregion
 
@@ -54,8 +47,9 @@ namespace ReadPDFTextTests.SheetData
 			if (SheetDataManager.SheetMetricsCount > 0
 				&& show && result)
 			{
-				ShowSheetRectInfo.showShtRects();
-				ShowSheetRectInfo.ShowValues();
+				ShowInfo.showShtRects(ShCode.ShowWhere.DEBUG);
+				ShowInfo.showShtRects(ShCode.ShowWhere.DEBUG);
+				ShowInfo.ShowValues(ShCode.ShowWhere.DEBUG);
 			}
 
 		}

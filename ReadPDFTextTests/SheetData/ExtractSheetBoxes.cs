@@ -1,24 +1,13 @@
 ﻿#region + Using Directives
-using System;
-using System.Collections.Generic;
+
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Path = System.IO.Path;
-
-using SharedCode.ShDataSupport;
 using static SharedCode.Constants;
-using iText.Kernel.Colors;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Annot;
-using iText.Layout.Properties;
-using SettingsManager;
 using SharedCode.ShPdfSupport;
-using ShCommonCode.ShSheetData;
-using UtilityLibrary;
+using ShSheetData.SheetData;
 
 #endregion
 
@@ -174,7 +163,7 @@ namespace ReadPDFTextTests.SheetData
 
 			srd = new SheetRectData<SheetRectId>(rectType, smId, r);
 
-			srd.Rotation = 360 - (anno.GetPdfObject().GetAsNumber(new PdfName("Rotation"))?.FloatValue() ?? 360);
+			srd.TextBoxRotation = 360 - (anno.GetPdfObject().GetAsNumber(new PdfName("Rotation"))?.FloatValue() ?? 360);
 
 			getAnnoSpecs((PdfFreeTextAnnotation) anno);
 

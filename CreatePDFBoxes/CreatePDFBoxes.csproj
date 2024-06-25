@@ -5,7 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-    <Configurations>Debug;Release;DbgCreate;DbgScan;DbgReadText</Configurations>
+    <Configurations>Debug;Release;DbgCreate;DbgScan;DbgReadText;DbgMgr</Configurations>
 		<UseWPF>true</UseWPF>
   </PropertyGroup>
 
@@ -25,16 +25,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.7.0" />
     <PackageReference Include="itext" Version="8.0.4" />
     <PackageReference Include="itext.bouncy-castle-adapter" Version="8.0.4" />
+    <PackageReference Include="itext7" Version="8.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
   </ItemGroup>
 
-  <Import Project="..\ShSheetDataA\ShSheetDataA.projitems" Label="Shared" />
+  <Import Project="..\ShSheetData\ShSheetData.projitems" Label="Shared" />
 
   <Import Project="..\ShItextCode\ShItextCode.projitems" Label="Shared" />
 
   <Import Project="..\ShCode\ShCode.projitems" Label="Shared" />
+
+  <Import Project="..\ShTempCode\ShTempCode.projitems" Label="Shared" />
 
 </Project>

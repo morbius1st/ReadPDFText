@@ -1,25 +1,4 @@
 ﻿#region + Using Directives
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using iText.Bouncycastle.Asn1;
-using iText.Kernel.Colors;
-using iText.Kernel.Geom;
-using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Canvas;
-using iText.Kernel.Pdf.Canvas.Parser;
-using iText.Kernel.Pdf.Canvas.Parser.Data;
-using iText.Kernel.Pdf.Canvas.Parser.Filter;
-using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using iText.Kernel.Pdf.Colorspace;
-using iText.Kernel.Pdf.Extgstate;
-using iText.Kernel.Pdf.Navigation;
-using iText.Kernel.Utils;
-using iText.Layout.Element;
-using iText.Layout.Properties;
-using static iText.Kernel.Pdf.Canvas.Parser.Listener.LocationTextExtractionStrategy;
 
 #endregion
 

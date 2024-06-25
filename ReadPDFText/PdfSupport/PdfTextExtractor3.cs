@@ -1,12 +1,8 @@
 ﻿#region + Using Directives
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using CommonPdfCodeShCode;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf.Canvas.Parser;
@@ -15,7 +11,6 @@ using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using SharedCode.ShDataSupport;
 
 using UtilityLibrary;
-using static ReadPDFText.PdfSupport.PdfExtensions;
 
 #endregion
 

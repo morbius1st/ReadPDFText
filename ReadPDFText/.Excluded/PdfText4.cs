@@ -1,30 +1,5 @@
 ﻿#region + Using Directives
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using iText.Forms;
-using iText.Kernel.Colors;
-using iText.Kernel.Geom;
-using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Canvas.Parser;
-using iText.Kernel.Pdf.Canvas.Parser.Data;
-using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using iText.Layout;
-using iText.Layout.Element;
-using iText.IO.Font;
-using iText.Kernel.Font;
-using iText.Kernel.Pdf.Action;
-using iText.Kernel.Pdf.Annot;
-using iText.Kernel.Pdf.Canvas;
-using iText.Kernel.Pdf.Layer;
-using iText.Kernel.Pdf.Navigation;
-using iText.Layout.Properties;
-
 #endregion
 
 // user name: jeffs

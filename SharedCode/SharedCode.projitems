@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PdfCalculations\PdfCalcs2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShDataSupport\AltRectangle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShDataSupport\ExcelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShDataSupport\FormatItextData.cs" />

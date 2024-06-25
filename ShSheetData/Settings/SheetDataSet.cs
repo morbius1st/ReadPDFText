@@ -13,7 +13,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using SettingsManager;
-using ShCommonCode.ShSheetData;
+using ShSheetData.SheetData;
 
 namespace Settings
 {

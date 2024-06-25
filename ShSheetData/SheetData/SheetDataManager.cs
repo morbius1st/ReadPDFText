@@ -3,53 +3,23 @@ using Settings;
 using SettingsManager;
 using UtilityLibrary;
 
-namespace ShCommonCode.ShSheetData
+namespace ShSheetData.SheetData
 {
 	public static class SheetDataManager
 	{
-		private static FilePath<FileNameSimple> file;
-
 		public static bool Initialized { get; private set; } = false;
 
 		public static DataManager<SheetDataSet> Manager { get; private set; }
-
-		public static void Init(FilePath<FileNameSimple> filePath)
-		{
-			// Program.DS("@91");
-
-			if (Manager != null) return;
-
-			Manager = new DataManager<SheetDataSet>(filePath);
-
-			file = filePath;
-
-			Initialized = true;
-
-			// Program.DS("@92");
-		}
-
-		public static void Remove()
-		{
-			// Program.DS("@93");
-
-			Manager.Reset();
-
-			Write();
-
-			Initialized = false;
-
-			// Program.DS("@94");
-		}
 
 		public static SheetDataSet Data => Manager?.Data ?? null;
 		public static SettingsMgr<StorageMgrPath, StorageMgrInfo<SheetDataSet>, SheetDataSet> Admin => Manager?.Admin ?? null;
 		public static StorageMgrInfo<SheetDataSet> Info => Manager?.Info ?? null;
 		public static StorageMgrPath Path => Admin?.Path ?? null;
 
-		public static bool SettingsFileExists => Path.SettingFileExists;
-
 		public static int SheetsCount => Data?.SheetRectangles?.Count ?? -1;
+		public static int SheetMetricsCount => Data?.SheetRectangles?.Count ?? -1;
 
+		public static bool SettingsFileExists => Path.SettingFileExists;
 
 		public static IEnumerable<KeyValuePair<string, SheetRects>> GetSheets()
 		{
@@ -69,6 +39,24 @@ namespace ShCommonCode.ShSheetData
 			}
 		}
 
+		public static void Init(FilePath<FileNameSimple> filePath)
+		{
+			if (Manager != null) return;
+
+			Manager = new DataManager<SheetDataSet>(filePath);
+
+			Initialized = true;
+		}
+
+		public static void Remove()
+		{
+			Manager.Reset();
+
+			Write();
+
+			Initialized = false;
+		}
+
 		public static void Read()
 		{
 			Admin.Read();
@@ -76,8 +64,6 @@ namespace ShCommonCode.ShSheetData
 
 		public static void Write()
 		{
-			// SeeData();
-
 			Admin.Write();
 		}
 
@@ -95,7 +81,7 @@ namespace ShCommonCode.ShSheetData
 			d1.DataFileDescription += " + d1 (manager)";
 			d2.DataFileDescription += " + d2 (info)";
 
-			int a = 1;
+			// int a = 1;
 		}
 	}
 }

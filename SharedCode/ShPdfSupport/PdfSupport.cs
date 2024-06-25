@@ -1,15 +1,8 @@
 ﻿#region + Using Directives
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using iText.Kernel.Colors;
-using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Colorspace;
-using SharedCode.ShDataSupport;
 
 #endregion
 

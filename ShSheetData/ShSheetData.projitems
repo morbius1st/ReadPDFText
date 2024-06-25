@@ -6,24 +6,26 @@
     <SharedGUID>f346511a-73db-4543-99bd-2cc82ad1a142</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>ShSheetDataA</Import_RootNamespace>
+    <Import_RootNamespace>ShSheetData</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)SheetFileManager2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings\HeadingSetting.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Settings2\SheetDataSet2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings\SheetDataSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SheetData2\SheetDataManager2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SheetData2\SheetManager2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SheetData2\SheetData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData\SheetDataManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SheetData2\SheetRectData2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData\SheetRectData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData\SheetRects.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData\SheetRectSupport.cs" />
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsItextHelpers.cs">
-      <Link>.Linked\CsItextHelpers.cs</Link>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Settings\SheetDataSetConsts.cs" />
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsMath.cs">
-      <Link>.Linked\CsMath.cs</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Reports\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Settings2\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Notes.txt" />
   </ItemGroup>
 </Project>

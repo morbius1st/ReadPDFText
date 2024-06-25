@@ -1,23 +1,19 @@
 ﻿#region + Using Directives
+
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using iText.Kernel.Colors;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Annot;
-using iText.Kernel.Pdf.Colorspace;
-
-
+using iText.Layout.Properties;
+using static ShItextCode.Constants;
 #endregion
 
 // user name: jeffs
 // created:   5/18/2024 5:26:02 PM
 
-namespace SharedCode.ShPdfSupport
+namespace ShItextCode
 {
 	public class PdfSupport
 	{
@@ -109,10 +105,35 @@ namespace SharedCode.ShPdfSupport
 		}
 
 
+		// alignment
+		private HorizontalAlignment getTextHorizAlign(string s2)
+		{
+			for (int i = 1; i < TextHorzAlignment.Length; i++)
+			{
+				if (s2.ToLower().Equals(TextHorzAlignment[i].Item1.ToLower()))
+				{
+					return TextHorzAlignment[i].Item2;
+				}
+			}
+
+			return TextHorzAlignment[0].Item2;
+		}
+
+		private VerticalAlignment getTextVertAlign(string s2)
+		{
+			foreach (Tuple<string, VerticalAlignment, char, float> va in TextVertAlignment)
+			{
+				if (s2.ToLower().Equals(va.Item1.ToLower()))
+				{
+					return va.Item2;
+				}
+			}
+
+			return VerticalAlignment.TOP; // default
+		}
 
 
-
-		/*
+		/*  removed - see ShSheetData / .Linked
 
 		public static string FormatRectangle(Rectangle r)
 		{

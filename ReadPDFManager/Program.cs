@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ReadPDFManager.Process;
 using ReadPDFManager.SheetDataSupport;
 
 namespace ReadPDFManager
@@ -13,6 +9,8 @@ namespace ReadPDFManager
 		private static Program me;
 
 		private SheetDataManager sdMgr;
+		private TbOriginAdjust toa;
+		private TbOriginAdjust2 toa2;
 
 		[STAThread]
 		static void Main(string[] args)
@@ -21,13 +19,18 @@ namespace ReadPDFManager
 
 			config();
 
-			process();
+			// me.processB();
+			me.processC();
 
+			Console.WriteLine("waiting ... ");
+			Console.ReadKey();
 		}
 
 		private static void config()
 		{
 			me.sdMgr = new SheetDataManager();
+			me.toa = new TbOriginAdjust();
+			me.toa2 = new TbOriginAdjust2();
 		}
 
 		private static void process()
@@ -72,6 +75,15 @@ namespace ReadPDFManager
 
 		}
 
+		private void processB()
+		{
+			toa.Process();
+		}
 
+		
+		private void processC()
+		{
+			toa2.Process();
+		}
 	}
 }

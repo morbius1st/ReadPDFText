@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using SharedCode.ShDataSupport;
-using SettingsManager;
+
 #endregion
 
 // in code, after creating the data file for the first time, set the

@@ -1,9 +1,5 @@
 ﻿#region + Using Directives
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using iText.Layout.Properties;
 
 #endregion
@@ -35,21 +31,30 @@ namespace SharedCode
 		public static double RadToDegrees(double deg)
 		{
 			return deg / Math.PI * 180;
+
 		}
 
-		public static Tuple<string, TextAlignment>[] TextHorzAlignment = new []
+		// public static Tuple<string, TextAlignment>[] TextHorzAlignment = new []
+		// {
+		// 	new Tuple<string, TextAlignment>("justified", TextAlignment.JUSTIFIED),
+		// 	new Tuple<string, TextAlignment>("left", TextAlignment.LEFT),
+		// 	new Tuple<string, TextAlignment>("right", TextAlignment.RIGHT),
+		// 	new Tuple<string, TextAlignment>("center", TextAlignment.CENTER),
+		// };
+
+
+		public static Tuple<string, HorizontalAlignment, char, float>[] TextHorzAlignment = new []
 		{
-			new Tuple<string, TextAlignment>("justified", TextAlignment.JUSTIFIED),
-			new Tuple<string, TextAlignment>("left", TextAlignment.LEFT),
-			new Tuple<string, TextAlignment>("right", TextAlignment.RIGHT),
-			new Tuple<string, TextAlignment>("center", TextAlignment.CENTER),
+			new Tuple<string, HorizontalAlignment, char, float>("Left"  , HorizontalAlignment.LEFT  , 'L', 0.0f),
+			new Tuple<string, HorizontalAlignment, char, float>("Center", HorizontalAlignment.CENTER, 'C', 0.5f),
+			new Tuple<string, HorizontalAlignment, char, float>("Right" , HorizontalAlignment.RIGHT , 'R', 1.0f),
 		};
 
-		public static Tuple<string, VerticalAlignment>[] TextVertAlignment = new []
+		public static Tuple<string, VerticalAlignment, char, float>[] TextVertAlignment = new []
 		{
-			new Tuple<string, VerticalAlignment>("top"    , VerticalAlignment.TOP),
-			new Tuple<string, VerticalAlignment>("middle" , VerticalAlignment.MIDDLE),
-			new Tuple<string, VerticalAlignment>("bottom" , VerticalAlignment.BOTTOM),
+			new Tuple<string, VerticalAlignment, char, float>("Top"    , VerticalAlignment.TOP   , 'T', 1.0f),
+			new Tuple<string, VerticalAlignment, char, float>("Middle" , VerticalAlignment.MIDDLE, 'M', 0.5f),
+			new Tuple<string, VerticalAlignment, char, float>("Bottom" , VerticalAlignment.BOTTOM, 'B', 0.0f),
 		};
 	}
 }

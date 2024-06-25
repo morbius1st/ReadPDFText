@@ -1,36 +1,5 @@
 ﻿#region + Using Directives
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Drawing.Text;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using iText.IO.Font.Constants;
-using iText.IO.Font.Otf.Lookuptype8;
-using iText.Kernel.Colors;
-using iText.Kernel.Font;
-using iText.Kernel.Geom;
-using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Annot;
-using iText.Layout.Font;
-using iText.Layout.Properties;
-using iText.StyledXmlParser.Css.Font;
-using Microsoft.Extensions.Primitives;
-using Org.BouncyCastle.Utilities.Encoders;
-using ReadPDFTextTests.SheetData;
-using SettingsManager;
-using SharedCode.ShDataSupport;
-using SharedCode.ShPdfSupport;
-using ShCommonCode.ShSheetData;
-using UtilityLibrary;
-using Path = System.IO.Path;
-
-using static SharedCode.Constants;
-
 #endregion
 
 // user name: jeffs

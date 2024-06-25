@@ -1,17 +1,5 @@
 ﻿#region + Using Directives
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using iText.Kernel.Geom;
-using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Navigation;
-using iText.Layout.Element;
-using iText.Layout.Renderer;
-
 #endregion
 
 // user name: jeffs

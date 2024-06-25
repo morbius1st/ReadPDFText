@@ -17,12 +17,12 @@ namespace ScanPDFBoxes.Process
 {
 	public class ProcessResults
 	{
-		private ProcessManager pm;
-
-		public ProcessResults(ProcessManager pm)
-		{
-			this.pm = pm;
-		}
+		// private ProcessManager pm;
+		//
+		// public ProcessResults(ProcessManager pm)
+		// {
+		// 	this.pm = pm;
+		// }
 
 		// public bool ShowBasicRects { get; set; }
 		// public bool ShowRectValues { get; set; }

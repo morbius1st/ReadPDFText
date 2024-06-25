@@ -1,20 +1,11 @@
 ﻿#region + Using Directives
 using iText.Kernel.Pdf;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf.Annot;
 using SharedCode.ShPdfSupport;
-using ShCommonCode.ShSheetData;
-
-using static SharedCode.Constants;
+using ShItextCode;
+using ShSheetData.SheetData;
 using Path = System.IO.Path;
-using Org.BouncyCastle.Asn1.Pkcs;
-using System.Diagnostics;
 using UtilityLibrary;
 
 #endregion
@@ -94,7 +85,7 @@ namespace ScanPDFBoxes.Process
 
 			page = src.GetPage(1);
 			pageSize = page.GetPageSize();
-			sm.SheetSizeWithRotation = page.GetPageSizeWithRotation();
+			sm.PageSizeWithRotation = page.GetPageSizeWithRotation();
 			sm.SheetRotation = page.GetRotation();
 
 			IList<PdfAnnotation> a = page.GetAnnotations();
@@ -134,7 +125,7 @@ namespace ScanPDFBoxes.Process
 
 			subject = pd.GetAsString(PdfName.Subj)?.GetValue() ?? null;
 
-			if (subject == null || !subject.StartsWith(BOX_SUBJECT))
+			if (subject == null || !subject.StartsWith(Constants.BOX_SUBJECT))
 			{
 				return false;
 			}
@@ -210,14 +201,14 @@ namespace ScanPDFBoxes.Process
 			if (smId == SheetRectId.SM_NA)
 			{
 				pm.extraRects.Add(new Tuple<string, string, 
-					Rectangle>(shtDataName, rectname, ps.convertCoordToPage(sm.SheetSizeWithRotation, rect)));
+					Rectangle>(shtDataName, rectname, ps.convertCoordToPage(sm.PageSizeWithRotation, rect)));
 				return false;
 			}
 
 			if (rects.ContainsKey(smId))
 			{
 				pm.duplicateRects.Add(new Tuple<string, string, 
-					Rectangle>(shtDataName, rectname, ps.convertCoordToPage(sm.SheetSizeWithRotation, rect)));
+					Rectangle>(shtDataName, rectname, ps.convertCoordToPage(sm.PageSizeWithRotation, rect)));
 				return false;
 			}
 

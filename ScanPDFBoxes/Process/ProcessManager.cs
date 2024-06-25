@@ -1,15 +1,9 @@
 ﻿#region + Using Directives
-using Settings;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using iText.Kernel.Geom;
-using ShCode.ShDebugInfo;
-using ShCommonCode.ShSheetData;
+using ScanPDFBoxes.SheetData;
+using ShItextCode;
+using ShSheetData.SheetData;
 using UtilityLibrary;
 
 using Path = System.IO.Path;
@@ -27,7 +21,6 @@ namespace ScanPDFBoxes.Process
 		ERROR_MAYBE_FATAL,
 		ERROR_IS_FATAL
 	}
-
 
 	public class ProcessManager
 	{
@@ -52,14 +45,6 @@ namespace ScanPDFBoxes.Process
 
 		public bool HasFatalErrors {get; set; }
 
-		// public void InitSheetData()
-		// {
-		// 	SheetDataManager.Init(DataFilePath);
-		//
-		// 	SheetDataManager.Write();
-		// }
-
-
 		// config
 
 		private void ResetSheetData()
@@ -81,8 +66,6 @@ namespace ScanPDFBoxes.Process
 
 		public bool ScanSheets(string[] sheets)
 		{
-			// ShowSheetRectInfo.showStatus(ShowWhere.DEBUG, "@21");
-
 			HasFatalErrors = false;
 
 			duplicateRects = new List<Tuple<string, string, Rectangle>>();

@@ -1,13 +1,8 @@
 ﻿#region + Using Directives
-using System;
+
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.WindowsAPICodePack.Dialogs.Controls;
-using Org.BouncyCastle.Crypto.Parameters;
 using UtilityLibrary;
 
 #endregion

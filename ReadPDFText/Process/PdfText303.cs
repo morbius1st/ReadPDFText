@@ -3,14 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Drawing2D;
 using System.Text;
-using System.Windows.Forms;
 using static System.Drawing.Color;
 using CommonPdfCodeShCode;
 using iText.Kernel.Colors;
-using iText.Kernel.Crypto.Securityhandler;
-using iText.Kernel.Font;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Action;
 using iText.Kernel.Pdf.Annot;
@@ -29,8 +25,6 @@ using SharedCode.ShDataSupport;
 using ReadPDFText.PdfSupport;
 using UtilityLibrary;
 using static SharedCode.ShDataSupport.ReadPDFText;
-using static iText.Svg.SvgConstants;
-using System.Windows.Media.Imaging;
 using iText.Kernel.Pdf.Canvas.Parser.ClipperLib;
 
 #endregion

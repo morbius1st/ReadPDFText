@@ -6,45 +6,20 @@
 // using SharedCode.ShDataSupport;
 // using SharedCode.ShPdfSupport;
 
+using System;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Text.Json.Serialization;
+
 using iText.Kernel.Colors;
 using iText.Kernel.Geom;
-using iText.Kernel.Pdf;
 using iText.Layout.Properties;
+using Newtonsoft.Json;
 using UtilityLibrary;
 
-namespace ShCommonCode.ShSheetData
+namespace ShSheetData.SheetData
 {
-	public class TextDecorations
-	{
-		public static int NORMAL { get; } = 0;
-		public static int UNDERLINE { get; } = 1 << 1;
-		public static int LINETHROUGH { get; } = 1 << 2;
 
-		public static bool HasUnderline(int decoration)
-		{
-			return (decoration & UNDERLINE) > 0;
-		}
 
-		public static bool HasLinethrough(int decoration)
-		{
-			return (decoration & LINETHROUGH) > 0;
-		}
-
-		public static string FormatTextDeco(int deco)
-		{
-			if (deco == NORMAL) { return nameof(NORMAL); }
-
-			StringBuilder result = new StringBuilder();
-
-			if (HasUnderline(deco)) result.Append(nameof(UNDERLINE));
-			if (HasLinethrough(deco)) result.Append(nameof(LINETHROUGH));
-
-			return result.ToString();
-		}
-	}
 
 	[DataContract(Namespace = "")]
 	public class SheetRectData<T> : ICloneable
@@ -53,7 +28,6 @@ namespace ShCommonCode.ShSheetData
 		private float[] bdrColor;
 		private float[] textColor;
 		private float[] rectangleA;
-
 
 		public SheetRectData(SheetRectType type, T id)
 		{
@@ -87,7 +61,6 @@ namespace ShCommonCode.ShSheetData
 
 			Reset();
 		}
-
 
 		[DataMember(Order =  0)]
 		public SheetRectType Type { get; private set; }
@@ -124,21 +97,10 @@ namespace ShCommonCode.ShSheetData
 		}
 
 		[IgnoreDataMember]
-		public bool SpecialBorder
-		{
-			get
-			{
-				if (
-					Type == SheetRectType.SRT_TEXT_N_BOX ||
-					Type == SheetRectType.SRT_LINK_N_BOX ||
-					Type == SheetRectType.SRT_TEXT_LINK_N_BOX &&
-					TextColor.Equals(DeviceRgb.BLACK) && 
-					FillColor.Equals(DeviceRgb.WHITE)) return true;
+		public float TbOriginX {get; set; }
 
-				return false;
-			}
-		}
-
+		[IgnoreDataMember]
+		public float TbOriginY {get; set; }
 
 		[DataMember(Order =  11)]
 		public string InfoText { get; set; }
@@ -146,6 +108,8 @@ namespace ShCommonCode.ShSheetData
 		[DataMember(Order =  12)]
 		public string UrlLink { get; set; }
 
+		[IgnoreDataMember]
+		public int SheetRotation { get; set; }
 
 		[DataMember(Order =  21)]
 		public float TextBoxRotation { get; set; }
@@ -245,6 +209,7 @@ namespace ShCommonCode.ShSheetData
 			InfoText = null;
 			UrlLink = null;
 
+			SheetRotation = 0;
 			TextBoxRotation = 0;
 
 			FillColor = null;
@@ -285,6 +250,7 @@ namespace ShCommonCode.ShSheetData
 
 			copy.InfoText = InfoText;
 			copy.UrlLink = UrlLink;
+			copy.SheetRotation = SheetRotation;
 			copy.TextBoxRotation = TextBoxRotation;
 			copy.FillColor = FillColor;
 			copy.FillOpacity = FillOpacity;

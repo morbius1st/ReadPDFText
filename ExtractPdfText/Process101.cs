@@ -1,12 +1,7 @@
 ﻿#region + Using Directives
-using System;
-using System.Collections.Generic;
+
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using CommonPdfCodeShCode;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
@@ -16,8 +11,6 @@ using iText.Kernel.Pdf.Canvas.Parser.Filter;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using iText.Kernel.Pdf.Layer;
 using iText.Layout;
-using static iText.Kernel.Pdf.Canvas.Parser.Listener.LocationTextExtractionStrategy;
-
 using Rectangle = iText.Kernel.Geom.Rectangle;
 
 #endregion

@@ -1,19 +1,14 @@
 ﻿#region + Using Directives
+
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using iText.Kernel.Colors;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Annot;
-using iText.Layout;
 using iText.Layout.Properties;
-
-using ShCommonCode.ShSheetData;
-using static SharedCode.Constants;
+using ShItextCode;
+using ShSheetData.SheetData;
+using static ShItextCode.Constants;
 
 #endregion
 
@@ -49,7 +44,7 @@ namespace SharedCode.ShPdfSupport
 
 			if (rt != 0 && rt != 90 && rt != 270)
 			{
-				PdfArray pa = PdfSupport.GetBBoxFromAnnotation(pfa);
+				PdfArray pa = ShItextCode.PdfSupport.GetBBoxFromAnnotation(pfa);
 
 				if (pa != null)
 				{
@@ -231,7 +226,7 @@ namespace SharedCode.ShPdfSupport
 		{
 			for (int i = 1; i < TextHorzAlignment.Length; i++)
 			{
-				if (s2.Equals(TextHorzAlignment[i].Item1))
+				if (s2.ToLower().Equals(TextHorzAlignment[i].Item1.ToLower()))
 				{
 					srd.TextHorizAlignment= TextHorzAlignment[i].Item2;
 					return;
@@ -243,9 +238,9 @@ namespace SharedCode.ShPdfSupport
 
 		private void getTextVertAlign(string s2)
 		{
-			foreach (Tuple<string, VerticalAlignment> va in TextVertAlignment)
+			foreach (Tuple<string, VerticalAlignment, char, float> va in TextVertAlignment)
 			{
-				if (va.Item1.Equals(s2))
+				if (s2.ToLower().Equals(va.Item1.ToLower()))
 				{
 					srd.TextVertAlignment = va.Item2;
 				}

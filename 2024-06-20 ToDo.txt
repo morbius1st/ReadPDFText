@@ -1,0 +1,34 @@
+
+* coordinate / adjust / setup pdf text and/or paragraph text to use enum - maybe.  + setup alt values and text names, etc.
+
+* data storage class
+	* eliminate duplicate
+	* adjust so that text settings are independant
+	* adjust so that box settings are independant
+
+* clean code to make more generic (and use the independant text / box settings)
+
+* consider test adjusting the create box process to save with non-flipped height vs width values
+	or further incorporate that 90 deg and 270 deg have flipped height vs width values
+
+* eliminate old / test code
+
+* create copies of working code and try to clean better
+
+* move code from programs to shared code
+
+* clean code to make more generic
+
+* clean namespaces
+
+* move code to the "correct" shared project
+
+* eliminate extra shared projects
+
+* clean / organize ".linked" files
+
+* create font family class
+
+* refactor:
+	SheetDataSet2
+		SheetRectangles => SheetData

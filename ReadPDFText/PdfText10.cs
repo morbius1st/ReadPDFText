@@ -1,7 +1,6 @@
 ﻿#region + Using Directives
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using CommonPdfCodeShCode;
@@ -21,10 +20,8 @@ using iText.Kernel.Pdf.Layer;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using Rectangle = iText.Kernel.Geom.Rectangle;
-using SettingsManager;
 using SharedCode.ShDataSupport.ExcelSupport;
 using SharedCode.ShDataSupport.PdfSupport;
-using iText.Kernel.Pdf.Canvas.Parser.ClipperLib;
 
 #endregion
 

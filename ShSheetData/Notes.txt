@@ -1,0 +1,68 @@
+﻿
+
+
+
+ShSheetData >
+
+  data files
+
+  Settings2 >
+
+	> SheetDataSet2
+	* primary file used to save sheet information
+	* includes a dictionary for each sheet (SheetDataList) this
+		* references these objects which are also saved
+			> SheetRects2
+			> SheetRectData2
+
+  SheetData2 >
+
+	> SheetRecs2
+	* top level collection of data for a sheet
+	* name, description, rotation, size, etc.
+	* includes dictionaries for stored in SheetRectData2
+		> sheet rectangles (required)
+		> optional rectangles
+
+	> SheetRectData2
+	* information for each rectangle - size, rotation, text info, box info, etc.
+
+
+  operational files
+
+	root >
+
+	> SheetFileManager2
+	* manages file(s) information (not the information in the file)
+		> Data file
+			* the file that holds the sheet data information
+			* includes: "GotDataFile" - found / "DeleteDataFile" - delete file
+		> Sheet files
+			* the location of the PDF sheet files to be processed
+			* the list of sheet files found / to be processed
+			* includes: "GotSheetFiles" - found and loaded / "SheetFileList" - the list of sheet files found
+		> Output file
+			* the file to use for creating test PDF to backcheck that the input information is correct
+			* includes: "GotOutputFile" - location good and no existing output file (depending on overwrite)
+			* includes: "DeleteOutputFile"
+
+  SheetData2 >
+
+    SheetDataManager (static)
+	* manages the SheetDataSet file
+	* includes: (operations) "Read", "Write", etc. (properties) "IsLoaded"
+
+	
+	SheetManager2
+	* manages the processes for working with sheet PDF files
+	* includes status properties
+	* operations
+		> ResetSheetData - eliminate all sheet data in memory
+			* does not modify what is saved on disk
+			* sheet files will need to be reloaded or re-created
+		> ScanSheets - reads the list of loaded sheet files for rect setting info
+		> RemoveSheets - removes one or more sheets from the current list of sheets
+		> QuerySheets - shows information about the currently loaded sheets
+		> ReadSheets - when no sheets are loaded, reads the sheet information from the saved information
+	* properties
+		> "SdmInitialized", "SdmLoaded"

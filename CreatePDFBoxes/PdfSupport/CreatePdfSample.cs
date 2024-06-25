@@ -1,21 +1,16 @@
 ﻿#region + Using Directives
-using System;
-using System.Collections.Generic;
+
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using iText.Kernel.Colors;
-using iText.Kernel.Font;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas;
 using iText.Layout;
 using iText.Layout.Properties;
-using SharedCode;
-using ShCode.ShDebugInfo;
-using ShCommonCode.ShSheetData;
+using ShItextCode;
+using ShSheetData.SheetData;
 using ShItextCode.ElementCreation;
+
 
 #endregion
 
@@ -58,15 +53,17 @@ namespace CreatePDFBoxes.PdfSupport
 
 		private CreateRectangle cr;
 		public static CreateText ct;
+		public static CreateText2 ct2;
 
 		private string pdfFilePath;
 
 		private SheetRectData<SheetRectId> sampleSrd;
 
 		private string sampleName;
-		private bool specialBorder;
 
 		private int pageNum;
+
+		private int sheetRotation;
 
 
 		public CreatePdfSample(string pdfFilePath)
@@ -75,6 +72,8 @@ namespace CreatePDFBoxes.PdfSupport
 
 			cr = new CreateRectangle();
 			ct = new CreateText(null);
+			ct2 = new CreateText2(null);
+
 		}
 
 		public void BeginSample()
@@ -103,21 +102,19 @@ namespace CreatePDFBoxes.PdfSupport
 
 			addAnnotations();
 
-			pdfPage.SetRotation(this.sheetRects.SheetRotation);
+			// placeTestRect(sheetRotation);
 
+			pdfPage.SetRotation(sheetRotation);
 		}
 
 		public void CompleteSample()
 		{
 			pdfPage.Flush();
 			pdfDoc.Close();
-
 		}
-
 
 		public void CreateSample(SheetRects sheetRects)
 		{
-
 			PdfShowInfo.StartMsg($"for {sheetRects.Name}");
 
 			this.sheetRects= sheetRects;
@@ -132,7 +129,6 @@ namespace CreatePDFBoxes.PdfSupport
 
 			initPdfPage();
 
-
 			addAnnotations();
 
 			pdfPage.Flush();
@@ -143,19 +139,19 @@ namespace CreatePDFBoxes.PdfSupport
 		private void initPdfPage()
 		{
 			PageSize ps;
-			int pr = sheetRects.SheetRotation;
+			sheetRotation = sheetRects.SheetRotation;
 
-			if (pr == 0)
+			if (sheetRotation == 0)
 			{
 				ps = 
-					new PageSize(sheetRects.SheetSizeWithRotation.GetWidth(), 
-						sheetRects.SheetSizeWithRotation.GetHeight());
+					new PageSize(sheetRects.PageSizeWithRotation.GetWidth(), 
+						sheetRects.PageSizeWithRotation.GetHeight());
 			}
 			else
 			{
 				ps = 
-					new PageSize(sheetRects.SheetSizeWithRotation.GetHeight(), 
-						sheetRects.SheetSizeWithRotation.GetWidth());
+					new PageSize(sheetRects.PageSizeWithRotation.GetHeight(), 
+						sheetRects.PageSizeWithRotation.GetWidth());
 			}
 
 			pageNum++;
@@ -183,6 +179,7 @@ namespace CreatePDFBoxes.PdfSupport
 			CreateSupport.PageSizeWithRotation = pageSizeWithRotation;
 
 			ct.pdfCanvas= pdfCanvas;
+			ct2.pdfCanvas= pdfCanvas;
 
 		}
 
@@ -220,17 +217,14 @@ namespace CreatePDFBoxes.PdfSupport
 
 			if (rt == SheetRectType.SRT_NA) return;
 
-			// Debug.WriteLine($"\nmaking this rect| {rectData.Id}  ({rectData.Type})");
+			Debug.WriteLine($"\nfor | {rectData.Id.ToString()}");
 
-			// if (kvp.Key == SheetRectId.SM_WATERMARK1)
-			// {
-			// 	int a = 1;
-			// }
+			// future sheet rotation
+			rectData.SheetRotation = sheetRotation;
 
 			configSampleData();
 			placeRectangleIf();
 			placeTextIf();
-
 		}
 
 		private void placeRectangleIf()
@@ -242,7 +236,9 @@ namespace CreatePDFBoxes.PdfSupport
 
 		private void placeTextIf()
 		{
-			ct.PlaceSheetText(document, pageNum, sampleSrd, sheetRects.SheetRotation);
+			// ct.PlaceSheetText(document, pageNum, sampleSrd, sheetRects.SheetRotation);
+
+			ct2.CreateSrdText(document, pageNum, sampleSrd);
 		}
 
 		private void configSampleData()
@@ -250,7 +246,6 @@ namespace CreatePDFBoxes.PdfSupport
 			sampleSrd = rectData.Clone2();
 
 			sampleName = getName();
-			specialBorder = useSpecialBorder();
 			SheetRectType t = sampleSrd.Type;
 
 			
@@ -271,7 +266,7 @@ namespace CreatePDFBoxes.PdfSupport
 
 		private void configBorder()
 		{
-			if ((sampleSrd.Type != SheetRectType.SRT_TEXT && specialBorder) || 
+			if ((sampleSrd.Type != SheetRectType.SRT_TEXT) || 
 				sampleSrd.Type == SheetRectType.SRT_BOX)
 			{
 				sampleSrd.BdrColor = sampleSrd.TextColor;
@@ -304,13 +299,6 @@ namespace CreatePDFBoxes.PdfSupport
 			}
 		}
 
-		private bool useSpecialBorder()
-		{
-
-
-			return false;
-		}
-
 		private SheetRectData<SheetRectId> makeSheetTitle(string title)
 		{
 			Rectangle r = new Rectangle(250f, 150f, 250f, 50f);
@@ -326,6 +314,18 @@ namespace CreatePDFBoxes.PdfSupport
 			tSrd.InfoText =  $"{title}";
 
 			return tSrd;
+		}
+
+		private void placeTestRect(int sheetRotation)
+		{
+			Rectangle r = new Rectangle(2200f, 1000f, 6 * 72f, 2 * 72f);
+
+			SheetRectData<SheetRectId> sd =
+				new SheetRectData<SheetRectId>(SheetRectType.SRT_BOX, SheetRectId.SM_OPT0, r);
+
+			sd.SheetRotation = sheetRotation;
+
+			cr.PlaceRectangleDirect(sd, pdfCanvas, 1, DeviceRgb.GREEN, 1.0f, DeviceRgb.GREEN, 0.3f);
 		}
 
 

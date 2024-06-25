@@ -1,46 +1,5 @@
 ﻿#region + Using Directives
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Reflection.Emit;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
-
-using iText.Forms;
-using iText.Kernel.Colors;
-using iText.Kernel.Geom;
-using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Canvas.Parser;
-using iText.Kernel.Pdf.Canvas.Parser.Data;
-using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using iText.Layout;
-using iText.Layout.Element;
-using iText.IO.Font;
-using iText.Kernel.Font;
-using iText.Kernel.Pdf.Action;
-using iText.Kernel.Pdf.Annot;
-using iText.Kernel.Pdf.Canvas;
-using iText.Kernel.Pdf.Canvas.Parser.Filter;
-using iText.Kernel.Pdf.Layer;
-using iText.Kernel.Pdf.Navigation;
-using iText.Layout.Properties;
-using iText.Kernel.Pdf.Extgstate;
-using iText.Kernel.Pdf.Colorspace;
-using Org.BouncyCastle.Asn1.BC;
-using System.Net.Mail;
-using iText.Kernel.XMP;
-using iText.Kernel.XMP.Properties;
-using static iText.Kernel.XMP.XMPConst;
-
-using CommonPdfCodeShCode;
-using Org.BouncyCastle.Security;
-using UtilityLibrary;
-
 #endregion
 
 // user name: jeffs

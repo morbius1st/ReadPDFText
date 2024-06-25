@@ -17,10 +17,18 @@
     <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateSupport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateRectangle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PdfCalculations\PdfCalcTbOrigin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PdfCalculations\PdfCalcTxOrigin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfFreeTextRead.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PdfMath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PdfCalculations\PdfMath.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfShowInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfSupport.cs" />
+    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsItextHelpers.cs">
+      <Link>.Linked\CsItextHelpers.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsMath.cs">
+      <Link>.Linked\CsMath.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

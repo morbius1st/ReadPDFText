@@ -8,8 +8,66 @@ ShCommonCode
 First attempt to fix the shared project setup
 says "common code" but is still to "non-common"
 
-ShCommCode
-this needs to be only code that every / any project will / may need
-
 ShCode
 this will hold code used by every project that subscribes to this SH project
+
+ShItextCode
+holds code that is specific to iText
+
+ShSheetData
+SheetData related code
+
+ShTempCode
+temporary / placeholder code
+
+
+					 itext	 SharedCode   ShCode   ShCommonCode   ShItextCode   ShSheetData   ShTempCode
+CreatePDFBoxes		|	x	|			|	x	 |	removed		|		x	  |		x		 |		x	 |
+ExtractPdfText		|	x	|	x		|	x	 |				|			  |		x		 |		x	 |
+ReadPDFManager		|	x	|	x		|	x	 |				|			  |		x		 |		x	 |
+ReadPDFText			|	x	|	x		|	x	 |				|			  |		x		 |		x	 |
+ReadPDFTextTests	|	x	|	x		|	x	 |				|			  |		x		 |		x	 |
+ScanPDFBoxes		|	x	|			|	x	 |				|		x	  |		x		 |		x	 |
+
+
+
+CreatePDFBoxes 
+* uses the saved box information to create sample sheets
+	used to validate the rect information scanned
+references:
+	ShCode
+	ShItextCode
+	ShSheetData
+
+ExtractPdfText
+* tests how to extract text from a pdf
+references:
+	SharedCode
+
+ReadPDFManager
+* test - shows the pre-created sample information (not scanned)
+references
+	SharedCode
+
+ReadPDFText
+* primary program - but tests various methods to create the final PDF based on sample and pre-created information
+references
+	SharedCode
+	ShSheetData
+
+
+ReadPDFTextTests
+* test how to extract text from a pdf / scan boxes / save data to the file (data saved to file may be in the wrong format)
+references
+	SharedCode
+	ShCode
+	ShCommonCode
+	ShSheetData
+
+ScanPDFBoxes
+* scan's a pdf with location boxes and saves the information to an xml file (used by CreatePDFBoxes and others)
+references
+	ShCode
+	ShItextCode
+	ShSheetData
+

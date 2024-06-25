@@ -1,15 +1,4 @@
 ﻿#region + Using Directives
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CreatePDFBoxes.PdfSupport;
-using Settings;
-using SettingsManager;
-using ShCommonCode.ShSheetData;
-using UtilityLibrary;
 
 #endregion
 

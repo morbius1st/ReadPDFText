@@ -1,20 +1,13 @@
 ﻿#region + Using Directives
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using iText.Kernel.Geom;
 using iText.Layout.Properties;
 using ScanPDFBoxes.Process;
-
-using Settings;
-using ShCode.ShDebugInfo;
-using ShCommonCode.ShSheetData;
+using ShItextCode;
+using ShSheetData.SheetData;
 using UtilityLibrary;
+using ShowWhere = ShTempCode.DebugCode.ShowWhere;
 
 #endregion
 
@@ -23,7 +16,6 @@ using UtilityLibrary;
 
 namespace ScanPDFBoxes.SheetData
 {
-
 	public class ShowSheetRectInfo
 	{
 		private static ShowWhere showWhere;
@@ -45,7 +37,6 @@ namespace ScanPDFBoxes.SheetData
 			Console.WriteLine($"Initial count {beginCount} | final count {finalCount} | removed {beginCount - finalCount}");
 
 			showErrors(pm);
-
 		}
 
 		public static void showScanReport(ProcessManager pm)
@@ -424,35 +415,6 @@ namespace ScanPDFBoxes.SheetData
 		}
 		
 		// always to debug
-
-		public void showAlignment()
-		{
-			Debug.WriteLine("\nHorizontalAlignment");
-			Debug.WriteLine($"\t{"left",-12} {(int) HorizontalAlignment.LEFT}");
-			Debug.WriteLine($"\t{"center",-12} {(int) HorizontalAlignment.CENTER}");
-			Debug.WriteLine($"\t{"right",-12} {(int) HorizontalAlignment.RIGHT}");
-
-			Debug.WriteLine("\nVerticalAlignment");
-			Debug.WriteLine($"\t{"top",-12} {(int) VerticalAlignment.TOP}");
-			Debug.WriteLine($"\t{"middle",-12} {(int) VerticalAlignment.MIDDLE}");
-			Debug.WriteLine($"\t{"bottom",-12} {(int) VerticalAlignment.BOTTOM}");
-			
-			Debug.WriteLine("\nTextAlignment");
-			Debug.WriteLine($"\t{"left",-12} {(int) TextAlignment.LEFT}");
-			Debug.WriteLine($"\t{"center",-12} {(int) TextAlignment.CENTER}");
-			Debug.WriteLine($"\t{"right",-12} {(int) TextAlignment.RIGHT}");
-		}
-
-		public static void showSinAndCos()
-		{
-			Debug.WriteLine("");
-			Debug.WriteLine("sin and cos angles");
-
-			Debug.WriteLine($"for angle {0,5:F0} | sin {Math.Sin(FloatOps.ToRad(0)),6:F0} cos {Math.Cos(FloatOps.ToRad(0)),6:F0}");
-			Debug.WriteLine($"for angle {90,5:F0} | sin {Math.Sin(FloatOps.ToRad(90)),6:F0} cos {Math.Cos(FloatOps.ToRad(90)),6:F0}");
-			Debug.WriteLine($"for angle {270,5:F0} | sin {Math.Sin(FloatOps.ToRad(90)),6:F0} cos {Math.Cos(FloatOps.ToRad(90)),6:F0}");
-		}
-
 
 		// utility routines
 

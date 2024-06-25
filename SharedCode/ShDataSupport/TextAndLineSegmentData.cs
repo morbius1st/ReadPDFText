@@ -5,9 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using iText.Commons.Utils;
-using iText.IO.Util;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 

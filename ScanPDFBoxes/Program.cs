@@ -1,17 +1,32 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks.Dataflow;
-using ScanPDFBoxes.Process;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Configuration;
 using Settings;
 using ShCode.ShDebugInfo;
-using ShCommonCode.ShSheetData;
+using ShItextCode;
+using ShSheetData;
+using ShSheetData.SheetData;
+using ShSheetData.SheetData2;
+using ShTempCode.DebugCode;
 using UtilityLibrary;
+using ShowWhere = ShTempCode.DebugCode.ShowWhere;
+
+using ScanPDFBoxes.Process;
+using ScanPDFBoxes.SheetData;
 
 namespace ScanPDFBoxes
 {
+
 	internal class Program
 	{
+		// [0] thru [4] == program - [0] show location msg
+		// [10] thru [19] = SheetManager - [10] show location msg
+		public static int[,] dmx;
+
 		private static bool? lastOp = null;
 
 		public const string SHEET_METRIC_FOLDER = @"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\";
@@ -33,16 +48,28 @@ namespace ScanPDFBoxes
 		private ShSamples ss;
 
 		private static ProcessManager pm;
+		private static SheetManager2 sm2;
 
 		private string[] files;
-
 
 		private static Program p;
 
 		static void Main(string[] args)
 		{
+
+			DM.configDebugMsgList();
+
+			DM.dmx[0,0] = 0;
+			DM.dmx[0,1] = (int) ShowWhere.DEBUG;
+			DM.dmx[10,0] = 2;
+			DM.dmx[10,1] = (int) ShowWhere.DEBUG;
+
+			DM.DbxLineEx(0, "start");
+
 			p = new Program();
 			pm = new ProcessManager(new FilePath<FileNameSimple>(DataFilePath));
+			sm2 = new SheetManager2();
+
 			pm.ConfigSheetData();
 
 			p.ss = new ShSamples();
@@ -56,11 +83,9 @@ namespace ScanPDFBoxes
 
 			do
 			{
-				// Program.DS("@1");
+				DM.DbxLineEx(0, "main switchboard\n", 0, 1); // reset to level 1
 
 				result = p.switchBoardMain();
-
-				// Program.DS("@2");
 			}
 			while (result);
 		}
@@ -71,7 +96,7 @@ namespace ScanPDFBoxes
 			bool result = true;
 
 			Console.Write("\n");
-			ShowSheetRectInfo.showStatus(ShowWhere.DBG_CONS);
+			ShowSheetRectInfo.showStatus(ShowWhere.CONSOLE);
 			Console.Write("\n");
 			Console.WriteLine("> A  | *** Add Files (add 4 sheets) ***");
 			Console.WriteLine("> B  | *** Add Files (add existing files) ***");
@@ -79,6 +104,7 @@ namespace ScanPDFBoxes
 			Console.WriteLine("> D  | *** Add Files (add three good file) ***");
 			Console.WriteLine("> E  | *** Add Files (add file removed ***");
 			Console.WriteLine("> F  | *** Add (3) Special Files ***");
+			Console.WriteLine("> P  | *** test new add ***");
 			Console.WriteLine("> R1 | *** Remove Sheet (fail - no match) ***");
 			Console.WriteLine("> R2 | *** Remove Sheet (good - match) ***");
 			Console.WriteLine("> Q  | *** Query Sheets ***");
@@ -147,6 +173,11 @@ namespace ScanPDFBoxes
 				case "F":
 					{
 						processAdd_F();
+						break;
+					}
+				case "P":
+					{
+						processAdd_F_Alt();
 						break;
 					}
 				case "L":
@@ -221,7 +252,6 @@ namespace ScanPDFBoxes
 			return key.KeyChar.ToString();
 		}
 
-
 		// setup
 
 		private void processAdd_C()
@@ -291,6 +321,43 @@ namespace ScanPDFBoxes
 			proceedAdd();
 		}
 
+		private void processAdd_F_Alt()
+		{
+			DM.DbxLineEx(0, "start\n", 0, 2);
+
+			// process
+			// config files - if good - continue
+			// config sheetdatamanager - if good - continue
+
+			int index ;
+
+			string idx = switchBoardSampleFolders();
+
+			if (!configFiles(idx))
+			{
+				DM.DbxLineEx(0, "end 1\n", -1);
+				return;
+			}
+
+			if (!sm2.initDataManager())
+			{
+				DM.DbxLineEx(0, "end 2\n", -1);
+				return;
+			}
+
+			if (sm2.ReadSheetData() != true)
+			{
+				DM.DbxLineEx(0, "end 3\n", -1);
+				return;
+			}
+
+			PdfShowInfo.StartMsg("Add Files F", DateTime.Now.ToString());
+
+			processAdd2();
+
+			DM.DbxLineEx(0, "end\n", -1);
+		}
+
 		private void testEnumerators()
 		{
 			Debug.WriteLine($"\n\nname list ({SheetDataManager.Data.SheetRectangles.Count})\n");
@@ -346,6 +413,20 @@ namespace ScanPDFBoxes
 			lastOp = pm.ScanSheets(files);
 		}
 
+		private void processAdd2()
+		{
+			lastOp = sm2.ScanSheets();
+
+			if (lastOp == false)
+			{
+				Console.WriteLine("\n*** FAILED ***");
+			}
+			else
+			{
+				Console.WriteLine("\n*** WORKED ***");
+			}
+		}
+
 		private void proceedRemove()
 		{
 			lastOp = pm.RemoveSheets(files);
@@ -369,6 +450,35 @@ namespace ScanPDFBoxes
 			if (!ss.GetFilesFromPdfFolder(index)) return;
 
 			files = ss.FilePathList.ToArray();
+		}
+
+		private bool configFiles(string idx)
+		{
+			DM.DbxLineEx(0, "start", 1);
+
+			int index;
+
+			if (!int.TryParse(idx, out index))
+			{
+				DM.DbxLineEx(0, "end 1 (fail)", -1);
+				return false;
+			}
+
+			if (!sm2.InitDataFile())
+			{
+				DM.DbxLineEx(0, "end 2 (fail)", -1);
+				return false;
+			}
+
+			if (!sm2.InitSheetFiles(index))
+			{
+				DM.DbxLineEx(0, "end 3 (fail)", -1);
+				return false;
+			}
+
+			DM.DbxLineEx(0, "end", -1);
+
+			return true;
 		}
 
 		private void getFiles1()
@@ -440,8 +550,6 @@ namespace ScanPDFBoxes
 
 			// ShowSheetRectInfo.showSinAndCos();
 		}
-
-
 
 		private void showRectValues()
 		{

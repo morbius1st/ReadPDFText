@@ -1,16 +1,8 @@
 ﻿#region + Using Directives
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Formats.Asn1;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Schema;
-using UtilityLibrary;
 
-using static UtilityLibrary.CsExtensions;
+using System.Diagnostics;
+using System.Text;
+using UtilityLibrary;
 
 #endregion
 

@@ -5,15 +5,12 @@ using iText.Kernel.Pdf.Canvas.Parser.Filter;
 using iText.Kernel.Pdf.Canvas.Parser;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using CommonPdfCodeShCode;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using iText.Kernel.Pdf;
 using System.Diagnostics;
-using UtilityLibrary;
 
 #endregion
 

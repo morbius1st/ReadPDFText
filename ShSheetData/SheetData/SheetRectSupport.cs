@@ -2,22 +2,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using iText.Kernel.Geom;
-
-using static ShCommonCode.ShSheetData.SheetRectType;
-using static ShCommonCode.ShSheetData.SheetRectId;
-using SharedCode.ShPdfSupport;
-using UtilityLibrary;
+using System.Text;
+using static ShSheetData.SheetData.SheetRectType;
+using static ShSheetData.SheetData.SheetRectId;
 
 #endregion
 
 // user name: jeffs
 // created:   5/11/2024 1:22:54 PM
 
-namespace ShCommonCode.ShSheetData
+namespace ShSheetData.SheetData
 {
-
 	[Flags]
 	public enum SheetRectType
 	{
@@ -63,8 +58,38 @@ namespace ShCommonCode.ShSheetData
 		SM_OPT7                ,
 		SM_OPT8                ,
 		SM_OPT9                ,
+		SM_OPT10               ,
 
 		SM_PAGE_TITLE			// to add a lable on a created page
+	}
+
+	public class TextDecorations
+	{
+		public static int NORMAL { get; } = 0;
+		public static int UNDERLINE { get; } = 1 << 1;
+		public static int LINETHROUGH { get; } = 1 << 2;
+
+		public static bool HasUnderline(int decoration)
+		{
+			return (decoration & UNDERLINE) > 0;
+		}
+
+		public static bool HasLinethrough(int decoration)
+		{
+			return (decoration & LINETHROUGH) > 0;
+		}
+
+		public static string FormatTextDeco(int deco)
+		{
+			if (deco == NORMAL) { return nameof(NORMAL); }
+
+			StringBuilder result = new StringBuilder();
+
+			if (HasUnderline(deco)) result.Append(nameof(UNDERLINE));
+			if (HasLinethrough(deco)) result.Append(nameof(LINETHROUGH));
+
+			return result.ToString();
+		}
 	}
 
 	public class SheetRectInfo<T>
@@ -249,6 +274,7 @@ namespace ShCommonCode.ShSheetData
 			{ "OPTIONAL 7"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT7) }, // ditto
 			{ "OPTIONAL 8"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT8) }, // ditto
 			{ "OPTIONAL 9"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT9) }, // ditto
+			{ "OPTIONAL10"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT10) }, // ditto
 		};
 
 		/*
@@ -419,6 +445,5 @@ namespace ShCommonCode.ShSheetData
 			return $"this is {nameof(SheetRectSupport)}";
 		}
 	}
-
 
 }

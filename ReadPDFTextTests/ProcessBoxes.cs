@@ -1,18 +1,4 @@
 ﻿#region + Using Directives
-using SettingsManager;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ReadPDFTextTests.SheetData;
-using SharedCode.ShDataSupport;
-using System.Diagnostics;
-using iText.Kernel.Geom;
-using Settings;
-using ShCommonCode.ShSheetData;
-using UtilityLibrary;
 
 #endregion
 

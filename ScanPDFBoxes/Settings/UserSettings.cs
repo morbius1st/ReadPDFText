@@ -49,27 +49,6 @@ namespace SettingsManager
 
 #endregion
 
-	[DataContract]
-	public class RGB
-	{
-		[DataMember]
-		public int R { get; set; }
-
-		[DataMember]
-		public int G { get; set; }
-
-		[DataMember]
-		public int B { get; set; }
-
-		public RGB(int r, int g, int b)
-		{
-			R = r;
-			G = g;
-			B = b;
-		}
-
-		public DeviceRgb GetDeviceRgb => new DeviceRgb(R, G, B);
-	}
 
 }
 

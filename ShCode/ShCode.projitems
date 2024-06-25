@@ -10,5 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ShDebugInfo\ShSamples.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ShowInfo.cs" />
   </ItemGroup>
 </Project>

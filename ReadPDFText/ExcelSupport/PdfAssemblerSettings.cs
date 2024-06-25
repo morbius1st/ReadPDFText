@@ -1,9 +1,6 @@
 ﻿#region + Using Directives
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Windows.Input;
 using iText.Kernel.Colors;
 using iText.Kernel.Pdf;
 using UtilityLibrary;

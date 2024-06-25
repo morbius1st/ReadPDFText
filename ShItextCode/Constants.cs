@@ -1,9 +1,6 @@
 ﻿#region + Using Directives
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using iText.Layout.Properties;
 
 #endregion
@@ -11,7 +8,7 @@ using iText.Layout.Properties;
 // user name: jeffs
 // created:   3/9/2024 11:32:02 PM
 
-namespace SharedCode
+namespace ShItextCode
 {
 	public static class Constants
 	{
@@ -32,23 +29,19 @@ namespace SharedCode
 			PI360 = PI180 * 2;
 		}
 
-		public static double RadToDegrees(double deg)
+		public static Tuple<string, HorizontalAlignment, char, float>[] TextHorzAlignment = new []
 		{
-			return deg / Math.PI * 180;
-		}
-
-		public static Tuple<string, HorizontalAlignment>[] TextHorzAlignment = new []
-		{
-			new Tuple<string, HorizontalAlignment>("left", HorizontalAlignment.LEFT),
-			new Tuple<string, HorizontalAlignment>("right", HorizontalAlignment.RIGHT),
-			new Tuple<string, HorizontalAlignment>("center", HorizontalAlignment.CENTER),
+			new Tuple<string, HorizontalAlignment, char, float>("Left"  , HorizontalAlignment.LEFT  , 'L', 0.0f),
+			new Tuple<string, HorizontalAlignment, char, float>("Center", HorizontalAlignment.CENTER, 'C', 0.5f),
+			new Tuple<string, HorizontalAlignment, char, float>("Right" , HorizontalAlignment.RIGHT , 'R', 1.0f),
 		};
 
-		public static Tuple<string, VerticalAlignment>[] TextVertAlignment = new []
+		public static Tuple<string, VerticalAlignment, char, float>[] TextVertAlignment = new []
 		{
-			new Tuple<string, VerticalAlignment>("top"    , VerticalAlignment.TOP),
-			new Tuple<string, VerticalAlignment>("middle" , VerticalAlignment.MIDDLE),
-			new Tuple<string, VerticalAlignment>("bottom" , VerticalAlignment.BOTTOM),
+			new Tuple<string, VerticalAlignment, char, float>("Top"    , VerticalAlignment.TOP   , 'T', 1.0f),
+			new Tuple<string, VerticalAlignment, char, float>("Middle" , VerticalAlignment.MIDDLE, 'M', 0.5f),
+			new Tuple<string, VerticalAlignment, char, float>("Bottom" , VerticalAlignment.BOTTOM, 'B', 0.0f),
 		};
+
 	}
 }

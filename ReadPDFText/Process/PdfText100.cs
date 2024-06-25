@@ -1,14 +1,8 @@
 ﻿#region + Using Directives
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
-using iText.Forms.Form.Renderer;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
@@ -16,10 +10,7 @@ using iText.Kernel.Pdf.Canvas.Parser.Data;
 using iText.Kernel.Pdf.Canvas.Parser.Filter;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using iText.Layout;
-using iText.StyledXmlParser.Jsoup.Parser;
 using SharedCode.ShDataSupport;
-using SharedCode.ShDataSupport.PdfSupport;
-using UtilityLibrary;
 
 #endregion
 

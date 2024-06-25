@@ -20,13 +20,10 @@ using iText.Kernel.Pdf.Layer;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using Rectangle = iText.Kernel.Geom.Rectangle;
-using SettingsManager;
 using SharedCode.ShDataSupport.ExcelSupport;
 using SharedCode.ShDataSupport.PdfSupport;
 using iText.Kernel.Pdf.Canvas.Parser.ClipperLib;
 using iText.Kernel.Pdf.Canvas.Parser.Filter;
-using ReadPDFText.Process;
-using iText.StyledXmlParser.Jsoup.Parser;
 
 #endregion
 

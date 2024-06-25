@@ -5,8 +5,18 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Configurations>Debug;Release;DbgScan;DbgReadText</Configurations>
+    <Configurations>Debug;Release;DbgScan;DbgReadText;DbgMgr</Configurations>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Settings\**" />
+    <EmbeddedResource Remove="Settings\**" />
+    <None Remove="Settings\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Process\ProcessResults.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs" Link=".Linked\CsExtensions.cs" />
@@ -21,18 +31,23 @@
 
   <ItemGroup>
     <Folder Include=".Linked\" />
-    <Folder Include="Settings\" />
+    <Folder Include="Process2\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="itext" Version="8.0.4" />
     <PackageReference Include="itext.bouncy-castle-adapter" Version="8.0.4" />
+    <PackageReference Include="itext7" Version="8.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
   </ItemGroup>
 
   <Import Project="..\ShItextCode\ShItextCode.projitems" Label="Shared" />
 
-  <Import Project="..\ShSheetDataA\ShSheetDataA.projitems" Label="Shared" />
+  <Import Project="..\ShSheetData\ShSheetData.projitems" Label="Shared" />
 
   <Import Project="..\ShCode\ShCode.projitems" Label="Shared" />
+
+  <Import Project="..\ShTempCode\ShTempCode.projitems" Label="Shared" />
 
 </Project>

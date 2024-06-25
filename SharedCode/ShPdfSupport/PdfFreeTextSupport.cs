@@ -1,19 +1,11 @@
 ﻿#region + Using Directives
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using iText.Kernel.Colors;
-using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Annot;
-using iText.Kernel.Geom;
 using iText.Layout.Properties;
+using ShSheetData.SheetData;
 // using ReadPDFTextTests.SheetData;
-using SharedCode.ShDataSupport;
-using ShCommonCode.ShSheetData;
 using static SharedCode.Constants;
 
 #endregion
@@ -222,7 +214,7 @@ namespace SharedCode.ShPdfSupport
 
 		private void setTextVertAlign(string s2)
 		{
-			foreach (Tuple<string, VerticalAlignment> va in TextVertAlignment)
+			foreach (Tuple<string, VerticalAlignment, char, float> va in TextVertAlignment)
 			{
 				if (va.Item1.Equals(s2))
 				{

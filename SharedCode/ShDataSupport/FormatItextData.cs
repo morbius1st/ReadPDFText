@@ -1,10 +1,4 @@
 ﻿#region + Using Directives
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using iText.Kernel.Colors;
-using iText.Kernel.Geom;
 
 #endregion
 

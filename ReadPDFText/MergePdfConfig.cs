@@ -1,17 +1,10 @@
 ﻿#region using
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.DirectoryServices.AccountManagement;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using iText.Kernel.Colors;
 using iText.Kernel.Font;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Canvas;
 using iText.Layout;
 using iText.Layout.Element;
 

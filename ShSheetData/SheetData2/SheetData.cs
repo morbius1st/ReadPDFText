@@ -1,27 +1,24 @@
-﻿
-// using ReadPDFTextTests.SheetData;
-// using SharedCode.ShDataSupport;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.Serialization;
 using iText.Kernel.Geom;
-using ShCommonCode.ShSheetData;
+using ShSheetData.SheetData;
+using ShSheetData.ShSheetData2;
 
-namespace ShCommonCode.ShSheetData
+namespace ShSheetData.SheetData2
 {
 	[DataContract(Namespace = "")]
-	public class SheetRects
+	public class SheetData
 	{
 		private DateTime created;
 		private float[] sheetSizeWithRotationA;
 
-		public SheetRects()
+		public SheetData()
 		{
 			// ShtRects = new Dictionary<SheetMetricId, Rectangle>();
-			ShtRects = new Dictionary<SheetRectId, SheetRectData<SheetRectId>>();
-			OptRects = new Dictionary<SheetRectId, SheetRectData<SheetRectId>>();
+			ShtRects = new Dictionary<SheetRectId, SheetRectData2<SheetRectId>>();
+			OptRects = new Dictionary<SheetRectId, SheetRectData2<SheetRectId>>();
 
 			// ShtRects.Add(SheetMetricId.SM_SHT, new ShtRectData<SheetMetricId, Rectangle>(SheetRectType.SRT_NA, SheetMetricId.SM_SHT));
 		}
@@ -50,7 +47,7 @@ namespace ShCommonCode.ShSheetData
 		public int SheetRotation { get; set; }
 
 		[IgnoreDataMember]
-		public Rectangle SheetSizeWithRotation
+		public Rectangle PageSizeWithRotation
 		{
 			get => ShtRects[SheetRectId.SM_SHT].Rect;
 			set
@@ -59,7 +56,7 @@ namespace ShCommonCode.ShSheetData
 
 				if (!ShtRects.ContainsKey(SheetRectId.SM_SHT))
 				{
-					ShtRects.Add(SheetRectId.SM_SHT, new SheetRectData<SheetRectId>(SheetRectType.SRT_NA, SheetRectId.SM_SHT));
+					ShtRects.Add(SheetRectId.SM_SHT, new SheetRectData2<SheetRectId>(SheetRectType.SRT_NA, SheetRectId.SM_SHT));
 				}
 
 				ShtRects[SheetRectId.SM_SHT].Rect = value;
@@ -86,11 +83,11 @@ namespace ShCommonCode.ShSheetData
 			{
 				if (value != null)
 				{
-					SheetSizeWithRotation = new Rectangle(value[0], value[1], value[2], value[3]);
+					PageSizeWithRotation = new Rectangle(value[0], value[1], value[2], value[3]);
 				}
 				else
 				{
-					SheetSizeWithRotation = null;
+					PageSizeWithRotation = null;
 				}
 			}
 		}
@@ -107,10 +104,10 @@ namespace ShCommonCode.ShSheetData
 		// public Dictionary<SheetMetricId, Rectangle> ShtRects { get; set; }
 
 		[DataMember(Order = 5)]
-		public Dictionary<SheetRectId, SheetRectData<SheetRectId>> ShtRects { get; set; }
+		public Dictionary<SheetRectId, SheetRectData2<SheetRectId>> ShtRects { get; set; }
 
 		[DataMember(Order = 6)]
-		public Dictionary<SheetRectId, SheetRectData<SheetRectId>> OptRects { get; set; }
+		public Dictionary<SheetRectId, SheetRectData2<SheetRectId>> OptRects { get; set; }
 	}
 
 }

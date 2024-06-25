@@ -1,13 +1,7 @@
 ﻿#region + Using Directives
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using UtilityLibrary;
 
 #endregion
