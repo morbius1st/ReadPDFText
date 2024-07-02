@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,12 +7,6 @@
     <Nullable>enable</Nullable>
     <Configurations>Debug;Release;DbgScan;DbgReadText;DbgMgr</Configurations>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Settings\**" />
-    <EmbeddedResource Remove="Settings\**" />
-    <None Remove="Settings\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Process\ProcessResults.cs" />
@@ -31,10 +25,10 @@
 
   <ItemGroup>
     <Folder Include=".Linked\" />
-    <Folder Include="Process2\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="envdte80" Version="17.9.37000" />
     <PackageReference Include="itext" Version="8.0.4" />
     <PackageReference Include="itext.bouncy-castle-adapter" Version="8.0.4" />
     <PackageReference Include="itext7" Version="8.0.4" />

@@ -16,6 +16,8 @@ namespace ShSheetData.SheetData
 		public static StorageMgrInfo<SheetDataSet> Info => Manager?.Info ?? null;
 		public static StorageMgrPath Path => Admin?.Path ?? null;
 
+		public static string DataFileName => SheetDataSet.DataFileName;
+
 		public static int SheetsCount => Data?.SheetRectangles?.Count ?? -1;
 		public static int SheetMetricsCount => Data?.SheetRectangles?.Count ?? -1;
 
@@ -46,15 +48,17 @@ namespace ShSheetData.SheetData
 			Manager = new DataManager<SheetDataSet>(filePath);
 
 			Initialized = true;
+			
+			Read();
+
+			updateHeader();
 		}
 
-		public static void Remove()
+		private static void updateHeader()
 		{
-			Manager.Reset();
-
-			Write();
-
-			Initialized = false;
+			Info.FileType = SettingFileType.SETTING_MGR_DATA;
+			Info.DataClassVersion = Data.DataFileVersion;
+			Info.Description = Data.DataFileDescription;
 		}
 
 		public static void Read()
@@ -66,6 +70,27 @@ namespace ShSheetData.SheetData
 		{
 			Admin.Write();
 		}
+
+		public static void Reset()
+		{
+			Manager.Reset();
+
+			updateHeader();
+			Write();
+
+			Initialized = false;
+		}
+
+		public static void Close()
+		{
+			updateHeader();
+			Write();
+
+			Manager.Reset();
+
+			Initialized = false;
+		}
+
 
 		public static void SeeData()
 		{

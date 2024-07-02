@@ -1,11 +1,16 @@
 ﻿#region + Using Directives
 
+using System;
 using System.Diagnostics;
 using iText.Kernel.Geom;
 using iText.Layout.Properties;
 using ScanPDFBoxes.Process;
 using ShItextCode;
+using ShSheetData;
 using ShSheetData.SheetData;
+using ShSheetData.SheetData2;
+using ShSheetData.ShSheetData2;
+using ShTempCode.DebugCode;
 using UtilityLibrary;
 using ShowWhere = ShTempCode.DebugCode.ShowWhere;
 
@@ -172,21 +177,57 @@ namespace ScanPDFBoxes.SheetData
 
 		// special listings - to console or to debug
 
-		public static void showStatus(ShowWhere where, string location = null)
+		public static void showStatus(ShowWhere where)
 		{
 			showWhere = where;
-			showMsg($"Currently there are {SheetDataManager.Data.SheetRectangles.Count} saved");
 
-			if (location != null)
-			{
-				showMsgLine($" | here| {location}");
-			}
-			else
-			{
-				showMsg("\n");
-			}
+			string count = SheetDataManager.SheetsCount <= 0 ? "no sheets" : SheetDataManager.SheetsCount.ToString();
+
+			showMsgLine($"Currently there are {count} saved");
+
+			string s1 = SheetDataManager.Path?.RootFolderPath ?? "** null **";
+			string s2 = SheetDataManager.Path?.FileName ?? "** null **";
+
+			showMsgLine($"data file folder DM| {s1}");
+			showMsgLine($"data file name   DM| {s2}");
+			
+			showMsg("\n");
+
+			count = SheetDataManager2.SheetsCount <= 0 ? "no sheets" : SheetDataManager2.SheetsCount.ToString();
+
+			showMsgLine($"Currently there are {count} saved");
+
+			string s3 = SheetFileManager2.DataFilePath?.FolderPath ?? "** null **";
+			string s4 = SheetFileManager2.DataFilePath?.FileName ?? "** null **";
+
+			s1 = SheetDataManager2.Path?.RootFolderPath ?? "** null **";
+			s2 = SheetDataManager2.Path?.FileName ?? "** null **";
+
+			showMsgLine($"data file folder FM| {s3}");
+			showMsgLine($"data file name   FM| {s4}");
+
+			showMsgLine($"data file folder DM| {s1}");
+			showMsgLine($"data file name   DM| {s2}");
+
 		}
 
+
+	#region show info for "program" - orig
+
+
+		public static void StartMsg(string msg1,  ShowWhere where, string msg2=null)
+		{
+			showWhere = where;
+
+			showMsg("\n\n");
+			showMsgLine(SEPARATOR);
+			showMsgLine($"*** {msg1,-1*(START_MSG_WIDTH-8)} ***");
+			if (msg2!=null) showMsgLine($"*** {msg2,-1*(START_MSG_WIDTH-8)} ***");
+			showMsgLine(SEPARATOR);
+			showMsg("\n");
+		}
+
+		// sheet names from "program"
 		public static void ShowSheetNames(ShowWhere where)
 		{
 			string found;
@@ -218,19 +259,7 @@ namespace ScanPDFBoxes.SheetData
 			}
 		}
 
-		public static void StartMsg(string msg1,  ShowWhere where, string msg2=null)
-		{
-			showWhere = where;
-
-			showMsg("\n\n");
-			showMsgLine(SEPARATOR);
-			showMsgLine($"*** {msg1,-1*(START_MSG_WIDTH-8)} ***");
-			if (msg2!=null) showMsgLine($"*** {msg2,-1*(START_MSG_WIDTH-8)} ***");
-			showMsgLine(SEPARATOR);
-			showMsg("\n");
-		}
-
-
+		// basic rects from "program"
 		public static void showShtRects(ShowWhere where)
 		{
 			showWhere = where;
@@ -286,28 +315,33 @@ namespace ScanPDFBoxes.SheetData
 				name = SheetRectSupport.GetOptRectName(kvp2.Key);
 			}
 
-			string rotation = $"{kvp2.Value.TextBoxRotation,8:F2}";
+			return formatSingleRect2(name, kvp2.Value.TextBoxRotation, kvp2.Value.Type, kvp2.Value.Rect, pageSize);
 
-			string type = kvp2.Value.Type.ToString();
 
-			Rectangle r = kvp2.Value.Rect;
-
-			float oaWidth = r.GetX()+r.GetWidth();
-			float oaHeight = r.GetY()+r.GetHeight();
-
-			string oa = null;
-
-			if (pageSize != null)
-			{
-				float wDiff = pageSize.GetWidth() - oaWidth;
-				float hDiff = pageSize.GetHeight() - oaHeight;
-
-				oa = $" | oaW| {oaWidth,8:F2}  wDif {$"({wDiff:F2})",10} | oaH {oaHeight,8:F2}  hDif {$"({hDiff:F2})",10}";
-			}
-
-			return $"{name,TITLE_WIDTH}| {type,TYPE_WIDTH}| {FormatItextData.FormatRectangle(kvp2.Value.Rect)} ({rotation}°)  {oa}";
+			// string rotation = $"{kvp2.Value.TextBoxRotation,8:F2}";
+			//
+			// string type = kvp2.Value.Type.ToString();
+			//
+			// Rectangle r = kvp2.Value.Rect;
+			//
+			// float oaWidth = r.GetX()+r.GetWidth();
+			// float oaHeight = r.GetY()+r.GetHeight();
+			//
+			// string oa = null;
+			//
+			// if (pageSize != null)
+			// {
+			// 	float wDiff = pageSize.GetWidth() - oaWidth;
+			// 	float hDiff = pageSize.GetHeight() - oaHeight;
+			//
+			// 	oa = $" | oaW| {oaWidth,8:F2}  wDif {$"({wDiff:F2})",10} | oaH {oaHeight,8:F2}  hDif {$"({hDiff:F2})",10}";
+			// }
+			//
+			// return $"{name,TITLE_WIDTH}| {type,TYPE_WIDTH}| {FormatItextData.FormatRectangle(kvp2.Value.Rect)} ({rotation}°)  {oa}";
 		}
 
+
+		// rect values from "program"
 		public static void ShowValues(ShowWhere where)
 		{
 			showWhere = where;
@@ -413,7 +447,234 @@ namespace ScanPDFBoxes.SheetData
 			showMsgLine($"{$"{TAB_S}{TAB_S}TextOpacity",-LABLE_WIDTH}| {box.TextOpacity }");
 
 		}
-		
+
+	#endregion
+
+		private static string formatSingleRect2(string name, float rotn, SheetRectType t, Rectangle r, Rectangle pageSize = null)
+		{
+			string rotation = $"{rotn,8:F2}";
+
+			string type = t.ToString();
+
+			float oaWidth = r.GetX()+r.GetWidth();
+			float oaHeight = r.GetY()+r.GetHeight();
+
+			string oa = null;
+
+			if (pageSize != null)
+			{
+				float wDiff = pageSize.GetWidth() - oaWidth;
+				float hDiff = pageSize.GetHeight() - oaHeight;
+
+				oa = $" | oaW| {oaWidth,8:F2}  wDif {$"({wDiff:F2})",10} | oaH {oaHeight,8:F2}  hDif {$"({hDiff:F2})",10}";
+			}
+
+			return $"{name,TITLE_WIDTH}| {type,TYPE_WIDTH}| {FormatItextData.FormatRectangle(r)} ({rotation}°)  {oa}";
+		}
+
+		private static void showBoxValues2(SheetRectData2<SheetRectId> box)
+		{
+			showMsgLine($"{$"{TAB_S}box data",-LABLE_WIDTH}| ");
+			showMsgLine($"{$"{TAB_S}{TAB_S}box id",-LABLE_WIDTH}| {box.Id}");
+			showMsgLine($"{$"{TAB_S}{TAB_S}box type",-LABLE_WIDTH}| {box.Type}");
+			showMsgLine($"{$"{TAB_S}{TAB_S}rectangle",-LABLE_WIDTH}| {FormatItextData.FormatRectangle(box.BoxSettings.Rect, false)}");
+			showMsgLine($"{$"{TAB_S}{TAB_S}rotation",-LABLE_WIDTH}| {box.BoxSettings.TextBoxRotation:F2}");
+
+			if (box.Id == SheetRectId.SM_XREF)
+			{
+				showBoundingBoxValues2(box.BoxSettings);
+				return;
+			}
+
+			if (box.Type == SheetRectType.SRT_NA ||
+				box.Type == SheetRectType.SRT_LOCATION
+				) return;
+
+			showMsg($"{$"{TAB_S}bounding box info",-LABLE_WIDTH}| ");
+
+			if (box.HasType(SheetRectType.SRT_BOX))
+			{
+				showMsg("\n");
+				showBoundingBoxValues2(box.BoxSettings);
+			}
+			else
+			{
+				showMsgLine("n/a");
+			}
+
+			showMsg($"{$"{TAB_S}link info",-LABLE_WIDTH}| ");
+
+			if (box.HasType(SheetRectType.SRT_LINK))
+			{
+				showMsg("\n");
+				showMsgLine($"{$"{TAB_S}{TAB_S}UrlLink",-LABLE_WIDTH}| {box.TextSettings.UrlLink}");
+
+			}
+			else
+			{
+				showMsgLine("n/a");
+			}
+
+			showMsg($"{$"{TAB_S}text info",-LABLE_WIDTH}| ");
+
+			if (box.HasType(SheetRectType.SRT_TEXT))
+			{
+				showMsg("\n");
+				showTextValues2(box.TextSettings);
+			}
+			else
+			{
+				showMsgLine("n/a");
+			}
+		}
+
+		private static void showBoundingBoxValues2(BoxSettings bxs)
+		{
+			showMsgLine($"{$"{TAB_S}{TAB_S}FillColor",-LABLE_WIDTH}| {FormatItextData.FormatColor(bxs.FillColor, false)}");
+			showMsgLine($"{$"{TAB_S}{TAB_S}FillOpacity",-LABLE_WIDTH}| {bxs.FillOpacity}");
+			showMsgLine($"{$"{TAB_S}{TAB_S}BdrWidth",-LABLE_WIDTH}| {bxs.BdrWidth}");
+			showMsgLine($"{$"{TAB_S}{TAB_S}BdrColor",-LABLE_WIDTH}| {FormatItextData.FormatColor(bxs.BdrColor, false)}");
+			showMsgLine($"{$"{TAB_S}{TAB_S}BdrOpacity",-LABLE_WIDTH}| {bxs.BdrOpacity}");
+			showMsgLine($"{$"{TAB_S}{TAB_S}BdrDashPattern",-LABLE_WIDTH}| {FormatItextData.FormatDashArray(bxs.BdrDashPattern)}");
+
+		}
+
+		private static void showTextValues2(TextSettings txs)
+		{
+			showMsgLine($"{$"{TAB_S}{TAB_S}InfoText",-LABLE_WIDTH}| {txs.InfoText }");
+			showMsgLine($"{$"{TAB_S}{TAB_S}FontFamily",-LABLE_WIDTH}| {txs.FontFamily }");
+			showMsgLine($"{$"{TAB_S}{TAB_S}FontStyle",-LABLE_WIDTH}| {FormatItextData.FormatFontStyle(txs.FontStyle)}");
+			showMsgLine($"{$"{TAB_S}{TAB_S}TextSize",-LABLE_WIDTH}| {txs.TextSize }");
+			showMsgLine($"{$"{TAB_S}{TAB_S}TextHorizAlignment",-LABLE_WIDTH}| {txs.TextHorizAlignment }");
+			showMsgLine($"{$"{TAB_S}{TAB_S}TextVertAlignment",-LABLE_WIDTH}| {txs.TextVertAlignment }");
+			showMsgLine($"{$"{TAB_S}{TAB_S}TextWeight",-LABLE_WIDTH}| {txs.TextWeight}");
+			showMsgLine($"{$"{TAB_S}{TAB_S}TextDecoration",-LABLE_WIDTH}| {TextDecorations.FormatTextDeco(txs.TextDecoration)}");
+			showMsgLine($"{$"{TAB_S}{TAB_S}TextColor",-LABLE_WIDTH}| {FormatItextData.FormatColor(txs.TextColor, false)}");
+			showMsgLine($"{$"{TAB_S}{TAB_S}TextOpacity",-LABLE_WIDTH}| {txs.TextOpacity }");
+
+		}
+
+	#region show info for "program" - new
+
+		// sheet names from "program"
+		public static void ShowSheetNames2(ShowWhere where)
+		{
+			string found;
+
+			showWhere = where;
+
+			if (SheetDataManager2.Data.SheetDataList == null || SheetDataManager2.Data.SheetDataList.Count == 0)
+			{
+				showMsgLine("There are no sheets saved");
+				return;
+			}
+
+			foreach (KeyValuePair<string, SheetData2> kvp in SheetDataManager2.Data.SheetDataList)
+			{
+				showMsg($"Sheet Name| {kvp.Key} | ");
+
+				showMsg($"Rectangles found {kvp.Value.ShtRects.Count,3} | ");
+
+				if (kvp.Value.AllShtRectsFound)
+				{
+					found = "Yep";
+				}
+				else
+				{
+					found = "Nope";
+				}
+
+				showMsgLine($"All Rects Found? | {found}");
+			}
+		}
+
+		// basic rects from "program"
+		public static void showShtRects2(ShowWhere where)
+		{
+			showWhere = where;
+
+			if (SheetDataManager2.Data.SheetDataList == null || SheetDataManager2.Data.SheetDataList.Count == 0)
+			{
+				return;
+			}
+
+			foreach (KeyValuePair<string, SheetData2> kvp in SheetDataManager2.Data.SheetDataList)
+			{
+				int missing;
+
+				showMsgLine($"\n\nfor {kvp.Key}");
+
+				showMsg($"{"sheet rectangles",TITLE_WIDTH}| found {kvp.Value.ShtRects.Count}");
+
+				missing = SheetRectSupport.ShtRectsQty - kvp.Value.ShtRects.Count;
+
+				if (missing > 0)
+				{
+					showMsgLine($" | missing {missing}");
+				}
+				else
+				{
+					showMsg("\n");
+				}
+
+				showMsgLine($"{"optional rectangles",TITLE_WIDTH}| found {kvp.Value.OptRects.Count}");
+
+				foreach (KeyValuePair<SheetRectId, SheetRectData2<SheetRectId>> kvp2 in kvp.Value.ShtRects)
+				{
+					showMsgLine(formatSingleRect2(kvp2));
+				}
+
+				showMsg("\n");
+				
+				foreach (KeyValuePair<SheetRectId, SheetRectData2<SheetRectId>> kvp2 in kvp.Value.OptRects)
+				{
+					showMsgLine(formatSingleRect2(kvp2));
+				}
+
+				showMsg("\n");
+			}
+		}
+
+		public static string formatSingleRect2(KeyValuePair<SheetRectId, SheetRectData2<SheetRectId>> kvp2, Rectangle pageSize = null)
+		{
+			string name = SheetRectSupport.GetShtRectName(kvp2.Key)!;
+
+			if (name.IsVoid())
+			{
+				name = SheetRectSupport.GetOptRectName(kvp2.Key);
+			}
+
+			return formatSingleRect2(name, kvp2.Value.BoxSettings.TextBoxRotation, kvp2.Value.Type, kvp2.Value.BoxSettings.Rect, pageSize);
+		}
+
+		// rect values from "program"
+		public static void ShowValues2(ShowWhere where)
+		{
+			showWhere = where;
+
+			foreach (KeyValuePair<string, SheetData2> kvp in SheetDataManager2.Data.SheetDataList)
+			{
+				showMsgLine($"sheet name| {kvp.Key}");
+
+				foreach (KeyValuePair<SheetRectId, SheetRectData2<SheetRectId>> kvp2 in kvp.Value.ShtRects)
+				{
+					showMsgLine($"\n{kvp2.Key}");
+
+					showBoxValues2(kvp2.Value);
+				}
+
+				foreach (KeyValuePair<SheetRectId, SheetRectData2<SheetRectId>> kvp3 in kvp.Value.OptRects)
+				{
+					showMsgLine($"\n {kvp3.Key}");
+
+					showBoxValues2(kvp3.Value);
+				}
+			}
+		}
+
+
+	#endregion
+
 		// always to debug
 
 		// utility routines

@@ -9,7 +9,9 @@
     <Import_RootNamespace>ShTempCode</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)DebugCode\ConsoleFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DebugCode\DebugMessages.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DebugCode\ShSamples.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings\SheetDataSetConsts.cs" />
   </ItemGroup>
 </Project>

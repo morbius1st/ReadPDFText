@@ -25,7 +25,6 @@ namespace ScanPDFBoxes.Process
 		private SheetRects sm;
 		private SheetRectData<SheetRectId> srd;
 
-
 		private PdfDocument src;
 		private PdfPage page;
 		private PdfDictionary pd;
@@ -47,11 +46,11 @@ namespace ScanPDFBoxes.Process
 			pft = new PdfFreeTextRead();
 		}
 
+		/// <summary>  scan and extract the information from one sheet
+		/// </summary>
 		public bool ProcessSheet(string file)
 		{
 			bool result = true;
-
-			// Debug.WriteLine($"@21 {(SheetDataManager.Data?.SheetRectangles?.Count.ToString() ?? "null")}");
 
 			src = new PdfDocument(new PdfReader(file));
 
@@ -62,8 +61,6 @@ namespace ScanPDFBoxes.Process
 			sm.Description = $"Sheet Rectangles for {shtDataName}";
 			sm.CreatedDt = DateTime.Now;
 
-			// Debug.WriteLine($"@22 {(SheetDataManager.Data?.SheetRectangles?.Count.ToString() ?? "null")}");
-
 			scanSheet();
 
 			SheetDataManager.Data.SheetRectangles.Add(sm.Name, sm);
@@ -71,7 +68,8 @@ namespace ScanPDFBoxes.Process
 			if (!sm.AllShtRectsFound)
 			{
 				pm.errors.Add(new Tuple<string?, string?, ErrorLevel>(
-					shtDataName, "Missing one or more rectangles", ErrorLevel.ERROR_IS_FATAL));
+					shtDataName, "Missing one or more boxes", ErrorLevel.ERROR_IS_FATAL));
+				result = false;
 			}
 
 			src.Close();

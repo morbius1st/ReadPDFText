@@ -19,10 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanPDFBoxes", "ScanPDFBoxe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C9B2649F-B29C-4438-9695-86CEBDDF840C}"
 	ProjectSection(SolutionItems) = preProject
-		2024-06-20 ToDo.txt = 2024-06-20 ToDo.txt
-		Rect Type Descriptions.txt = Rect Type Descriptions.txt
-		Sh Project Usage.txt = Sh Project Usage.txt
-		ShCommonCode\ShSheetData\SheetDataSetsNotes.txt = ShCommonCode\ShSheetData\SheetDataSetsNotes.txt
+		Solution Items\2024-06-20 ToDo.txt = Solution Items\2024-06-20 ToDo.txt
+		Solution Items\Notes.txt = Solution Items\Notes.txt
+		Solution Items\Rect Type Descriptions.txt = Solution Items\Rect Type Descriptions.txt
+		Solution Items\Sh Project Usage.txt = Solution Items\Sh Project Usage.txt
+		Solution Items\sheet data.txt = Solution Items\sheet data.txt
 	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ShItextCode", "ShItextCode\ShItextCode.shproj", "{2331E34C-D552-465A-89C0-66597782543E}"

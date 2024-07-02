@@ -9,12 +9,12 @@ using ShSheetData.ShSheetData2;
 namespace ShSheetData.SheetData2
 {
 	[DataContract(Namespace = "")]
-	public class SheetData
+	public class SheetData2
 	{
 		private DateTime created;
 		private float[] sheetSizeWithRotationA;
 
-		public SheetData()
+		public SheetData2()
 		{
 			// ShtRects = new Dictionary<SheetMetricId, Rectangle>();
 			ShtRects = new Dictionary<SheetRectId, SheetRectData2<SheetRectId>>();
@@ -49,7 +49,7 @@ namespace ShSheetData.SheetData2
 		[IgnoreDataMember]
 		public Rectangle PageSizeWithRotation
 		{
-			get => ShtRects[SheetRectId.SM_SHT].Rect;
+			get => ShtRects[SheetRectId.SM_SHT].BoxSettings.Rect;
 			set
 			{
 				if (ShtRects == null) return;
@@ -59,7 +59,7 @@ namespace ShSheetData.SheetData2
 					ShtRects.Add(SheetRectId.SM_SHT, new SheetRectData2<SheetRectId>(SheetRectType.SRT_NA, SheetRectId.SM_SHT));
 				}
 
-				ShtRects[SheetRectId.SM_SHT].Rect = value;
+				ShtRects[SheetRectId.SM_SHT].BoxSettings.Rect = value;
 
 				if (value != null)
 				{

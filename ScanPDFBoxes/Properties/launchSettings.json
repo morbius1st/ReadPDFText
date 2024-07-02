@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ScanPDFBoxes": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

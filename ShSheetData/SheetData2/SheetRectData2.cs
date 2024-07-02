@@ -7,6 +7,7 @@
 // using SharedCode.ShPdfSupport;
 
 using System;
+using System.Diagnostics.Contracts;
 using System.Runtime.Serialization;
 using System.Text;
 using iText.Kernel.Colors;
@@ -45,6 +46,8 @@ namespace ShSheetData.ShSheetData2
 	{
 		private float[] textColor;
 
+		public TextSettings() {}
+
 		public TextSettings(string fontFamily, int fontStyle, float textSize)
 		{
 			Reset();
@@ -54,11 +57,17 @@ namespace ShSheetData.ShSheetData2
 			TextSize = textSize;
 		}
 
-		public TextSettings(string fontFamily, int fontStyle,
-			float textSize, Color textColor, VerticalAlignment textVertAlignment,
+		public TextSettings(
+			string infoText, string urlLink,
+			string fontFamily, int fontStyle,
+			float textSize, Color textColor, 
+			VerticalAlignment textVertAlignment,
 			HorizontalAlignment textHorizAlignment, int textWeight,
 			float textOpacity)
 		{
+			InfoText = infoText;
+			UrlLink = urlLink;
+
 			FontFamily = fontFamily;
 			FontStyle = fontStyle;
 			TextSize = textSize;
@@ -70,7 +79,11 @@ namespace ShSheetData.ShSheetData2
 			TextOpacity = textOpacity;
 		}
 
-		private TextSettings() { }
+		[DataMember(Order =  50)]
+		public string InfoText { get; set; }
+
+		[DataMember(Order =  50)]
+		public string UrlLink { get; set; }
 
 		// text info ...
 		[DataMember(Order =  51)]
@@ -113,6 +126,9 @@ namespace ShSheetData.ShSheetData2
 
 		public void Reset()
 		{
+			InfoText = null;
+			UrlLink = null;
+
 			FontFamily = "Arial";
 			FontStyle = iText.IO.Font.Constants.FontStyles.NORMAL; // 1 = bold // 2 = italic
 
@@ -130,6 +146,9 @@ namespace ShSheetData.ShSheetData2
 		public object Clone()
 		{
 			TextSettings copy = new TextSettings();
+
+			copy.InfoText = InfoText;
+			copy.UrlLink = UrlLink;
 
 			copy.FontFamily = FontFamily;
 			copy.FontStyle = FontStyle;
@@ -155,11 +174,24 @@ namespace ShSheetData.ShSheetData2
 	{
 		private float[] fillColor;
 		private float[] bdrColor;
+		private float[] rectangleA;
 
-		public BoxSettings(Color fillColor, Color bdrColor,
+		public BoxSettings(Rectangle rect)
+		{
+			Reset();
+
+			Rect = rect;
+		}
+
+		public BoxSettings(Rectangle rect,
+			float tbRotation,
+			Color fillColor, Color bdrColor,
 			float fillOpacity, float bdrWidth, float bdrOpacity,
 			float[] bdrDashPattern)
 		{
+			Rect = rect;
+			TextBoxRotation = tbRotation;
+
 			FillColor = fillColor;
 			BdrColor = bdrColor;
 			FillOpacity = fillOpacity;
@@ -169,6 +201,38 @@ namespace ShSheetData.ShSheetData2
 		}
 
 		private BoxSettings() { }
+
+		// bounding box info ...
+		// box location and dimensions
+
+		// **
+		[IgnoreDataMember]
+		public Rectangle Rect
+		{
+			get => new Rectangle(rectangleA[0], rectangleA[1], rectangleA[2], rectangleA[3]);
+			set
+			{
+				if (value != null)
+				{
+					rectangleA = new [] { value.GetX(), value.GetY(), value.GetWidth(), value.GetHeight() };
+				}
+				else
+				{
+					rectangleA = null;
+				}
+			}
+		}
+
+		[DataMember(Order =  2)]
+		public float[] RectangleA
+		{
+			get => rectangleA;
+			set => rectangleA = value;
+		}
+
+
+		[DataMember(Order =  0)]
+		public float TextBoxRotation { get; set; }
 
 		[DataMember(Order = 1)]
 		public float BdrWidth { get; set; }
@@ -212,6 +276,8 @@ namespace ShSheetData.ShSheetData2
 
 		public void Reset()
 		{
+			TextBoxRotation = 0;
+
 			BdrWidth = 1f;
 			BdrColor = DeviceRgb.BLACK;
 			BdrOpacity = 1f;
@@ -224,6 +290,8 @@ namespace ShSheetData.ShSheetData2
 		public object Clone()
 		{
 			BoxSettings copy = new BoxSettings();
+
+			copy.TextBoxRotation = TextBoxRotation;
 
 			copy.BdrWidth = BdrWidth;
 			copy.BdrColor = BdrColor;
@@ -247,13 +315,15 @@ namespace ShSheetData.ShSheetData2
 		private float[] fillColor;
 		private float[] bdrColor;
 		private float[] textColor;
-		private float[] rectangleA;
+		
 
 		public SheetRectData2(SheetRectType type, T id)
 		{
 			Type = type;
 			Id = id;
-			Rect = null;
+
+			TextSettings = new TextSettings();
+			BoxSettings = new BoxSettings(null);
 
 			Reset();
 		}
@@ -262,7 +332,9 @@ namespace ShSheetData.ShSheetData2
 		{
 			Type = type;
 			Id = id;
-			Rect = rect;
+
+			TextSettings = new TextSettings();
+			BoxSettings = new BoxSettings(rect);
 
 			Reset();
 		}
@@ -270,7 +342,11 @@ namespace ShSheetData.ShSheetData2
 		public SheetRectData2(string name, T id, Rectangle rect)
 		{
 			Id = id;
-			Rect = rect;
+
+			TextSettings = new TextSettings();
+			BoxSettings = new BoxSettings(rect);
+
+			Reset();
 
 			Type = SheetRectSupport.GetShtRectType(name);
 
@@ -278,8 +354,6 @@ namespace ShSheetData.ShSheetData2
 			{
 				Type = SheetRectSupport.GetOptRectType(name);
 			}
-
-			Reset();
 		}
 
 		[DataMember(Order =  0)]
@@ -288,33 +362,6 @@ namespace ShSheetData.ShSheetData2
 		[DataMember(Order =  1)]
 		public T Id { get; private set; }
 
-		// bounding box info ...
-		// box location and dimensions
-
-		// **
-		[IgnoreDataMember]
-		public Rectangle Rect
-		{
-			get => new Rectangle(rectangleA[0], rectangleA[1], rectangleA[2], rectangleA[3]);
-			set
-			{
-				if (value != null)
-				{
-					rectangleA = new [] { value.GetX(), value.GetY(), value.GetWidth(), value.GetHeight() };
-				}
-				else
-				{
-					rectangleA = null;
-				}
-			}
-		}
-
-		[DataMember(Order =  2)]
-		public float[] RectangleA
-		{
-			get => rectangleA;
-			set => rectangleA = value;
-		}
 
 		[IgnoreDataMember]
 		public float TbOriginX { get; set; }
@@ -322,17 +369,8 @@ namespace ShSheetData.ShSheetData2
 		[IgnoreDataMember]
 		public float TbOriginY { get; set; }
 
-		[DataMember(Order =  11)]
-		public string InfoText { get; set; }
-
-		[DataMember(Order =  12)]
-		public string UrlLink { get; set; }
-
 		[IgnoreDataMember]
 		public int SheetRotation { get; set; }
-
-		[DataMember(Order =  21)]
-		public float TextBoxRotation { get; set; }
 
 		[DataMember(Order = 31)]
 		public TextSettings TextSettings { get; set; }
@@ -432,11 +470,7 @@ namespace ShSheetData.ShSheetData2
 			// not reset:
 			// Id, Type, Rect
 
-			InfoText = null;
-			UrlLink = null;
-
 			SheetRotation = 0;
-			TextBoxRotation = 0;
 
 			TextSettings.Reset();
 
@@ -466,7 +500,7 @@ namespace ShSheetData.ShSheetData2
 
 		public float GetAdjTextRotation(float pageAdjust)
 		{
-			return FloatOps.ToRad(TextBoxRotation + pageAdjust);
+			return FloatOps.ToRad(BoxSettings.TextBoxRotation + pageAdjust);
 		}
 
 		public bool HasType(SheetRectType test)
@@ -476,12 +510,9 @@ namespace ShSheetData.ShSheetData2
 
 		public object Clone()
 		{
-			SheetRectData2<T> copy = new SheetRectData2<T>(Type, Id, Rect);
-
-			copy.InfoText = InfoText;
-			copy.UrlLink = UrlLink;
+			SheetRectData2<T> copy = new SheetRectData2<T>(Type, Id, BoxSettings.Rect);
+			
 			copy.SheetRotation = SheetRotation;
-			copy.TextBoxRotation = TextBoxRotation;
 
 			copy.TextSettings = TextSettings.Clone2();
 

@@ -1,0 +1,37 @@
+
+Currently there are 3 saved
+data file folder DM| C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples
+data file name   DM| SheetData.xml
+
+Currently there are 3 saved
+data file folder FM| C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples
+data file name   FM| SheetData2.xml
+data file folder DM| C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples
+data file name   DM| SheetData2.xml
+
+      + --- original data file options ---
+> A   | *** Add Files (add 4 sheets) ***
+> B   | *** Add Files (add existing files) ***
+> C   | *** Add Files (add bad files) ***
+> D   | *** Add Files (add three good file) ***
+> E   | *** Add Files (add file removed ***
+> F   | *** Add (3) Special Files ***
+> R1  | *** Remove Sheet (fail - no match) ***
+> R2  | *** Remove Sheet (good - match) ***
+> Q   | *** Query orig sheet list ***
+> O1  | *** Open orig sheet types ***
+> L1  | *** List orig sheet types ***
+> Z1  | *** Close the orig data file ***
+> 0   | *** Reset the orig list ***
+
+      + --- new list options ---
+> P   | *** Add files to new data file ***
+> L2  | *** List new sheet types ***
+> O2  | *** Open new sheet types ***
+> Z2  | *** Close the new data file ***
+> 1   | *** Reset the new list ***
+
+      + --- completion options ---
+> X   | *** Exit ***
+
+> ? > 

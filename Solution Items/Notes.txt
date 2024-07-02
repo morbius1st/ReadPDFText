@@ -1,12 +1,39 @@
 ﻿
 
+ScanPDFBoxes
+
+application side								between													private side 
+
+program	(ScanPDFBoxes) 							SheetManager2 (SheetData2)(not static)					SheetFileManager2
+	+> main											+> status properties									+> status properties
+	+> switchboardmain								+> init paths and filenames / files						+> config data file routines
+		+> primary routines							+> object creation / configuration						+> config sheet file routines
+														+> SheetFileManager2								+> config output file routines
+ScanSheets (ScanPDFBoxes) 							+> SheetDataManager2								
+	+> status properties								+> operation routines							PdfSupport (ShItextCode)
+	+> add - errors, dups, extras						+> ScanSheets, QuerySheets,							+> general Pdf routines
+	+> reports												ResetSheetData, RemoveSheets
+	+> runs ScanPdf																						ExtractSupport (ShItextCode)
+												ScanStatus (ShItextCode) (static)							+> routines to extract info from 
+													+> status propertu (HasFatalErrors)							a PDF for specific objects
+													+> dups, extras, errors lists
+													+> display routines									PdfFreeTextExtract (ShItextCode)
+																											+> routines to extract info from 
+												ScanPdf (ShItextCode) (not static)								a PdfFreeText object
+													+> scan one PDF
+													+> accesses private side
+														+> ExtractSupport
+														+> PdfSupport
+														+> PdfFreeTextExtract
 
 
-ShSheetData >
+
+
+ShSheetData > (shared project)
 
   data files
 
-  Settings2 >
+	Settings2 > (folder)
 
 	> SheetDataSet2
 	* primary file used to save sheet information
@@ -15,7 +42,7 @@ ShSheetData >
 			> SheetRects2
 			> SheetRectData2
 
-  SheetData2 >
+	SheetData2 > (folder / namespace)
 
 	> SheetRecs2
 	* top level collection of data for a sheet
@@ -46,14 +73,14 @@ ShSheetData >
 			* includes: "GotOutputFile" - location good and no existing output file (depending on overwrite)
 			* includes: "DeleteOutputFile"
 
-  SheetData2 >
+	SheetData2 > (folder / namespace)
 
-    SheetDataManager (static)
+    > SheetDataManager2 (static)
 	* manages the SheetDataSet file
 	* includes: (operations) "Read", "Write", etc. (properties) "IsLoaded"
 
 	
-	SheetManager2
+	> SheetManager2
 	* manages the processes for working with sheet PDF files
 	* includes status properties
 	* operations

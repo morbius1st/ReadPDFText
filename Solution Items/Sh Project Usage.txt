@@ -21,13 +21,13 @@ ShTempCode
 temporary / placeholder code
 
 
-					 itext	 SharedCode   ShCode   ShCommonCode   ShItextCode   ShSheetData   ShTempCode
-CreatePDFBoxes		|	x	|			|	x	 |	removed		|		x	  |		x		 |		x	 |
-ExtractPdfText		|	x	|	x		|	x	 |				|			  |		x		 |		x	 |
-ReadPDFManager		|	x	|	x		|	x	 |				|			  |		x		 |		x	 |
-ReadPDFText			|	x	|	x		|	x	 |				|			  |		x		 |		x	 |
-ReadPDFTextTests	|	x	|	x		|	x	 |				|			  |		x		 |		x	 |
-ScanPDFBoxes		|	x	|			|	x	 |				|		x	  |		x		 |		x	 |
+					 itext	 SharedCode   ShCode   ShItextCode   ShSheetData   ShTempCode
+CreatePDFBoxes		|	x	|			|	x	 |		x	  |		x		 |		x	 |
+ExtractPdfText		|	x	|	x		|	x	 |		x	  |		x		 |		x	 |
+ReadPDFManager		|	x	|	x		|	x	 |		x	  |		x		 |		x	 |
+ReadPDFText			|	x	|	x		|	x	 |		x	  |		x		 |		x	 |
+ReadPDFTextTests	|	x	|	x		|	x	 |		x	  |		x		 |		x	 |
+ScanPDFBoxes		|	x	|			|	x	 |		x	  |		x		 |		x	 |
 
 
 

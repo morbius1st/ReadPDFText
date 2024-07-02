@@ -1,11 +1,13 @@
 ﻿#region + Using Directives
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ShCode.ShDebugInfo;
-using ShSheetData.ShSheetData;
+using ScanPDFBoxes.Process2;
+using ShItextCode.ElementExtraction;
+using ShSheetData.ShSheetData2;
 using ShTempCode.DebugCode;
 using UtilityLibrary;
 using ShowWhere = ShTempCode.DebugCode.ShowWhere;
@@ -29,13 +31,14 @@ namespace ShSheetData.SheetData2
 		// private FilePath<FileNameSimple> dataFilePath;
 
 		// the location that the list of sheet box information is saved
-		public string DataFilePath => sfm2.DataFilePath.FullFilePath;
+		public string DataFilePath => SheetFileManager2.DataFilePath.FullFilePath;
 
 		public bool SdmInitialized => SheetDataManager2.Initialized;
 		public bool SdmHasSheets => SheetDataManager2.HasSheets;
 		public int SdmSheetCount => SheetDataManager2.SheetsCount;
 
-		public bool? DataFilesInit => sfm2?.GotDataFile ?? false;
+		public bool? DataFileInit => sfm2?.GotDataFile ?? false;
+		public bool DataFilePathInit => sfm2?.DataFilePathInit ?? false;
 		public bool SheetFilesInit { get; private set; }
 
 		/// <summary> initialize the various data files<br/> creates the list of sheet PDF files to process<br/>
@@ -45,7 +48,7 @@ namespace ShSheetData.SheetData2
 		{
 			DM.DbxLineEx(0, "start", 1);
 
-			if (DataFilesInit == true) return false;
+			if (DataFilePathInit) return false;
 
 			// config the sheet data folder
 			if (!sfm2.GetDataFileFolder(ShSamples.DATA_FILE_FOLDER))
@@ -55,7 +58,7 @@ namespace ShSheetData.SheetData2
 			}
 
 			// config the sheet data folder file name
-			if (!sfm2.GetDataFile(ShSamples.DATA_FILE_NAME))
+			if (!sfm2.GetDataFile(SheetDataManager2.DataFileName))
 			{
 				DM.DbxLineEx(0, "file not found");
 			}
@@ -71,9 +74,9 @@ namespace ShSheetData.SheetData2
 		{
 			DM.DbxLineEx(0, "start", 1);
 
-			if (DataFilesInit == false || SheetFilesInit)
+			if (DataFilePathInit == false || SheetFilesInit)
 			{
-				DM.DbxLineEx(0, "end 1", -1);
+				DM.DbxLineEx(0, $"end 1 - DataFileInit {DataFileInit} or SheetFilesInit {SheetFilesInit} issue", -1);
 				return false;
 			} // not initialized or already init'd
 
@@ -117,16 +120,13 @@ namespace ShSheetData.SheetData2
 		{
 			DM.DbxLineEx(0,"start", 1);
 
-			if (DataFilesInit ==  false)
+			if (DataFileInit ==  false)
 			{
 				DM.DbxLineEx(0,"end 1", -1);
 				return false;
 			}
 
-			if (!SheetDataManager2.Initialized)
-			{
-				SheetDataManager2.Init(sfm2.DataFilePath);
-			}
+			createDataManager();
 
 			DM.DbxLineEx(0, $"sheetdatamanager", 1);
 			DM.DbxLineEx(0, $"init   {SdmInitialized}", 1);
@@ -139,16 +139,28 @@ namespace ShSheetData.SheetData2
 			return true;
 		}
 
-		public bool? ReadSheetData()
+		public void createDataManager()
 		{
 			DM.DbxLineEx(0,"start", 1);
 
-			if (DataFilesInit ==  false)
+			if (!SheetDataManager2.Initialized)
+			{
+				SheetDataManager2.Open(SheetFileManager2.DataFilePath);
+			}
+
+			DM.DbxLineEx(0,"end", -1);
+		}
+
+		public bool? InitSheetData()
+		{
+			DM.DbxLineEx(0,"start", 1);
+
+			if (DataFileInit ==  false)
 			{
 				DM.DbxLineEx(0,"end 1 - not init", -1);
 				return false;
 			}
-
+			
 			if (SheetDataManager2.HasSheets)
 			{
 				DM.DbxLineEx(0,$"end 2 - is loaded and has {SheetDataManager2.SheetsCount} sheets", -1);
@@ -157,7 +169,13 @@ namespace ShSheetData.SheetData2
 			
 			SheetDataManager2.Read();
 
-			DM.DbxLineEx(0,$"\tstatus | loaded {SheetDataManager2.HasSheets} | read {SheetDataManager2.SheetsCount} sheets", 1);
+			DM.DbxLineEx(0,$"\tstatus | loaded {SheetDataManager2.HasSheets} | read {SheetDataManager2.SheetsCount} sheets");
+
+			if (SheetDataManager2.SheetsCount == -1)
+			{
+				SheetDataManager2.Reset();
+				SheetDataManager2.Data.SheetDataList = new Dictionary<string, SheetData2>();
+			}
 
 			DM.DbxLineEx(0,"end", -1);
 
@@ -171,49 +189,122 @@ namespace ShSheetData.SheetData2
 		// remove sheets
 		// query sheets
 
-		public bool ScanSheets()
+		/// <summary> scan the list of sheets and create the data file<br/>
+		/// true = worked <br/>
+		/// false = did not work or other error<br/>
+		/// null = cannot proceed / config issue
+		/// </summary>
+		public bool? ScanShts()
 		{
+			bool result;
+
 			DM.DbxLineEx(0,"start", 1);
+
+
+			if (!sfm2.GotSheetFiles)
+			{
+				DM.DbxLineEx(0,"end 1 - exit - sheet file paths not configured", -1);
+				return null;
+			}
 
 			if (SdmHasSheets)
 			{
-				DM.DbxLineEx(0,"end 1", -1);
+				DM.DbxLineEx(0,"end 2 - exit - sheet files exist", -1);
 				return false;
 			}
 
+			SheetDataManager2.updateHeader();
+
+			ScanSheets ss = new ScanSheets();
+
+			result = ss.Process(sfm2.SheetFileList);
 
 			showScanResults(0);
 
 			DM.DbxLineEx(0,"end", -1);
 
-			return true;
+			return result;
 		}
 
-
-		public void ResetSheetData()
+		public void ResetShtData()
 		{
-			sfm2.ResetDataFile();
-			sfm2.ResetSheetFiles();
 
 			// clear the sheet data
 			SheetDataManager2.Reset();
 		}
 
-
-		public void QuerySheets()
+		public void QueryShts()
 		{
 			if (!SdmHasSheets) return;
 		}
 
-		public void RemoveSheets()
+		public void RemoveShts()
 		{
 			if (!SdmHasSheets) return;
 		}
 
+		public bool Close()
+		{
+			DM.DbxLineEx(0, "start");
+
+			sfm2.ResetSheetFiles();
+			sfm2.ResetDataFile();
+
+			SheetDataManager2.Close();
+
+			DM.DbxLineEx(0, "end", -1);
+
+			return true;
+		}
+
+		public bool? Open()
+		{
+
+
+			return true;
+		}
+
+		public bool configDataManager()
+		{
+			DM.DbxLineEx(0, "start", 1);
+
+			if (!InitDataFile())
+			{
+				DM.DbxLineEx(0, "end 2", -1);
+				return false;
+			}
+
+			if (!initDataManager())
+			{
+				DM.DbxLineEx(0, "end 3", -1);
+				return false;
+			}
+			
+			DM.DbxLineEx(0, "end", -1);
+
+			return true;
+		}
+
+		public bool ConfigSheetFileInfo(int idx)
+		{
+			DM.DbxLineEx(0, "start", 1);
+
+			if (!InitSheetFiles(idx))
+			{
+				DM.DbxLineEx(0, "end 1 - (", -1);
+				return false;
+			}
+
+			DM.DbxLineEx(0, "end", -1);
+
+			return true;
+		}
 
 	#endregion
 
 	#region private operations
+
+		
 
 		private bool ReadSheets()
 		{

@@ -1,0 +1,31 @@
+﻿
+
+
+
+
+ScanPDFBoxes
+
+application side								between													private side 
+
+program	(ScanPDFBoxes) 							SheetManager2 (SheetData2)(not static)					SheetFileManager2
+	+> main											+> status properties									+> status properties
+	+> switchboardmain								+> init paths and filenames / files						+> config data file routines
+		+> primary routines							+> object creation / configuration						+> config sheet file routines
+														+> SheetFileManager2								+> config output file routines
+ScanSheets (ScanPDFBoxes) 							+> SheetDataManager2								
+	+> status properties								+> operation routines							PdfSupport (ShItextCode)
+	+> add - errors, dups, extras						+> ScanSheets, QuerySheets,							+> general Pdf routines
+	+> reports												ResetSheetData, RemoveSheets
+	+> runs ScanPdf																						ExtractSupport (ShItextCode)
+												ScanStatus (ShItextCode) (static)							+> routines to extract info from 
+													+> status propertu (HasFatalErrors)							a PDF for specific objects
+													+> dups, extras, errors lists
+													+> display routines									PdfFreeTextExtract (ShItextCode)
+																											+> routines to extract info from 
+												ScanPdf (ShItextCode) (not static)								a PdfFreeText object
+													+> scan one PDF
+													+> accesses private side
+														+> ExtractSupport
+														+> PdfSupport
+														+> PdfFreeTextExtract
+

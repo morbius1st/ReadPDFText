@@ -25,14 +25,14 @@ namespace Settings
 		[IgnoreDataMember]
 		public static string DataFileName { get; } = "SheetData.xml";
 
-		[DataMember]
+		[IgnoreDataMember]
 		public string DataFileDescription { get; set; } = "Sheet Metric Information";
 
-		[DataMember]
+		[IgnoreDataMember]
 		public string DataFileNotes { get; set; } = "Sheet Metrics is user specific / created";
 
-		[DataMember]
-		public string DataFileVersion { get; set; } = "v1.0";
+		[IgnoreDataMember]
+		public string DataFileVersion { get; set; } = "v1.0x";
 
 		[IgnoreDataMember]
 		// public Dictionary<string, SheetMetricA> SheetMetricsA { get; set; } = new Dictionary<string, SheetMetricA>();

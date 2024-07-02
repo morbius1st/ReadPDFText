@@ -10,22 +10,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)SheetFileManager2.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Settings\HeadingSetting.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings2\SheetDataSet2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings\SheetDataSet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData2\SheetDataManager2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData2\SheetManager2.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SheetData2\SheetData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SheetData2\SheetData2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData\SheetDataManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData2\SheetRectData2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData\SheetRectData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData\SheetRects.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData\SheetRectSupport.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Settings2\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Notes.txt" />
   </ItemGroup>
 </Project>

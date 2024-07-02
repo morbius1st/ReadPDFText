@@ -1,16 +1,13 @@
 ﻿#region + Using Directives
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using UtilityLibrary;
-
 #endregion
 
 // user name: jeffs
 // created:   6/2/2024 11:22:51 PM
 
-namespace ShCode.ShDebugInfo
+using UtilityLibrary;
+
+namespace ShTempCode.DebugCode
 {
 	public struct Sample
 	{
@@ -58,8 +55,8 @@ namespace ShCode.ShDebugInfo
 	{
 		public const string DATA_FILE_FOLDER = @"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\";
 
-		public const string DATA_FILE_NAME  = "SheetData.xml";
-		public const string DATA_FILE_PATH = DATA_FILE_FOLDER + DATA_FILE_NAME;
+		// public const string DATA_FILE_NAME  = "SheetData.xml";
+		// public const string DATA_FILE_PATH = DATA_FILE_FOLDER + DATA_FILE_NAME;
 
 		public const string ROOT_PATH_01 = @"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\TestBoxes\";
 

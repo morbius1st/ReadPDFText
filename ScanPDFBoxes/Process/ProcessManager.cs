@@ -36,9 +36,9 @@ namespace ScanPDFBoxes.Process
 		public List<Tuple<string, string, Rectangle>> extraRects { get; private set; }
 		public List<Tuple<string?, string?, ErrorLevel>> errors { get; private set; }
 
-		public ProcessManager(FilePath<FileNameSimple> dataFile)
+		public ProcessManager(string dataFilePath)
 		{
-			DataFilePath = dataFile;
+			DataFilePath = new FilePath<FileNameSimple>(dataFilePath + SheetDataManager.DataFileName);
 		}
 
 		public FilePath<FileNameSimple> DataFilePath { get; set; }
@@ -152,6 +152,16 @@ namespace ScanPDFBoxes.Process
 			qs.Process(sheets);
 
 			PdfShowInfo.ShowPdfInfoBasic(qs.Docs);
+		}
+
+		public void Reset()
+		{
+			SheetDataManager.Reset();
+		}
+
+		public void Close()
+		{
+			SheetDataManager.Close();
 		}
 
 		// action

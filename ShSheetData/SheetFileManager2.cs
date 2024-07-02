@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ShCode.ShDebugInfo;
+using ShSheetData.ShSheetData2;
 using UtilityLibrary;
 
 #endregion
@@ -18,7 +18,7 @@ namespace ShSheetData
 {
 	public class SheetFileManager2
 	{
-		public const string DATA_FILE_NAME  = "SheetData.xml";
+		// public const string DATA_FILE_NAME  = "SheetData.xml";
 
 		private string dataFileFolder;
 		private string sheetFileFolder;
@@ -51,6 +51,8 @@ namespace ShSheetData
 			}
 		}
 
+		public bool DataFilePathInit => (dataFileFolder != null && DataFilePath != null);
+
 		public string DataFileFolder
 		{
 			get => dataFileFolder;
@@ -67,7 +69,7 @@ namespace ShSheetData
 			}
 		}
 
-		public FilePath<FileNameSimple> DataFilePath { get; set; }
+		public static FilePath<FileNameSimple> DataFilePath { get; set; }
 
 		public bool GetDataFileFolder(string folder = null)
 		{
@@ -100,7 +102,7 @@ namespace ShSheetData
 
 			if (name == null)
 			{
-				name = DATA_FILE_NAME;
+				name = SheetDataManager2.DataFileName;
 			}
 
 			if (path != null)

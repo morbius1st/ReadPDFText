@@ -9,7 +9,9 @@
     <Import_RootNamespace>ShCode</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)ShDebugInfo\ShSamples.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShowInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)ShDebugInfo\" />
   </ItemGroup>
 </Project>

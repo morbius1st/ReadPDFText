@@ -1,4 +1,5 @@
 ﻿#region + Using Directives
+using ScanPDFBoxes.SheetData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +9,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-
+using ShSheetData.ShSheetData2;
 using UtilityLibrary;
 #endregion
 
@@ -31,11 +32,22 @@ namespace ShTempCode.DebugCode
 
 		public static int[,] dmx;
 
+		[DebuggerStepThrough]
+		public static void DbxSetIdx(int idx, int value)
+		{
+			dmx[idx, 0] = value;
+		}
 
-		
+		[DebuggerStepThrough]
+		public static void DbxChgIdx(int idx, int value)
+		{
+			dmx[idx, 0] += value;
+		}
+
+		[DebuggerStepThrough]
 		public static void DbxLineEx(int idx, string msg1,
-			int chgIdx = 0,
-			int setIdx = -1,
+			int chgIdxPre = 0,
+			int chgIdxPost = 0,
 			ShowWhere where = ShowWhere.NONE,
 			string msg2 = null,
 			[CallerMemberName] string mx = null,
@@ -44,6 +56,8 @@ namespace ShTempCode.DebugCode
 		{
 			if (dmx[idx,0] < 0) return;
 
+			string zx = null;
+			
 			if (sx != null)
 			{
 				sx = Path.GetFileNameWithoutExtension(sx) + " . ";
@@ -52,16 +66,22 @@ namespace ShTempCode.DebugCode
 			if (mx != null)
 			{
 				sx += mx;
+
+				if (msg1.StartsWith("start") || msg1.StartsWith("end"))
+				{
+					zx = $" ({mx})";
+				}
 			}
 
 			prefaceWidth = -44;
 
-			Dbx(idx, msg1, chgIdx, setIdx, where, $"{msg2}\n", sx);
+			Dbx(idx, msg1, "\n",chgIdxPre, chgIdxPost, where, msg2, sx, zx);
 		}
 
+		[DebuggerStepThrough]
 		public static void DbxEx(int idx, string msg1,
-			int chgIdx = 0,
-			int setIdx = -1,
+			int chgIdxPre = 0,
+			int chgIdxPost = 0,
 			ShowWhere where = ShowWhere.NONE,
 			string msg2 = null,
 			[CallerMemberName] string mx = null,
@@ -69,24 +89,33 @@ namespace ShTempCode.DebugCode
 		{
 			if (dmx[idx,0] < 0) return;
 
+			string zx = null;
+
 			if (sx != null)
 			{
 				sx = Path.GetFileNameWithoutExtension(sx) + " . ";
-			}
+			}			
 
 			if (mx != null)
 			{
 				sx += mx;
+
+				if (msg1.StartsWith("start") || msg1.StartsWith("end"))
+				{
+					zx = $" ({mx})";
+				}
 			}
 
 			prefaceWidth = -44;
 
-			Dbx(idx,msg1, chgIdx, setIdx, where, $"{msg2}", sx);
+			Dbx(idx,msg1, null, chgIdxPre, chgIdxPost, where, msg2, sx, zx);
 		}
 
+
+		[DebuggerStepThrough]
 		public static void DbxLine(int idx, string msg1,
-			int chgIdx = 0,
-			int setIdx = -1,
+			int chgIdxPre = 0,
+			int chgIdxPost = 0,
 			ShowWhere where = ShowWhere.NONE,
 			string msg2 = null)
 		{
@@ -94,42 +123,46 @@ namespace ShTempCode.DebugCode
 
 			string s = MethodBase.GetCurrentMethod().DeclaringType.Name;
 
-			Dbx(idx, msg1, chgIdx, setIdx, where, $"{msg2}\n");
+			Dbx(idx, msg1, "\n",chgIdxPre, chgIdxPost,where, msg2);
 		}
 
+		[DebuggerStepThrough]
 		public static void Dbx(int idx, string msg1,
-			int chgIdx = 0,
-			int setIdx = -1,
+			string t1,
+			int chgIdxPre = 0,
+			int chgIdxPost = 0,
 			ShowWhere where = ShowWhere.NONE,
-			string msg2 = null, string msg3 = null)
+			string msg2 = null,
+			string msg3 = null,
+			string msg4 = null)
 		{
 			if (dmx[idx,0] < 0) return;
 
-			string fmt = $"{{0,{prefaceWidth}}}|";
+			string fmt = $"{{0,{prefaceWidth}}}| ";
 
-			if (chgIdx > 0) dmx[idx, 0] += chgIdx;
-
-			if (setIdx > -1)
-			{
-				dmx[idx, 0] = setIdx;
-			}
+			if (chgIdxPre > 0) dmx[idx, 0] += chgIdxPre;
+			if (chgIdxPost < 0 && dmx[idx, 0] != 0) dmx[idx, 0] += chgIdxPost;
 
 			// string m = msg3 == null ? null : $"{msg3,prefaceWidth}|";
 			string m = msg3 == null ? null : string.Format(fmt, msg3);
 
-			if (dmx[idx,0] > 0) m += " ".Repeat(dmx[idx,0] * 3);
+			if (dmx[idx,0] > 0) m += " ".Repeat(dmx[idx,0] * 2);
 
 			m += msg1;
 
 			if (msg2 != null) m += msg2;
 
+			if (msg4 != null) m += msg4;
+
 			ShowWhere w = where == ShowWhere.NONE ? (ShowWhere) dmx[idx, 1] : where;
 
-			if (chgIdx < 0 && dmx[idx, 0] != 0) dmx[idx, 0] += chgIdx;
+			if (chgIdxPre < 0 && dmx[idx, 0] != 0) dmx[idx, 0] += chgIdxPre;
+			if (chgIdxPost > 0) dmx[idx, 0] += chgIdxPost;
 
-			showDmx(m, w);
+			showDmx(m+t1, w);
 		}
 
+		[DebuggerStepThrough]
 		private static void showDmx(string msg, ShowWhere where)
 		{
 			if (where == ShowWhere.CONSOLE || where == ShowWhere.DBG_CONS)
@@ -139,10 +172,16 @@ namespace ShTempCode.DebugCode
 
 			if (where == ShowWhere.DEBUG  || where == ShowWhere.DBG_CONS)
 			{
+				
+				Debug.Write($"{SheetDataManager2.SheetsCount,-4:F0}");
+
 				Debug.Write(msg);
+
+				// ShowSheetRectInfo.showStatus(ShowWhere.DEBUG);
 			}
 		}
 
+		[DebuggerStepThrough]
 		public static void configDebugMsgList()
 		{
 			// setup the whold list
