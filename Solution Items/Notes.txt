@@ -1,4 +1,38 @@
-﻿
+﻿D
+subject naming
+
+Sheet / Sheets
+> the PDF files read and updated with the links and annotations
+* filepath / folder / file
+	> SheetsFilePath
+	> SheetsFolder
+	> SheetsFile
+
+SampleSheet / SampleSheets
+> the PDF files scanned to define the SheetRect's
+* folder
+	> SampleSheetFolder
+
+SheetRect
+> the information that defines the data to be placed on sheet PDF's
+
+SheetData
+> the list of sheets used to define PDF SheetRect information
+* filepath / folder / file
+	> SheetDataFilePath
+	> SheetDataFolder
+	> SheetDataFile
+	> SheetDataList
+
+DataManager 
+> the class that manages the SheetData file
+* filepath / folder / file
+	> DataManagerFilePath
+	> DataManagerFolder
+	> DataManagerFile
+
+
+
 
 ScanPDFBoxes
 

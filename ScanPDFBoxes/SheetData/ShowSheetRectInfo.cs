@@ -173,8 +173,7 @@ namespace ScanPDFBoxes.SheetData
 			}
 		}
 
-
-
+		
 		// special listings - to console or to debug
 
 		public static void showStatus(ShowWhere where)
@@ -197,8 +196,8 @@ namespace ScanPDFBoxes.SheetData
 
 			showMsgLine($"Currently there are {count} saved");
 
-			string s3 = SheetFileManager2.DataFilePath?.FolderPath ?? "** null **";
-			string s4 = SheetFileManager2.DataFilePath?.FileName ?? "** null **";
+			string s3 = Program.sm2.DataFilePath?.FolderPath ?? "** null **";
+			string s4 = Program.sm2.DataFilePath?.FileName ?? "** null **";
 
 			s1 = SheetDataManager2.Path?.RootFolderPath ?? "** null **";
 			s2 = SheetDataManager2.Path?.FileName ?? "** null **";

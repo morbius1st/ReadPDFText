@@ -5,11 +5,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Shell.Interop;
+using ScanPDFBoxes;
 using ScanPDFBoxes.Process2;
+using SettingsManager;
+using ShCode;
 using ShItextCode.ElementExtraction;
 using ShSheetData.ShSheetData2;
 using ShTempCode.DebugCode;
 using UtilityLibrary;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 using ShowWhere = ShTempCode.DebugCode.ShowWhere;
 
 #endregion
@@ -19,201 +24,159 @@ using ShowWhere = ShTempCode.DebugCode.ShowWhere;
 
 namespace ShSheetData.SheetData2
 {
+	// public enum SM2_CODES
+	// {
+	//
+	// 	SMC_INIT_DATA_MANAGER_FAILED = -4,
+	// 	SMC_SCAN_PDF_FOLDER_MISSING = -3,
+	// 	SMC_DATA_FILE_PATH_ALREADY_SET = -2,
+	// 	SMC_DATA_FILE_HAS_SHEETS = -1,
+	// 	SMC_NORMAL = 0,		// 0 neutral
+	// 	SMC_WORKED = 1,		// >0 good
+	// }
+	//
+
 	public class SheetManager2
 	{
 		private SheetFileManager2 sfm2;
 
-		public SheetManager2()
+		public SheetManager2(SheetFileManager2 sfm2)
 		{
-			sfm2 = new SheetFileManager2();
+			this.sfm2 = sfm2;
+
+			StatusCode = StatCodes.SC_G_NONE;
 		}
 
-		// private FilePath<FileNameSimple> dataFilePath;
+		public StatCodes StatusCode { get; private set; }
 
-		// the location that the list of sheet box information is saved
-		public string DataFilePath => SheetFileManager2.DataFilePath.FullFilePath;
+	#region public properties
 
-		public bool SdmInitialized => SheetDataManager2.Initialized;
-		public bool SdmHasSheets => SheetDataManager2.HasSheets;
-		public int SdmSheetCount => SheetDataManager2.SheetsCount;
+		public FilePath<FileNameSimple> DataFilePath => sfm2.DataFilePath;
 
-		public bool? DataFileInit => sfm2?.GotDataFile ?? false;
-		public bool DataFilePathInit => sfm2?.DataFilePathInit ?? false;
-		public bool SheetFilesInit { get; private set; }
+		public bool GotDataFilePath => sfm2.GotDataFilePath;
+		public bool? GotDataFile => sfm2.GotDataFile;
+
+		public List<string> SheetFileList => sfm2.SheetFileList;
+		public string SheetFileFolder => sfm2.SheetFileFolder;
+		public bool GotSheetFileList => sfm2.GotSheetFileList;
+		public bool GotSheetFolder => sfm2.GotSheetFolder;
+		public bool SheetFolderExists => sfm2.SheetFolderExists;
+
+	#endregion
+
+
+	#region public operations
+
+		// config operations
 
 		/// <summary> initialize the various data files<br/> creates the list of sheet PDF files to process<br/>
 		/// initialize the SheetDataManager but does not read SheetData
 		/// </summary>
-		public bool InitDataFile()
+		public bool InitDataFilePath()
 		{
+			// usersettings configured with the path values
+
 			DM.DbxLineEx(0, "start", 1);
 
-			if (DataFilePathInit) return false;
-
-			// config the sheet data folder
-			if (!sfm2.GetDataFileFolder(ShSamples.DATA_FILE_FOLDER))
+			if (sfm2.GotDataFilePath == true)
 			{
-				DM.DbxLineEx(0, "end 1 (fail)", -1);
+				StatusCode = StatCodes.SC_DM_DATA_FILE_PATH_ALREADY_SET;
+				DM.DbxLineEx(0, "end 1 (already config'd)", -1);
 				return false;
 			}
 
-			// config the sheet data folder file name
-			if (!sfm2.GetDataFile(SheetDataManager2.DataFileName))
-			{
-				DM.DbxLineEx(0, "file not found");
-			}
+			sfm2.DataFilePath = UserSettings.Data.DataFilePath;
 
-			DM.DbxLineEx(0, $"end | data file status {sfm2.GotDataFile?.ToString() ?? "null"}", -1);
+			DM.DbxLineEx(0, $"end | data file status {sfm2.GotDataFile?.ToString() ?? "null"}", 0, -1);
 
 			return true;
 		}
 
-		/// <summary> initialize the sheet files - folder and read the sheet files
-		/// </summary>
-		public bool InitSheetFiles(int idx)
+		public bool InitSheetFileFolder()
 		{
 			DM.DbxLineEx(0, "start", 1);
 
-			if (DataFilePathInit == false || SheetFilesInit)
+			bool b1 = sfm2.GotSheetFolder;
+			bool b2 = sfm2.SheetFolderExists;
+
+			if (sfm2.SheetFolderExists)
 			{
-				DM.DbxLineEx(0, $"end 1 - DataFileInit {DataFileInit} or SheetFilesInit {SheetFilesInit} issue", -1);
-				return false;
-			} // not initialized or already init'd
-
-			if (sfm2.GotSheetFiles)
-			{
-				DM.DbxLineEx(0, "end 2", -1);
-				return false;
-			} // already got - don't re-load
-
-			SheetFilesInit = false;
-
-			ShSamples ss = new ShSamples();
-
-			Sample sample;
-
-			if (!ss.SampleData.TryGetValue(idx, out sample))
-			{
-				DM.DbxLineEx(0, "end 3", -1);
+				StatusCode = StatCodes.SC_SFM_SHEET_DATA_FOLDER_MISSING;
+				DM.DbxLineEx(0, "end 1 (scan pdf folder missing)", -1);
 				return false;
 			}
 
-			// config the the sheet file folder (do not read the file list)
-			sfm2.GetSheetFileFolder(sample.PdfFolder.FullFilePath);
+			DM.DbxLineEx(0, "end", 0, -1);
 
-			if (!sfm2.GetSheetFiles())
-			{
-				DM.DbxLineEx(0, "end 4", -1);
-				return false;
-			}
-
-			SheetFilesInit = true;
-
-			DM.DbxLineEx(0, "end", -1);
-
-			return true;
+			return sfm2.SetSheetFileFolder(UserSettings.Data.ScanPDfFolder.FolderPath);
 		}
 
-		/// <summary> initialize the SheetDataManager
+		/// <summary> start or re-use the SheetDataManager<br/>
+		/// if not initialized, init, write the initial data file<br/>
+		/// if initialized, ok if sheet data files count == 0
 		/// </summary>
-		public bool initDataManager()
+		public bool StartDataManager()
 		{
 			DM.DbxLineEx(0,"start", 1);
 
-			if (DataFileInit ==  false)
+			if (SheetDataManager2.Configured)
 			{
-				DM.DbxLineEx(0,"end 1", -1);
-				return false;
+				if (SheetDataManager2.GotDataSheets)
+				{
+					StatusCode = StatCodes.SC_DM_DATA_FILE_HAS_SHEETS;
+					DM.DbxLineEx(0,"end 1", 0, -1);
+					return false;
+				}
+			}
+			else
+			{
+				// not configured
+				if (!SheetDataManager2.Init(sfm2.DataFilePath))
+				{
+					StatusCode = StatCodes.SC_DM_INIT_DATA_MANAGER_FAILED;
+					DM.DbxLineEx(0,"end 2", 0, -1);
+					return false;
+				}
 			}
 
-			createDataManager();
+			SheetDataManager2.Open(); 
 
-			DM.DbxLineEx(0, $"sheetdatamanager", 1);
-			DM.DbxLineEx(0, $"init   {SdmInitialized}", 1);
+			// is initialized and may or may not have sheets as Open reads the existing file
+			// and if the file has sheets, they are read
+
+			DM.DbxLineEx(0, $"status", 1, 1);
 			DM.DbxLineEx(0, $"exists {SheetDataManager2.SettingsFileExists}");
-			DM.DbxLineEx(0, $"loaded {SdmHasSheets}", -1);
-			DM.DbxLineEx(0, $"sheetdatamanager", -1);
+			DM.DbxLineEx(0, $"loaded {SheetDataManager2.GotDataSheets}");
+			DM.DbxLineEx(0, $"done", -1, -1);
 
-			DM.DbxLineEx(0,"end", -1);
+			DM.DbxLineEx(0, "end", 0, -1);
 
-			return true;
-		}
-
-		public void createDataManager()
-		{
-			DM.DbxLineEx(0,"start", 1);
-
-			if (!SheetDataManager2.Initialized)
-			{
-				SheetDataManager2.Open(SheetFileManager2.DataFilePath);
-			}
-
-			DM.DbxLineEx(0,"end", -1);
-		}
-
-		public bool? InitSheetData()
-		{
-			DM.DbxLineEx(0,"start", 1);
-
-			if (DataFileInit ==  false)
-			{
-				DM.DbxLineEx(0,"end 1 - not init", -1);
-				return false;
-			}
-			
-			if (SheetDataManager2.HasSheets)
-			{
-				DM.DbxLineEx(0,$"end 2 - is loaded and has {SheetDataManager2.SheetsCount} sheets", -1);
-				return null;
-			}
-			
-			SheetDataManager2.Read();
-
-			DM.DbxLineEx(0,$"\tstatus | loaded {SheetDataManager2.HasSheets} | read {SheetDataManager2.SheetsCount} sheets");
-
-			if (SheetDataManager2.SheetsCount == -1)
-			{
-				SheetDataManager2.Reset();
-				SheetDataManager2.Data.SheetDataList = new Dictionary<string, SheetData2>();
-			}
-
-			DM.DbxLineEx(0,"end", -1);
+			StatusCode = StatCodes.SC_G_WORKED;
 
 			return true;
 		}
-
-	#region public operations
 
 		// scan sheets
 		// reset sheets - clear from memory
 		// remove sheets
 		// query sheets
 
+
+		// scan operations
+
 		/// <summary> scan the list of sheets and create the data file<br/>
 		/// true = worked <br/>
-		/// false = did not work or other error<br/>
-		/// null = cannot proceed / config issue
+		/// false = did not work or other error
 		/// </summary>
+		// /// null = cannot proceed / config issue
 		public bool? ScanShts()
 		{
 			bool result;
 
 			DM.DbxLineEx(0,"start", 1);
 
-
-			if (!sfm2.GotSheetFiles)
-			{
-				DM.DbxLineEx(0,"end 1 - exit - sheet file paths not configured", -1);
-				return null;
-			}
-
-			if (SdmHasSheets)
-			{
-				DM.DbxLineEx(0,"end 2 - exit - sheet files exist", -1);
-				return false;
-			}
-
-			SheetDataManager2.updateHeader();
+			// reset (clear and prep for new) the sheet data list
+			SheetDataManager2.ResetSheetDataList();
 
 			ScanSheets ss = new ScanSheets();
 
@@ -221,97 +184,273 @@ namespace ShSheetData.SheetData2
 
 			showScanResults(0);
 
-			DM.DbxLineEx(0,"end", -1);
+			DM.DbxLineEx(0,"end", 0, -1);
 
 			return result;
 		}
 
-		public void ResetShtData()
+		public bool? ScanSht(string sheet)
 		{
+			bool result;
 
+			DM.DbxLineEx(0,"start", 1);
+
+			ScanSheets ss = new ScanSheets();
+
+			result = ss.Process(new () {sheet});
+
+			showScanResults(0);
+
+			DM.DbxLineEx(0,"end", 0, -1);
+
+			return result;
+		}
+
+		// general operations
+
+		public void ResetFull()
+		{
+			// tasks
+			// reset the data manager sheet list and save / update the information and date
+			// reset the sheet file manager's data paths to null;
+			// reset the sheet file manager's sheet file paths to null
+			// reset the sheet file manager's sheet list to null
+
+			CloseDataManager();
+			ResetDataManager();
+
+			sfm2.ResetSheetFiles();
+			sfm2.ResetDataFile();
+		}
+
+		// sheet file manager operations
+
+		public bool LoadSheetFiles()
+		{
+			return sfm2.GetSheetFiles();
+		}
+
+		public string SwitchboardSelectSheetFile()
+		{
+			DM.DbxLineEx(0,"start", 1);
+
+			Dictionary<string, Tuple<string, string>> files;
+
+			int result = getAvailableSheetDataFiles(out files);
+
+			if (result == 0)
+			{
+				DM.DbxLineEx(0,"end 1 (nothing to select)", 0, -1);
+				return null;
+			}
+
+			if (result > 99)
+			{
+				DM.DbxLineEx(0,"end 2 (too many selections)", 0, -1);
+				return null;
+			}
+
+			Console.Write("\n");
+
+			foreach (KeyValuePair<string, Tuple<string, string>> kvp in files)
+			{
+				Console.WriteLine($"> {kvp.Key,-3}  | *** {kvp.Value.Item1}");
+			}
+
+			Console.WriteLine($"> {'X',-3}  | *** Exit");
+			Console.Write("\n? ");
+
+			string c = Console.ReadKey().KeyChar.ToString().ToUpper();
+
+			Console.Write($"{c}");
+
+			if (c.Equals("X"))
+			{
+				DM.DbxLineEx(0,"end 3", 0, -1);
+				return null;
+			}
+
+			string c1 = null;
+
+			if (files.Count > 9)
+			{
+				c1 = Console.ReadKey().KeyChar.ToString().ToUpper();
+				Console.Write($"{c1}\n\n");
+			}
+
+			if (!files.ContainsKey(c + c1))
+			{
+				DM.DbxLineEx(0,"end 4", 0, -1);
+				return null;
+			}
+
+			DM.DbxLineEx(0,"end", 0, -1);
+
+			return files[c + c1].Item2;
+		}
+
+		// data manager operations
+
+		public bool RemoveSheet(string sheet)
+		{
+			DM.DbxLineEx(0,"start", 1);
+			DM.DbxLineEx(0,$"remove sheet {sheet}");
+
+			bool result = SheetDataManager2.Data.SheetDataList.Remove(sheet);
+
+			if (!result)
+			{
+				DM.DbxLineEx(0,"end 1", 0, -1);
+				return false;
+			}
+
+			SheetDataManager2.Write();
+
+			DM.DbxLineEx(0,"end", 0, -1);
+
+			return true;
+		}
+
+		public void ResetDataFile()
+		{
+			SheetDataManager2.ResetSheetDataList();
+			SheetDataManager2.Close();
+		}
+
+		public void ResetDataManager()
+		{
 			// clear the sheet data
 			SheetDataManager2.Reset();
 		}
 
 		public void QueryShts()
 		{
-			if (!SdmHasSheets) return;
+			if (!SheetDataManager2.GotDataSheets) return;
 		}
 
 		public void RemoveShts()
 		{
-			if (!SdmHasSheets) return;
+			if (!SheetDataManager2.GotDataSheets) return;
 		}
 
-		public bool Close()
+		public bool InitDataManager()
+		{
+			DM.DbxLineEx(0,"start", 1);
+
+			if (SheetDataManager2.Configured)
+			{
+				DM.DbxLineEx(0,"end 1", 0, -1);
+				return false;
+			}
+
+			SheetDataManager2.Init(sfm2.DataFilePath);
+
+			DM.DbxLineEx(0,"end", 0, -1);
+
+			return true;
+		}
+
+		public bool CloseDataManager()
 		{
 			DM.DbxLineEx(0, "start");
 
-			sfm2.ResetSheetFiles();
-			sfm2.ResetDataFile();
-
 			SheetDataManager2.Close();
 
-			DM.DbxLineEx(0, "end", -1);
+			DM.DbxLineEx(0, "end", 0, -1);
 
 			return true;
 		}
 
-		public bool? Open()
+		public void CreateDataManager()
 		{
+			DM.DbxLineEx(0,"start", 1);
 
+			// if (!SheetDataManager2.SettingsFileExists)
+			// {
+			// }
+			SheetDataManager2.Create();
+
+			DM.DbxLineEx(0,"end", 0, -1);
+		}
+
+		public bool OpenDataManager()
+		{
+			DM.DbxLineEx(0,"start", 1);
+
+			if (!InitDataManager())
+			{
+				DM.DbxLineEx(0,"end 1", 0, -1);
+				return false;
+			}
+
+			SheetDataManager2.Open();
+
+			DM.DbxLineEx(0,"end", 0, -1);
 
 			return true;
 		}
 
-		public bool configDataManager()
+		// public bool configDataManager()
+		// {
+		// 	DM.DbxLineEx(0, "start", 1);
+		//
+		// 	if (!InitDataFile())
+		// 	{
+		// 		DM.DbxLineEx(0, "end 2", 0, -1);
+		// 		return false;
+		// 	}
+		//
+		// 	if (!initDataManager())
+		// 	{
+		// 		DM.DbxLineEx(0, "end 3", 0, -1);
+		// 		return false;
+		// 	}
+		// 	
+		// 	DM.DbxLineEx(0, "end", 0, -1);
+		//
+		// 	return true;
+		// }
+
+		// public bool ConfigSheetFileInfo(int idx)
+		// {
+		// 	DM.DbxLineEx(0, "start", 1);
+		//
+		// 	if (!InitSheetFiles(idx))
+		// 	{
+		// 		DM.DbxLineEx(0, "end 1 - (", -1);
+		// 		return false;
+		// 	}
+		//
+		// 	DM.DbxLineEx(0, "end", 0, -1);
+		//
+		// 	return true;
+		// }
+
+		public bool SheetDataContainsSheet(string name)
 		{
-			DM.DbxLineEx(0, "start", 1);
-
-			if (!InitDataFile())
-			{
-				DM.DbxLineEx(0, "end 2", -1);
-				return false;
-			}
-
-			if (!initDataManager())
-			{
-				DM.DbxLineEx(0, "end 3", -1);
-				return false;
-			}
-			
-			DM.DbxLineEx(0, "end", -1);
-
-			return true;
-		}
-
-		public bool ConfigSheetFileInfo(int idx)
-		{
-			DM.DbxLineEx(0, "start", 1);
-
-			if (!InitSheetFiles(idx))
-			{
-				DM.DbxLineEx(0, "end 1 - (", -1);
-				return false;
-			}
-
-			DM.DbxLineEx(0, "end", -1);
-
-			return true;
+			return SheetDataManager2.Data.SheetDataList.ContainsKey(name);
 		}
 
 	#endregion
 
 	#region private operations
 
-		
-
-		private bool ReadSheets()
+		private int getAvailableSheetDataFiles(out Dictionary<string, Tuple<string, string>> outFiles)
 		{
-			if (SdmHasSheets) return false;
+			outFiles = new Dictionary<string, Tuple<string, string>>();
+			Dictionary<string, Tuple<string, string>> inFiles = sfm2.SheetFileDictionary;
 
-			return true;
+			foreach (KeyValuePair<string, Tuple<string, string>> kvp in inFiles)
+			{
+				if (!SheetDataContainsSheet(kvp.Value.Item1))
+				{
+					outFiles.Add(kvp.Key, kvp.Value);
+				}
+			}
+
+			return outFiles.Count;
 		}
+
 
 		private void showScanResults(int option)
 		{

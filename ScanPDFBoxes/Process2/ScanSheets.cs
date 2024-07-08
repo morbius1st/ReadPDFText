@@ -43,15 +43,15 @@ namespace ScanPDFBoxes.Process2
 
 			if (!processStatus())
 			{
-				DM.DbxLineEx(0, "end 1", -1);
+				DM.DbxLineEx(0, "end 1", 0, -1);
 				return false;
 			}
 
-			DM.DbxLineEx(0, "end", -1);
+			DM.DbxLineEx(0, "end", 0, -1);
 
-			Console.WriteLine($"{SheetDataManager2.SheetsCount - count} > 0? | {ScanStatus.ErrCount} == 0? | {!ScanStatus.HasFatalErrors} | all must be true");
+			Console.WriteLine($"{SheetDataManager2.SheetsCount - count} >= 0? | {ScanStatus.ErrCount} == 0? | {!ScanStatus.HasFatalErrors} | all must be true");
 
-			return SheetDataManager2.SheetsCount - count > 0 && ScanStatus.ErrCount == 0 && !ScanStatus.HasFatalErrors;
+			return SheetDataManager2.SheetsCount - count >= 0 && ScanStatus.ErrCount == 0 && !ScanStatus.HasFatalErrors;
 		}
 
 		private bool processStatus()
@@ -64,17 +64,15 @@ namespace ScanPDFBoxes.Process2
 
 				SheetDataManager2.Read();
 
-				DM.DbxLineEx(0, $"end 1 (error count {ScanStatus.ErrCount})", -1);
+				DM.DbxLineEx(0, $"end 1 (error count {ScanStatus.ErrCount})", 0, -1);
 
 				return false;
 			}
 
-			Debug.WriteLine($"@3 {SheetDataManager2.SheetsCount}");
-
 			SheetDataManager2.Write();
 			Console.WriteLine("\nData Written");
 
-			DM.DbxLineEx(0, "end", -1);
+			DM.DbxLineEx(0, "end", 0, -1);
 
 			return true;
 		}
@@ -107,7 +105,7 @@ namespace ScanPDFBoxes.Process2
 				checkForDupsAndExtras(fileName);
 			}
 
-			DM.DbxLineEx(0, "end", -1);
+			DM.DbxLineEx(0, "end", 0, -1);
 		}
 
 		private bool checkFileExists(string fullFilePath, string fname)

@@ -126,7 +126,7 @@ namespace ShTempCode.DebugCode
 			Dbx(idx, msg1, "\n",chgIdxPre, chgIdxPost,where, msg2);
 		}
 
-		[DebuggerStepThrough]
+		// [DebuggerStepThrough]
 		public static void Dbx(int idx, string msg1,
 			string t1,
 			int chgIdxPre = 0,
@@ -140,13 +140,19 @@ namespace ShTempCode.DebugCode
 
 			string fmt = $"{{0,{prefaceWidth}}}| ";
 
-			if (chgIdxPre > 0) dmx[idx, 0] += chgIdxPre;
-			if (chgIdxPost < 0 && dmx[idx, 0] != 0) dmx[idx, 0] += chgIdxPost;
+			// if (chgIdxPre > 0) dmx[idx, 0] += chgIdxPre;
+
+			dmx[idx, 0] = dmx[idx, 0] + chgIdxPre < 0 ? 0 : dmx[idx, 0] + chgIdxPre;
+
+			// if (chgIdxPost < 0 && dmx[idx, 0] != 0) dmx[idx, 0] += chgIdxPost;
 
 			// string m = msg3 == null ? null : $"{msg3,prefaceWidth}|";
 			string m = msg3 == null ? null : string.Format(fmt, msg3);
 
 			if (dmx[idx,0] > 0) m += " ".Repeat(dmx[idx,0] * 2);
+
+			string s1 = $"  ({dmx[idx, 0].ToString("F0")})";
+			t1 = s1 + t1;
 
 			m += msg1;
 
@@ -156,8 +162,11 @@ namespace ShTempCode.DebugCode
 
 			ShowWhere w = where == ShowWhere.NONE ? (ShowWhere) dmx[idx, 1] : where;
 
-			if (chgIdxPre < 0 && dmx[idx, 0] != 0) dmx[idx, 0] += chgIdxPre;
-			if (chgIdxPost > 0) dmx[idx, 0] += chgIdxPost;
+			// if (chgIdxPre < 0 && dmx[idx, 0] != 0) dmx[idx, 0] += chgIdxPre;
+			// // if (chgIdxPost > 0) dmx[idx, 0] += chgIdxPost;
+			// dmx[idx, 0] += chgIdxPost;
+
+			dmx[idx, 0] = dmx[idx, 0] + chgIdxPost < 0 ? 0 : dmx[idx, 0] + chgIdxPost;
 
 			showDmx(m+t1, w);
 		}

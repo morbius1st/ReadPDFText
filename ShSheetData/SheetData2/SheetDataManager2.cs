@@ -14,10 +14,13 @@ namespace ShSheetData.ShSheetData2
 	{
 		public static string DataFileName => SheetDataSet2.DataFileName;
 
-		public static bool Initialized { get; private set; } = false;
-		public static bool SettingsFileExists => Path?.SettingFileExists ?? false;
-		public static bool HasSheets => SheetsCount > 0;
+		public static bool Initialized => Manager != null;
+		public static bool Configured => Initialized && GotDataPath;
+
+		public static bool GotDataPath => Path?.SettingFolderPathIsValid ?? false;
+		public static bool GotDataSheets => SheetsCount > 0;
 		public static int SheetsCount => Data?.SheetDataList?.Count ?? -1;
+		public static bool SettingsFileExists => Path?.SettingFileExists ?? false;
 
 		// public static Dictionary<string, SheetData2.SheetData2> SheetDataList => Data?.SheetDataList;
 		
@@ -28,7 +31,7 @@ namespace ShSheetData.ShSheetData2
 		public static StorageMgrInfo<SheetDataSet2> Info => Manager?.Info ?? null;
 		public static StorageMgrPath Path => Admin?.Path ?? null;
 
-		public static DataManager<SheetDataSet2> Dmx;
+		// enumerators
 
 		public static IEnumerable<KeyValuePair<string, SheetData2.SheetData2>> GetSheets()
 		{
@@ -48,12 +51,21 @@ namespace ShSheetData.ShSheetData2
 			}
 		}
 
+		// info
+
 		public static bool RectIsType(SheetRectType type, SheetRectType test)
 		{
 			return (type & test) != 0;
 		}
 
-		public static void updateHeader()
+		// operations
+
+		public static void ResetSheetDataList()
+		{
+			Data.SheetDataList = new Dictionary<string, SheetData2.SheetData2>();
+		}
+
+		public static void UpdateHeader()
 		{
 			DM.DbxLineEx(0, "\tdata manager - update header");
 			Info.FileType = SettingFileType.SETTING_MGR_DATA;
@@ -61,28 +73,48 @@ namespace ShSheetData.ShSheetData2
 			Info.Description = Data.DataFileDescription;
 		}
 
-		public static void Open(FilePath<FileNameSimple> filePath)
+		public static bool Init(FilePath<FileNameSimple> filePath)
 		{
-			if (Manager != null) return;
+			if (Configured) return false;
 
-			// Debug.WriteLine($"@2 {SheetsCount}");
+			// if (Manager != null || filePath == null) return false;
 
-			DM.DbxLineEx(0, "\tdata manager - open");
+			DM.DbxLineEx(0, "\t\tdata manager - init");
 
 			Manager = new DataManager<SheetDataSet2>(filePath);
 
-			Initialized = true;
+			return true;
+		}
 
-			// Debug.WriteLine($"@4 {SheetsCount}");
+		// public static void Create(FilePath<FileNameSimple> filePath)
+		public static void Create()
+		{
+			if (Manager == null) return;
+
+			DM.DbxLineEx(0, "\tdata manager - create");
+			
+			// Manager = new DataManager<SheetDataSet2>(filePath);
+
+			UpdateHeader();
+
+			ResetSheetDataList();
+
+			Write();
+		}
+		
+		// public static void Open(FilePath<FileNameSimple> filePath)
+		public static void Open()
+		{
+			if (!Configured) return;
+
+			DM.DbxLineEx(0, "\t\tdata manager - open");
 
 			Read();
-
-			// updateHeader();
 		}
 
 		public static void Read()
 		{
-			DM.DbxLineEx(0, "\tdata manager - read");
+			DM.DbxLineEx(0, "\t\tdata manager - read");
 			Admin.Read();
 		}
 
@@ -96,27 +128,29 @@ namespace ShSheetData.ShSheetData2
 		{
 			DM.DbxLineEx(0, "\tdata manager - reset");
 
+			Manager.ResetPath();
+
 			Manager.Reset();
+			
+			// UpdateHeader();
+			//
+			// Write();
 
-			updateHeader();
-
-			Write();
-
-			Initialized = false;
+			// Initialized = false;
 		}
 
 		public static void Close()
 		{
 			DM.DbxLineEx(0, "\tdata manager - close");
 
-			updateHeader();
+			UpdateHeader();
 
 			Write();
 
 			Manager.Reset();
 			Manager.ResetPath();
 
-			Initialized = false;
+			// Initialized = false;
 		}
 
 		public static void SeeData()

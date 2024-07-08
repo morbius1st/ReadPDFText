@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
+using UtilityLibrary;
 
 #endregion
 
@@ -74,10 +76,21 @@ namespace ShTempCode.DebugCode
 
 			string folder = Path.GetDirectoryName(outputFile);
 
+			bool result = File.Exists(outputFile);
+
+			if (result)
+			{
+				File.Delete(outputFile);
+			}
+
 			Enabled = Directory.Exists(folder);
 
 			_current = Console.Out;
 			Console.SetOut(new OutputWriter());
+
+			Console.WriteLine("*".Repeat(30));
+			Console.WriteLine(DateAndTime.Now.ToString());
+			Console.WriteLine("*".Repeat(30)+"\n");
 		}
 	}
 }

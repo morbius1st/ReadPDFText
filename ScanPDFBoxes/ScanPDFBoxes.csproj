@@ -8,6 +8,18 @@
     <Configurations>Debug;Release;DbgScan;DbgReadText;DbgMgr</Configurations>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DbgScan|AnyCPU'">
+    <DefineConstants>$(DefineConstants);USER_SETTINGS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants);USER_SETTINGS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);USER_SETTINGS</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Process\ProcessResults.cs" />
   </ItemGroup>

@@ -6,7 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SettingsManager;
 using ShSheetData.ShSheetData2;
+using ShTempCode.DebugCode;
 using UtilityLibrary;
 
 #endregion
@@ -20,18 +22,140 @@ namespace ShSheetData
 	{
 		// public const string DATA_FILE_NAME  = "SheetData.xml";
 
-		private string dataFileFolder;
+		private FilePath<FileNameSimple> dataFilePath;
+		private string dataFileFolder2;
+		private string dataFileName2;
 		private string sheetFileFolder;
 		private string outputFileFolder;
 		private string outputFileName;
 
 
+		// public bool? ScanOkToProceed { get; private set; }
+		//
+		// public bool ConfigScan(bool? reqdGotDataFileValue)
+		// {
+		// 	if (ScanOkToProceed == true) return true;
+		//
+		// 	ScanOkToProceed = false;
+		//
+		// 	DM.DbxLineEx(0, "start", 1);
+		// 	// presumption is that the settings have been made before this is run
+		// 	// do not check, just proceed as if this is true;
+		//
+		// 	if (!configScanSheetFiles())
+		// 	{
+		// 		DM.DbxLineEx(0, "end 1", 0, -1);
+		// 		return false;
+		// 	}
+		//
+		// 	bool result = configScanDataFile(reqdGotDataFileValue);
+		// 	
+		// 	// if reqdGotDataFileValue == true && configScanDataFile() == true - final answer is true
+		// 	//		if does not match, final answer is false
+		// 	// if reqdGotDataFileValue == false && configScanDataFile() == false - final answer is true
+		// 	//		if does not match, final answer is false
+		// 	// if reqdGotDataFileValue == null - result can be true or false
+		// 	//		if result == true, scanready == true, else scan ready == null
+		//
+		// 	if (reqdGotDataFileValue.HasValue)
+		// 	{
+		// 		if (reqdGotDataFileValue != result)
+		// 		{
+		// 			DM.DbxLineEx(0, "end 2", 0, -1);
+		// 			return false;
+		// 		}
+		//
+		// 		ScanOkToProceed = true;
+		// 	}
+		// 	else
+		// 	{
+		// 		ScanOkToProceed = null;
+		// 	}
+		//
+		// 	DM.DbxLineEx(0, "end", 0, -1);
+		//
+		// 	return true;
+		// }
+		//
+		// private bool configScanSheetFiles()
+		// {
+		// 	DM.DbxLineEx(0, "start", 1);
+		//
+		// 	SetSheetFileFolder(UserSettings.Data.ScanPDfFolder.FolderPath);
+		//
+		// 	if (!GotSheetFolder)
+		// 	{
+		// 		DM.DbxLineEx(0, "end 1", 0, -1);
+		// 		return false;
+		// 	}
+		//
+		// 	GetSheetFiles();
+		//
+		// 	if (!GotSheetFiles)
+		// 	{
+		// 		DM.DbxLineEx(0, "end 2", 0, -1);
+		// 		return false;
+		// 	}
+		//
+		// 	DM.DbxLineEx(0, "end", 0, -1);
+		//
+		// 	return true;
+		// }
+		//
+		// /// <summary>
+		// /// determine if the data file does or does not exist<br/>
+		// /// return: true, does and must exist, false, does not exist
+		// /// </summary>
+		// /// <param name="reqdGotDataFileValue"></param>
+		// /// <returns></returns>
+		// private bool configScanDataFile(bool? reqdGotDataFileValue)
+		// {
+		// 	DM.DbxLineEx(0, "start", 1);
+		//
+		// 	SetDataFileFolder(UserSettings.Data.DataFilePath.FolderPath);
+		// 	SetDataFileName(UserSettings.Data.DataFilePath.FileName);
+		//
+		// 	// gotdatafile does not matter, return the status of the data file
+		// 	if (!reqdGotDataFileValue.HasValue)
+		// 	{
+		// 		ScanOkToProceed = null;
+		// 		DM.DbxLineEx(0, "end B", -1);
+		// 		return GotDataFile == true;
+		// 	}
+		//
+		// 	// if reqdGotDataFileValue == true, GotDataFile must == true
+		// 	// if reqdGotDataFileValue == false, GotDataFile must == false
+		// 	if (reqdGotDataFileValue != GotDataFile)
+		// 	{
+		// 		DM.DbxLineEx(0, "end 1", 0, -1);
+		// 		return false;
+		// 	}
+		//
+		// 	// per the above, reqdGotDataFileValue and GotDataFile are both false
+		// 	if (reqdGotDataFileValue == false)
+		// 	{
+		// 		DM.DbxLineEx(0, "end C", -1);
+		// 		return false;
+		// 	}
+		//
+		// 	// must be last settings to keep scan ready correct
+		// 	// get here when both are true
+		//
+		// 	// todo is this correct
+		// 	// SheetDataManager2.Open(DataFilePath);
+		//
+		// 	DM.DbxLineEx(0, "end A", -1);
+		//
+		// 	return true;
+		// }
+
+
+	#region data file operations
+
 		// select the location of the data file
 		// select the location of the sheet files
 		// process the sheet files - make a list of only the PDF files
 		//		nothing fancy - just use the list of files as is
-
-	#region data file operations
 
 		// select folder
 		// get file
@@ -43,78 +167,53 @@ namespace ShSheetData
 		{
 			get
 			{
-				if (dataFileFolder == null) return false;
-
 				if (DataFilePath == null) return null;
 
 				return DataFilePath.Exists;
 			}
 		}
 
-		public bool DataFilePathInit => (dataFileFolder != null && DataFilePath != null);
+		public bool GotDataFilePath => DataFilePath != null;
 
-		public string DataFileFolder
+		public string DataFileFolder => dataFilePath.FolderPath;
+
+		public FilePath<FileNameSimple> DataFilePath
 		{
-			get => dataFileFolder;
-			private set
+			get => dataFilePath;
+			set
 			{
-				if (value == null ||
-					!Directory.Exists(value))
-				{
-					dataFileFolder = null;
-					return;
-				}
-
-				dataFileFolder = value;
+				dataFilePath = value;
 			}
 		}
 
-		public static FilePath<FileNameSimple> DataFilePath { get; set; }
-
-		public bool GetDataFileFolder(string folder = null)
+		public bool SetDataFileFolder(string folder)
 		{
-			if (dataFileFolder != null) return false;
+			if (dataFilePath != null) return false;
 
-			bool result = true;
+			dataFileFolder2 = folder;
 
-			if (folder != null)
-			{
-				dataFileFolder = folder;
-			}
-			// develop later
-			// else
-			// {
-			// 	// request folder
-			// 	// if cancel request, result = false
-			// }
+			makeDataFilePath();
 
-
-			// use folder picker to get the location
-			// temp - assign a location
-
-
-			return result;
+			return true;
 		}
 
-		public bool GetDataFile(string name = null, string path = null)
+		public bool SetDataFileName(string name)
 		{
-			if (GotDataFile.Equals(true)) return false;
+			if (GotDataFile.Equals(true) || name == null) return false;
 
-			if (name == null)
-			{
-				name = SheetDataManager2.DataFileName;
-			}
+			dataFileName2 = name;
 
-			if (path != null)
-			{
-				DataFileFolder = path;
-			}
+			makeDataFilePath();
 
-			if (dataFileFolder == null ) return false;
+			return true;
+		}
 
-			DataFilePath = new FilePath<FileNameSimple>(new [] { dataFileFolder, name });
+		private void makeDataFilePath()
+		{
+			if (dataFileName2 == null || dataFileFolder2 == null) return;
 
-			return GotDataFile.Equals(true);
+			DataFilePath = new FilePath<FileNameSimple>(new [] { dataFileFolder2, dataFileName2 });
+
 		}
 
 		public bool DeleteDataFile()
@@ -124,15 +223,15 @@ namespace ShSheetData
 
 			File.Delete(DataFilePath.FullFilePath);
 
-			dataFileFolder = null;
-			DataFilePath = null;
+			ResetDataFile();
 
 			return true;
 		}
 
 		public void ResetDataFile()
 		{
-			dataFileFolder = null;
+			dataFileFolder2 = null;
+			dataFileName2 = null;
 			DataFilePath = null;
 		}
 
@@ -145,7 +244,7 @@ namespace ShSheetData
 
 		/// <summary>  sheet files status - true, got files / false, not selected or not found
 		/// </summary>
-		public bool GotSheetFiles
+		public bool GotSheetFileList
 		{
 			get
 			{
@@ -161,9 +260,16 @@ namespace ShSheetData
 		{
 			get
 			{
-				if (sheetFileFolder == null) return false;
+				return sheetFileFolder != null;
+			}
+		}
 
-				return Directory.Exists(sheetFileFolder);
+		public bool SheetFolderExists
+		{
+			get
+			{
+				return GotSheetFolder && 
+					Directory.Exists(sheetFileFolder);
 			}
 		}
 
@@ -177,11 +283,43 @@ namespace ShSheetData
 
 		/// <summary> access to file list
 		/// </summary>
-		public List<string> SheetFileList { get; private set; }
+		public List<string> SheetFileList { get; set; }
 
+		/// <summary> get the SheetFileList as a dictionary with
+		/// index number (string, 1 based) as the key and the value is a
+		/// tuple (filename, filepath) 
+		/// </summary>
+		public Dictionary<string, Tuple<string, string>> SheetFileDictionary
+		{
+			get
+			{
+				int idx = 1;
+				string fmt;
+
+				Tuple<string, string> t1;
+
+				string filename;
+
+				Dictionary<string, Tuple<string, string>> dict = new ();
+
+				fmt = SheetFileList.Count > 9 ? "00" : "0";
+
+				foreach (string s in SheetFileList)
+				{
+					filename = Path.GetFileNameWithoutExtension(s);
+
+					t1 = new Tuple<string, string>(filename, s);
+
+					dict.Add(idx++.ToString(fmt), t1);
+				}
+
+				return dict;
+			}
+		}
+		
 		// allow a non-existent folder with the expectation that
 		// it will exist before being used
-		public bool GetSheetFileFolder(string folder = null)
+		public bool SetSheetFileFolder(string folder = null)
 		{
 			if (sheetFileFolder != null) return false;
 
@@ -204,7 +342,7 @@ namespace ShSheetData
 
 		public bool GetSheetFiles()
 		{
-			if (SheetFileFolder == null) return false;
+			if (!SheetFolderExists) return false;
 
 			try
 			{
@@ -224,7 +362,7 @@ namespace ShSheetData
 		/// </summary>
 		public void ResetSheetFiles()
 		{
-			if (GotSheetFiles)
+			if (GotSheetFileList)
 			{
 				SheetFileList.Clear();
 			}

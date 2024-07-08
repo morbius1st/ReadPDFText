@@ -1,6 +1,5 @@
 ﻿#region + Using Directives
-using System;
-using System.Collections.Generic;
+
 using System.Diagnostics;
 using iText.Kernel.Geom;
 using ShSheetData.SheetData;
@@ -12,7 +11,7 @@ using ShowWhere = ShTempCode.DebugCode.ShowWhere;
 // user name: jeffs
 // created:   6/13/2024 12:31:48 PM
 
-namespace ShCode
+namespace ShTempCode.DebugCode
 {
 	// public enum ShowWhere
 	// {
