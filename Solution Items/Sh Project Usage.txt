@@ -20,7 +20,7 @@ SheetData related code
 ShTempCode
 temporary / placeholder code
 
-
+                               (avoid)
 					 itext	 SharedCode   ShCode   ShItextCode   ShSheetData   ShTempCode
 CreatePDFBoxes		|	x	|			|	x	 |		x	  |		x		 |		x	 |
 ExtractPdfText		|	x	|	x		|	x	 |		x	  |		x		 |		x	 |

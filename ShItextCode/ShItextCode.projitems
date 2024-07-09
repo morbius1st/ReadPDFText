@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ElementExtraction\PdfFreeTextExtract.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ElementExtraction\ScanErrorLevel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ElementExtraction\ScanPdf.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ElementExtraction\ScanSheets.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ElementExtraction\ScanStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfCalculations\PdfCalcTbOrigin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfCalculations\PdfCalcTxOrigin.cs" />

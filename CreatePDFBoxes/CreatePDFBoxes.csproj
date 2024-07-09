@@ -9,6 +9,18 @@
 		<UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);USER_SETTINGS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants);USER_SETTINGS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DbgCreate|AnyCPU'">
+    <DefineConstants>$(DefineConstants);USER_SETTINGS</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs" Link=".Linked\CsExtensions.cs" />
     <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsFloatOps.cs" Link=".Linked\CsFloatOps.cs" />
@@ -18,10 +30,6 @@
     <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsXmlUtilities.cs" Link=".Linked\CsXmlUtilities.cs" />
     <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.4\SettingsMgr.cs" Link=".Linked\SettingsMgr.cs" />
     <Compile Include=".Linked\CsFilePath.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Settings\" />
   </ItemGroup>
 
   <ItemGroup>

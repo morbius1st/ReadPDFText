@@ -6,8 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell.Interop;
-using ScanPDFBoxes;
-using ScanPDFBoxes.Process2;
 using SettingsManager;
 using ShCode;
 using ShItextCode.ElementExtraction;

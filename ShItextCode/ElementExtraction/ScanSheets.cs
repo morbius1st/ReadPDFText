@@ -1,4 +1,6 @@
-﻿using iText.Kernel.Geom;
+﻿using System;
+using System.Collections.Generic;
+using iText.Kernel.Geom;
 using ShItextCode.ElementExtraction;
 using ShSheetData.SheetData2;
 using ShSheetData.ShSheetData2;
@@ -6,6 +8,7 @@ using ShTempCode.DebugCode;
 using Path = System.IO.Path;
 using ShSheetData.SheetData;
 using System.Diagnostics;
+using System.IO;
 
 
 // Solution:     ReadPDFText
@@ -13,7 +16,7 @@ using System.Diagnostics;
 // File:             ScanSheets.cs
 // Created:      2024-06-24 (8:57 PM)
 
-namespace ScanPDFBoxes.Process2
+namespace ShItextCode.ElementExtraction
 {
 	public class ScanSheets
 	{
@@ -23,8 +26,9 @@ namespace ScanPDFBoxes.Process2
 		int dupsAdded;
 		int extrasAdded;
 
-		// private ScanStatus ss;
-
+		/// <summary>scan a list of PDF and extract their 
+		/// metrics and text information
+		/// </summary>
 		public bool Process(List<string> sheets)
 		{
 			DM.DbxLineEx(0, "start", 1);

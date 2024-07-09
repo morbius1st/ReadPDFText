@@ -38,6 +38,8 @@ namespace ScanPDFBoxes
 
 		private static int sbIdx;
 
+		private string sbSelecteItem;
+
 		// true = worked / good | false = fail / error | null = cannot proceed / config issue
 		private static bool? lastOp = null;
 
@@ -191,7 +193,7 @@ namespace ScanPDFBoxes
 					{
 						int choice =  switchBoardTestAdd();
 
-						answer = getConfig(c, choice, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, choice, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -206,7 +208,7 @@ namespace ScanPDFBoxes
 
 						int choice =  switchBoardTestAdd();
 
-						answer = getConfig(c, choice, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer = cm.verifyConfig(c, choice, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 
 						showStatus(true, true);
 
@@ -225,7 +227,7 @@ namespace ScanPDFBoxes
 
 						// int choice =  switchBoardTestAdd();
 
-						answer = getConfig(c, scanConfigIdxNew, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, scanConfigIdxNew, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 						showStatus(true, true);
 						showScanReadyStatus(answer == true);
 
@@ -239,7 +241,7 @@ namespace ScanPDFBoxes
 
 				case "L1":
 					{
-						answer = getConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer = cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -250,7 +252,7 @@ namespace ScanPDFBoxes
 					}
 				case "L2":
 					{
-						answer = getConfig(c, scanConfigIdxNew, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, scanConfigIdxNew, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -264,7 +266,7 @@ namespace ScanPDFBoxes
 
 				case "O1":
 					{
-						answer = getConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer = cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -276,7 +278,7 @@ namespace ScanPDFBoxes
 					{
 						dataSetName = "new";
 
-						answer = getConfig(c, scanConfigIdxNew, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, scanConfigIdxNew, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 
 						if (StatMgr.Current != StatCodes.SC_CFG_DATA_FILE_PATH_MISSING)
 						{
@@ -296,7 +298,7 @@ namespace ScanPDFBoxes
 					}
 				case "Q":
 					{
-						answer = getConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -308,7 +310,7 @@ namespace ScanPDFBoxes
 					}
 				case "R1":
 					{
-						answer = getConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -318,7 +320,7 @@ namespace ScanPDFBoxes
 					}
 				case "R3":
 					{
-						answer = getConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -331,7 +333,7 @@ namespace ScanPDFBoxes
 					{
 						dataSetName = "new";
 
-						answer = getConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 						showStatus(true, true);
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -342,7 +344,7 @@ namespace ScanPDFBoxes
 
 				case "C1":
 					{
-						answer = getConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -354,7 +356,7 @@ namespace ScanPDFBoxes
 					{
 						dataSetName = "new";
 
-						answer = getConfig(c, scanConfigIdxNew, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, scanConfigIdxNew, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -366,7 +368,7 @@ namespace ScanPDFBoxes
 				case "1":
 					{
 						// original reset list
-						answer = getConfig(c, -1, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer = cm.verifyConfig(c, -1, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -378,7 +380,7 @@ namespace ScanPDFBoxes
 					{
 						dataSetName = "new";
 
-						answer = initialize(c, 0);
+						answer = cm.initialize(c, 0);
 						showStatus(true, true);
 						showScanReadyStatus(answer == true);
 						showInitStatus();
@@ -398,7 +400,7 @@ namespace ScanPDFBoxes
 						dataSetName = "new";
 
 						// new reset the data manager
-						answer = getConfig(c, -1, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, -1, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 						showStatus(true, true);
 						showScanReadyStatus(answer == true);
 						showInitStatus();
@@ -413,7 +415,7 @@ namespace ScanPDFBoxes
 						dataSetName = "new";
 
 						// new reset the data manager
-						answer = getConfig(c, -1, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, -1, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 						showStatus(true, true);
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -426,7 +428,7 @@ namespace ScanPDFBoxes
 						dataSetName = "new";
 
 						// new reset the data manager
-						answer = getConfig(c, -1, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer =cm.verifyConfig(c, -1, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
 						showStatus(true, true);
 						showScanReadyStatus(answer == true);
 						if (answer != true) break;
@@ -502,8 +504,6 @@ namespace ScanPDFBoxes
 
 			return i;
 		}
-
-		private string sbSelecteItem;
 
 		private bool switchboardSelectShtDataFile()
 		{
@@ -660,397 +660,7 @@ namespace ScanPDFBoxes
 			if (selected != null) DM.DbxLineEx(0, $"<<< selected | {selected}", -1);
 		}
 
-		private void switchAddSingle(int c)
-		{
-			string selected = sbOptionsMinor[1][c.ToString()].Item1;
-
-			if (selected != null) DM.DbxLineEx(0, $">>> selected | {selected}", 1);
-
-			Console.Write("\n");
-
-			switch (c)
-			{
-			case 1:
-				{
-					Console.WriteLine("not implemented");
-					DM.DbxLineEx(0, $"\toption {c} is not implemented");
-					break;
-				}
-			case 2:
-				{
-					Console.WriteLine("not implemented");
-					DM.DbxLineEx(0, $"\toption {c} is not implemented");
-					break;
-				}
-			case 3:
-				{
-					Console.WriteLine("not implemented");
-					DM.DbxLineEx(0, $"\toption {c} is not implemented");
-					break;
-				}
-			case 4:
-				{
-					Console.WriteLine("not implemented");
-					DM.DbxLineEx(0, $"\toption {c} is not implemented");
-					break;
-				}
-			case 5:
-				{
-					Console.WriteLine("not implemented");
-					DM.DbxLineEx(0, $"\toption {c} is not implemented");
-					break;
-				}
-			case 7:
-				{
-					processAdd1_F_Alt();
-					break;
-				}
-			default:
-				{
-					Console.WriteLine("\n*****************\nInvalid Entry\n***************\n");
-					break;
-				}
-			}
-
-			Console.Write("\n");
-
-			if (selected != null) DM.DbxLineEx(0, $"<<< selected | {selected}", -1);
-		}
-
-
-
 		// config
-
-		private bool initialize(string id, int def)
-		{
-			SetStatus(StatCodes.SC_G_NONE);
-
-			DM.DbxLineEx(0, $"start", 1);
-
-			switchboardIdx = id;
-
-			if (!cm.configGetScanInfo(def))
-			{
-				showStatus(true);
-				SetStatus(StatCodes.SC_INIT_GET_PATHS_FAIL);
-				DM.DbxLineEx(0, "end 1", 0, -1);
-				return false;
-			}
-
-			if (cm.configSheetDataFilePath() != true)
-			{
-				showStatus(true);
-				SetStatus(StatCodes.SC_INIT_CFG_DATA_PATH_FAIL);
-				DM.DbxLineEx(0, "end 2", 0, -1);
-				return false;
-			}
-
-			if (cm.configSheetPdfScanFolderPath() != true)
-			{
-				showStatus(true);
-				SetStatus(StatCodes.SC_INIT_CFG_SHT_DATA_PATH_FAIL);
-				DM.DbxLineEx(0, "end 3", 0, -1);
-				return false;
-			}
-
-			if (!sm2.StartDataManager())
-			{
-				showStatus( true);
-				SetStatus(StatCodes.SC_INIT_START_DATA_MGR_FAIL);
-				DM.DbxLineEx(0, "end 4", 0, -1);
-				return false;
-			}
-
-			if (!sm2.LoadSheetFiles())
-			{
-				showStatus( true);
-				SetStatus(StatCodes.SC_INIT_LOAD_SHT_DATA_FILES_FAIL);
-				DM.DbxLineEx(0, "end 5", 0, -1);
-				return false;
-			}
-
-			DM.DbxLineEx(0, "end", 0, -1);
-
-			SetStatus(StatCodes.SC_G_GOOD);
-
-			return true;
-		}
-
-		private bool getConfig(  string id, int def,
-			bool? mustHaveDataFilePath, bool? mustHaveDataFile, bool? mustHaveDataFileSheets, bool? mustHaveSheetFileList)
-		{
-			DM.DbxLineEx(0, $"start", 1);
-
-			switchboardIdx = id;
-
-			bool answer1 = true;
-			bool answer2 = true;
-			bool answer3 = true;
-			bool answer9 = true;
-
-			bool answerFinal;
-
-			// so far, always true
-			if (mustHaveDataFilePath == true)
-			{
-				answer1 = sm2.GotDataFilePath && SheetDataManager2.GotDataPath;
-
-				if (!answer1)
-				{
-					SetStatus(StatCodes.SC_CFG_DATA_FILE_PATH_MISSING);
-					DM.DbxLineEx(0, $"end 1", -1);
-					return false;
-				}
-
-				// answer1 is true;
-
-				// bool b1 = SheetDataManager2.Initialized;
-				// bool b2 = SheetDataManager2.GotDataSheets;
-				// bool b3 = SheetDataManager2.SettingsFileExists;
-				// bool b4 = SheetDataManager2.GotDataPath;
-				
-
-				if (!mustHaveDataFile.HasValue) // ie == null
-				{
-					answer2 = SheetDataManager2.SheetsCount >= 0;
-
-					if (answer2)
-					{
-						if (mustHaveDataFileSheets == false)
-						{
-							answer3 = SheetDataManager2.SheetsCount == 0;
-						}
-					}
-				}
-				else if (mustHaveDataFile == true)
-				{
-					// answer2 = cm.StartDataManager() == true;
-					answer2 = SheetDataManager2.SheetsCount >= 0;
-
-					if (answer2)
-					{
-						if (mustHaveDataFileSheets.HasValue)
-						{
-							answer3 = SheetDataManager2.GotDataSheets;
-							answer3 = answer3 == mustHaveDataFileSheets.Value;
-						}
-					}
-				}
-			}
-
-			if (mustHaveSheetFileList == true)
-			{
-				answer9 = sm2.GotSheetFolder;
-
-				if (answer9)
-				{
-					answer9 = sm2.GotSheetFileList;
-				}
-			}
-
-			DM.DbxLineEx(0, $"ans1 {answer1} | ans2 {answer2} | ans3 {answer3} | {answer9}");
-
-			answerFinal = answer2 && answer3 && answer9;
-
-			if (answerFinal)
-			{
-				SetStatus(StatCodes.SC_G_GOOD);
-			}
-			else
-			{
-				if (!answer2)
-				{
-					SetStatus(StatCodes.SC_CFG_DATA_FILE_MISSING);
-				}
-				else if (!answer3)
-				{
-					SetStatus(StatCodes.SC_CFG_DATA_FILE_HAS_SHEETS_INVALID);
-				}
-				else if (!answer9)
-				{
-					SetStatus(StatCodes.SC_CFG_DATA_FILE_SHEET_LIST_INVALID);
-				}
-			}
-
-			showGetConfigResults(answerFinal, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-
-			DM.DbxLineEx(0, $"end", -1);
-
-			return answerFinal;
-		}
-
-		private void showGetConfigResults(bool answer, bool? mustHaveDataFilePath,
-			bool? mustHaveDataFile, bool? mustHaveDataFileSheets, bool? mustHaveSheetFileList)
-		{
-			// string s1 = sfm2.ScanOkToProceed.HasValue ?  sfm2.ScanOkToProceed.Value.ToString() : "is null";
-			string s2 = sm2.GotDataFile.HasValue ?  sm2.GotDataFile.Value.ToString() : "is null";
-			string s3 = mustHaveDataFile.HasValue ?  mustHaveDataFile.Value.ToString() : "is null";
-			string s4 = mustHaveSheetFileList.HasValue ?  mustHaveSheetFileList.Value.ToString() : "is null";
-			string s5 = mustHaveDataFilePath.HasValue ?  mustHaveDataFilePath.Value.ToString() : "is null";
-			string s6 = mustHaveDataFileSheets.HasValue ?  mustHaveDataFileSheets.Value.ToString() : "is null";
-
-
-			DM.DbxLineEx(0, $"start", 1);
-			DM.DbxLineEx(0, $"option {switchboardIdx}", 1);
-
-			DM.DbxLineEx(0, $"{"get config?",-32}{answer}");
-			DM.DbxLineEx(0, $"{"must have data file path",-32}{s5,-8} | got path?   {SheetDataManager2.GotDataPath}");
-			DM.DbxLineEx(0, $"{"must have data file?",-32}{s3,-8} | got file?   {s2}");
-			DM.DbxLineEx(0, $"{"data file must have sheets?",-32}{s6,-8} | got sheets? {s2} | count {SheetDataManager2.SheetsCount}");
-
-			DM.DbxLineEx(0, $"{"must have sht file path?",-32}{s4,-8} | got path?  {sm2.GotSheetFolder}");
-			DM.DbxLineEx(0, $"{"must have sht Files?",-32}{s4,-8} | got files? {sm2.GotSheetFileList}");
-
-			DM.DbxLineEx(0, $"{"got sheet folder?",-32}{sm2.GotSheetFolder}");
-			DM.DbxLineEx(0, $"{"got sheet file?",-32}{sm2.GotSheetFileList} ({sm2.SheetFileList?.Count.ToString() ?? "null" })");
-
-			DM.DbxLineEx(0, $"{"got data file?",-32}{s2}");
-			DM.DbxLineEx(0, $"{"data file got path?",-32}{SheetDataManager2.GotDataPath}");
-			DM.DbxLineEx(0, $"{"data file got sheets?",-32}{SheetDataManager2.GotDataSheets}");
-			DM.DbxLineEx(0, $"{UserSettings.Data.DataFilePath?.FullFilePath ?? "data file path is null"}");
-			DM.DbxLineEx(0, $"{UserSettings.Data.ScanPDfFolder?.FullFilePath ?? "PDF folder path is null"}", -1);
-
-			DM.DbxLineEx(0, "end", 0, -1);
-		}
-
-		private void showStatus(bool showFrom = false, bool showOk = false)
-		{
-			StatMgr.ShowStatus(showFrom, showOk);
-		}
-
-		private void SetStatus(StatCodes code,  string note = null,
-			[CallerMemberName] string mx = null)
-		{
-			StatMgr.SetStatCode(code, note, mx);
-		}
-
-		private void showScanReadyStatus(bool which)
-		{
-			string s;
-			if (which)
-			{
-				s = "*** IS ready - continue ***";
-				Console.WriteLine(s);
-				DM.DbxLineEx(0, s);
-			}
-			else
-			{
-				s =  "*** is NOT ready - break ***";
-				Console.WriteLine(s);
-				DM.DbxLineEx(0, s);
-			}
-		}
-
-		private void showInitStatus()
-		{
-			DM.DbxLineEx(0, "start", 1);		// 1, 1
-
-			int tw = -30;
-			int max = 30;
-
-			string s1;
-			string fmt = $"{{0,{tw}}}";
-
-			try
-			{
-				DM.DbxLineEx(0, "sfm2 (SheetFileManager2", 1);   // 1, 1
-				DM.DbxLineEx(0, "data manager", 1);   // 2, 3
-				// Debug.Write("\n");
-				DM.DbxLineEx(0, "status", 1, 1);
-
-				DM.DbxEx(0, $"{(string.Format(fmt, "GotDataFile"))}| {sm2.GotDataFile?.ToString() ?? "null",-10}");
-				Debug.WriteLine("(data file path not null & data file path exists)");
-
-				DM.DbxEx(0, $"{(string.Format(fmt, "GotDataFilePath"))}| {sm2.GotDataFilePath,-10}");
-				Debug.WriteLine($"(data file path is not null)");
-
-				DM.DbxLineEx(0, "");
-
-				// Debug.Write("\n");
-				DM.DbxLineEx(0, "values", -1, 1);
-
-				DM.DbxLineEx(0, $"{(string.Format(fmt, "DataFilePath"))}| {sm2.DataFilePath?.FolderPath ?? "null"}");
-
-				// DM.DbxLineEx(0, "", -1);
-				DM.DbxLineEx(0, "");
-
-				// Debug.Write("\n");
-				DM.DbxLineEx(0, "sheet file", -2);
-				// Debug.Write("\n");
-				DM.DbxLineEx(0, "status", 1, 1);
-
-				DM.DbxEx(0, $"{(string.Format(fmt, "GotSheetFileList"))}| {sm2.GotSheetFileList,-10}");
-				Debug.WriteLine("(sheet folder not null && list not null && count >0 [true])");
-
-				DM.DbxEx(0, $"{(string.Format(fmt, "GotSheetFolder"))}| {sm2.GotSheetFolder,-10}");
-				Debug.WriteLine("(sheet folder not null [true])");
-
-				DM.DbxEx(0, $"{(string.Format(fmt, "SheetFolderExists"))}| {sm2.SheetFolderExists,-10}");
-				Debug.WriteLine("(sheet folder not null && folder exists [true])");
-
-				DM.DbxLineEx(0, "");
-
-				// Debug.Write("\n");
-				DM.DbxLineEx(0, "values", -1, 1);
-
-				DM.DbxLineEx(0, $"{(string.Format(fmt, "SheetFileFolder"))}| {sm2.SheetFileFolder ?? "null"}");
-				DM.DbxLineEx(0, $"{(string.Format(fmt, "SheetFileList"))}| {sm2.SheetFileList?.Count.ToString() ?? "null"}");
-
-				DM.DbxLineEx(0, "");
-				// Debug.Write("\n");
-				DM.DbxLineEx(0, "SheetDataManager2", -3);
-				// Debug.Write("\n");
-				DM.DbxLineEx(0, "status", 1, 1);
-
-				DM.DbxEx(0, $"{(string.Format(fmt, "Initialized"))}| {SheetDataManager2.Initialized,-10}");
-				Debug.WriteLine("(Manager is not null (created) )");
-
-				DM.DbxEx(0, $"{(string.Format(fmt, "GotDataPath"))}| {SheetDataManager2.GotDataPath,-10}");
-				Debug.WriteLine("(path configured and folder path is valid)");
-
-				DM.DbxEx(0, $"{(string.Format(fmt, "GotDataSheets"))}| {SheetDataManager2.GotDataSheets,-10}");
-				Debug.WriteLine("(data list exists and count > 0)");
-
-				DM.DbxEx(0, $"{(string.Format(fmt, "SettingsFileExists"))}| {SheetDataManager2.SettingsFileExists,-10}");
-				Debug.WriteLine("(file path configured and file exists)");
-
-				DM.DbxEx(0, $"{(string.Format(fmt, "Admin.Status"))}| {SheetDataManager2.Admin?.Status.ToString() ?? "null",-10}");
-				Debug.WriteLine("(internal status)");
-
-				DM.DbxLineEx(0, "");
-
-				// Debug.Write("\n");
-				DM.DbxLineEx(0, "values",-1, 1);
-
-				DM.DbxLineEx(0, $"{(string.Format(fmt, "SettingFilePath"))}| {SheetDataManager2.Path?.SettingFilePath ?? "null"}");
-
-				// DM.DbxLineEx(0, "", -1);
-				DM.DbxLineEx(0, "", -3);
-			}
-			catch (Exception e)
-			{
-				Debug.WriteLine("*** oops - status failed");
-				Debug.WriteLine(e.Message);
-			}
-
-			DM.DbxLineEx(0, "end", 0, -1);
-		}
-
-		private string trunc(string s, int max)
-		{
-			string s1;
-
-			int len = s.Length;
-
-			int pos = len > max - 3 ? len - (max - 3) : 0;
-
-			s1 = s.Substring(pos);
-
-			if (pos > 0) s1 = "..." + s1;
-
-			return s1;
-		}
-
 
 		// setup
 
@@ -1606,10 +1216,142 @@ namespace ScanPDFBoxes
 
 		// helpers
 
-		private string selectShtDataFileToAdd()
+		private string trunc(string s, int max)
 		{
+			string s1;
 
-			return "";
+			int len = s.Length;
+
+			int pos = len > max - 3 ? len - (max - 3) : 0;
+
+			s1 = s.Substring(pos);
+
+			if (pos > 0) s1 = "..." + s1;
+
+			return s1;
+		}
+
+		private void SetStatus(StatCodes code,  string note = null,
+			[CallerMemberName] string mx = null)
+		{
+			StatMgr.SetStatCode(code, note, mx);
+		}
+
+		private void showStatus(bool showFrom = false, bool showOk = false)
+		{
+			StatMgr.ShowStatus(showFrom, showOk);
+		}
+
+		private void showScanReadyStatus(bool which)
+		{
+			string s;
+			if (which)
+			{
+				s = "*** IS ready - continue ***";
+				Console.WriteLine(s);
+				DM.DbxLineEx(0, s);
+			}
+			else
+			{
+				s =  "*** is NOT ready - break ***";
+				Console.WriteLine(s);
+				DM.DbxLineEx(0, s);
+			}
+		}
+
+		private void showInitStatus()
+		{
+			DM.DbxLineEx(0, "start", 1);		// 1, 1
+
+			int tw = -30;
+			int max = 30;
+
+			string s1;
+			string fmt = $"{{0,{tw}}}";
+
+			try
+			{
+				DM.DbxLineEx(0, "sfm2 (SheetFileManager2", 1);   // 1, 1
+				DM.DbxLineEx(0, "data manager", 1);   // 2, 3
+				// Debug.Write("\n");
+				DM.DbxLineEx(0, "status", 1, 1);
+
+				DM.DbxEx(0, $"{(string.Format(fmt, "GotDataFile"))}| {sm2.GotDataFile?.ToString() ?? "null",-10}");
+				Debug.WriteLine("(data file path not null & data file path exists)");
+
+				DM.DbxEx(0, $"{(string.Format(fmt, "GotDataFilePath"))}| {sm2.GotDataFilePath,-10}");
+				Debug.WriteLine($"(data file path is not null)");
+
+				DM.DbxLineEx(0, "");
+
+				// Debug.Write("\n");
+				DM.DbxLineEx(0, "values", -1, 1);
+
+				DM.DbxLineEx(0, $"{(string.Format(fmt, "DataFilePath"))}| {sm2.DataFilePath?.FolderPath ?? "null"}");
+
+				// DM.DbxLineEx(0, "", -1);
+				DM.DbxLineEx(0, "");
+
+				// Debug.Write("\n");
+				DM.DbxLineEx(0, "sheet file", -2);
+				// Debug.Write("\n");
+				DM.DbxLineEx(0, "status", 1, 1);
+
+				DM.DbxEx(0, $"{(string.Format(fmt, "GotSheetFileList"))}| {sm2.GotSheetFileList,-10}");
+				Debug.WriteLine("(sheet folder not null && list not null && count >0 [true])");
+
+				DM.DbxEx(0, $"{(string.Format(fmt, "GotSheetFolder"))}| {sm2.GotSheetFolder,-10}");
+				Debug.WriteLine("(sheet folder not null [true])");
+
+				DM.DbxEx(0, $"{(string.Format(fmt, "SheetFolderExists"))}| {sm2.SheetFolderExists,-10}");
+				Debug.WriteLine("(sheet folder not null && folder exists [true])");
+
+				DM.DbxLineEx(0, "");
+
+				// Debug.Write("\n");
+				DM.DbxLineEx(0, "values", -1, 1);
+
+				DM.DbxLineEx(0, $"{(string.Format(fmt, "SheetFileFolder"))}| {sm2.SheetFileFolder ?? "null"}");
+				DM.DbxLineEx(0, $"{(string.Format(fmt, "SheetFileList"))}| {sm2.SheetFileList?.Count.ToString() ?? "null"}");
+
+				DM.DbxLineEx(0, "");
+				// Debug.Write("\n");
+				DM.DbxLineEx(0, "SheetDataManager2", -3);
+				// Debug.Write("\n");
+				DM.DbxLineEx(0, "status", 1, 1);
+
+				DM.DbxEx(0, $"{(string.Format(fmt, "Initialized"))}| {SheetDataManager2.Initialized,-10}");
+				Debug.WriteLine("(Manager is not null (created) )");
+
+				DM.DbxEx(0, $"{(string.Format(fmt, "GotDataPath"))}| {SheetDataManager2.GotDataPath,-10}");
+				Debug.WriteLine("(path configured and folder path is valid)");
+
+				DM.DbxEx(0, $"{(string.Format(fmt, "GotDataSheets"))}| {SheetDataManager2.GotDataSheets,-10}");
+				Debug.WriteLine("(data list exists and count > 0)");
+
+				DM.DbxEx(0, $"{(string.Format(fmt, "SettingsFileExists"))}| {SheetDataManager2.SettingsFileExists,-10}");
+				Debug.WriteLine("(file path configured and file exists)");
+
+				DM.DbxEx(0, $"{(string.Format(fmt, "Admin.Status"))}| {SheetDataManager2.Admin?.Status.ToString() ?? "null",-10}");
+				Debug.WriteLine("(internal status)");
+
+				DM.DbxLineEx(0, "");
+
+				// Debug.Write("\n");
+				DM.DbxLineEx(0, "values",-1, 1);
+
+				DM.DbxLineEx(0, $"{(string.Format(fmt, "SettingFilePath"))}| {SheetDataManager2.Path?.SettingFilePath ?? "null"}");
+
+				// DM.DbxLineEx(0, "", -1);
+				DM.DbxLineEx(0, "", -3);
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine("*** oops - status failed");
+				Debug.WriteLine(e.Message);
+			}
+
+			DM.DbxLineEx(0, "end", 0, -1);
 		}
 
 		private void showLastOpResult()

@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Annot;
-using ScanPDFBoxes.Process;
 using SharedCode.ShPdfSupport;
 using ShSheetData.SheetData;
 using ShSheetData.SheetData2;
 using ShSheetData.ShSheetData2;
 using ShTempCode.DebugCode;
+
 using Path = System.IO.Path;
 
 #endregion
@@ -59,6 +59,11 @@ namespace ShItextCode.ElementExtraction
 			pftx = new PdfFreeTextExtract();
 		}
 
+
+		/// <summary>scan a single PDF and extract the needed information and
+		/// rectangle and text metrics
+		/// </summary>
+		/// <param name="file"></param>
 		public void ProcessPdf(string file)
 		{
 			DM.DbxLineEx(0,"start", 1, 1);
