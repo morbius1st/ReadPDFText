@@ -1,5 +1,5 @@
 ﻿#region + Using Directives
-using Microsoft.VisualStudio.OLE.Interop;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,9 +7,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Org.BouncyCastle.Bcpg.OpenPgp;
+
 using static ShCode.StatCodeGroups;
-using static ShCode.StatCodes;
+using static ShCode.StatusCodes;
 
 #endregion
 
@@ -22,14 +22,16 @@ namespace ShCode
 	{
 		SCG_G       = 0,
 		SCG_INIT    = 1000,
-		SCG_CFG     = SCG_INIT + 20,  // 1020
-		SCG_DM      = SCG_CFG  + 20,  // 1040
-		SCG_SFM     = SCG_DM   + 20,  // 1060
+		SCG_CFG     = SCG_INIT + 20,  //
+		SCG_DM      = SCG_CFG  + 20,  // configuration
+		SCG_SFM     = SCG_DM   + 20,  // sheet file manager
+		SCG_SM      = SCG_SFM  + 20,  // sheet manager
+		SCG_RUN     = SCG_SM   + 20,  // proceed
 	}
 
 
 
-	public enum StatCodes
+	public enum StatusCodes
 	{
 		SC_SFM_SHEET_DATA_FOLDER_MISSING               = -SCG_SFM - 1,
 
@@ -38,6 +40,7 @@ namespace ShCode
 		SC_DM_DATA_FILE_HAS_SHEETS                     = -SCG_DM - 1,
 
 		SC_CFG_DATA_FILE_SHEET_LIST_INVALID            = -SCG_CFG - 9,
+		SC_CFG_DATA_HAS_FILE_PATH                      = -SCG_CFG - 4,
 		SC_CFG_DATA_FILE_HAS_SHEETS_INVALID            = -SCG_CFG - 3,
 		SC_CFG_DATA_FILE_MISSING                       = -SCG_CFG - 2,
 		SC_CFG_DATA_FILE_PATH_MISSING                  = -SCG_CFG - 1,
@@ -47,6 +50,10 @@ namespace ShCode
 		SC_INIT_CFG_SHT_DATA_PATH_FAIL                 = -SCG_INIT - 3,
 		SC_INIT_START_DATA_MGR_FAIL                    = -SCG_INIT - 4,
 		SC_INIT_LOAD_SHT_DATA_FILES_FAIL               = -SCG_INIT - 5,
+
+		SC_SM_INIT_DM_FAIL                             = -SCG_SM - 1,
+
+		SC_RUN_LOAD_SHT_DATA_FILES_FAIL                = -SCG_RUN - 1,
 
 
 		SC_G_FAIL   = SCG_G - 1, // general fail code
@@ -60,21 +67,21 @@ namespace ShCode
 
 
 
-	public class StatMgr
+	public class StatusMgr
 	{
-		public static Tuple<StatCodes, string, string, string> StatusCode { get; private set; }
+		public static Tuple<StatusCodes, string, string, string> StatusCode { get; private set; }
 
-		public static void SetStatCode(StatCodes code, string note = null,  
+		public static void SetStatCode(StatusCodes code, string note = null,  
 			[CallerMemberName] string mx = null, [CallerFilePath] string sx = null)
 		{
 			sx = Path.GetFileNameWithoutExtension(sx);
 
-			StatusCode = new Tuple<StatCodes, string, string, string>(code, note, mx, sx);
+			StatusCode = new Tuple<StatusCodes, string, string, string>(code, note, mx, sx);
 		}
 
-		public static StatCodes Current => StatusCode.Item1;
+		public static StatusCodes Current => StatusCode.Item1;
 
-		public static string StatusMessage(StatCodes code)
+		public static string StatusMessage(StatusCodes code)
 		{
 			string msg = $"Status Code Undefined ({code.ToString()})";
 
@@ -104,7 +111,7 @@ namespace ShCode
 
 
 			string s1;
-			s1 = $" | {StatMgr.StatusMessage(StatusCode.Item1)}";
+			s1 = $" | {StatusMgr.StatusMessage(StatusCode.Item1)}";
 			s1 += StatusCode.Item2 != null ? $"({StatusCode.Item2})" : null;
 			s1 += showFrom && s2 !=null ? $" | {s2}" : null;
 
@@ -125,7 +132,7 @@ namespace ShCode
 
 		// static data
 
-		public static Dictionary<StatCodeGroups, string> StatusGroupDesc = new ()
+		public static Dictionary<StatCodeGroups, string> StatusGroupDesc = new Dictionary<StatCodeGroups, string>()
 		{
 			{ SCG_G,   "General" },
 			{ SCG_CFG, "Configuration" },
@@ -133,7 +140,7 @@ namespace ShCode
 			{ SCG_SFM, "Sheet File Manager" },
 		};
 
-		public static Dictionary<StatCodes, Tuple<StatCodeGroups, string>> StatusDesc = new ()
+		public static Dictionary<StatusCodes, Tuple<StatCodeGroups, string>> StatusDesc = new Dictionary<StatusCodes, Tuple<StatCodeGroups, string>>()
 		{
 			{ SC_G_NONE, new Tuple<StatCodeGroups, string>(SCG_G, "None / Unassigned") },
 			{ SC_G_GOOD, new Tuple<StatCodeGroups, string>(SCG_G, "Good") },
@@ -166,6 +173,9 @@ namespace ShCode
 
 			{ SC_CFG_DATA_FILE_SHEET_LIST_INVALID, 
 				new Tuple<StatCodeGroups, string>(SCG_SFM, "The SheetData file list is not valid") },
+
+			{ SC_CFG_DATA_HAS_FILE_PATH, 
+				new Tuple<StatCodeGroups, string>(SCG_SFM, "The DataManager file path should not be configured") },
 			
 
 
@@ -183,6 +193,16 @@ namespace ShCode
 
 			{ SC_INIT_LOAD_SHT_DATA_FILES_FAIL, 
 				new Tuple<StatCodeGroups, string>(SCG_SFM, "Loading the SheetData failed") },
+
+
+			{ SC_SM_INIT_DM_FAIL, 
+				new Tuple<StatCodeGroups, string>(SCG_SM, "SM Init DataManager failed") },
+
+
+
+
+			{ SC_RUN_LOAD_SHT_DATA_FILES_FAIL, 
+				new Tuple<StatCodeGroups, string>(SCG_RUN, "Loading PDF files failed") },
 
 
 		};

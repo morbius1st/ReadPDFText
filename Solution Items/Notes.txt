@@ -1,12 +1,17 @@
-﻿D
+﻿
 subject naming
 
-Sheet / Sheets
+SheetDwgListFile
+> a CSV or Excel file with the sheet drawings and config info
+
+SheetDwg
 > the PDF files read and updated with the links and annotations
 * filepath / folder / file
-	> SheetsFilePath
-	> SheetsFolder
-	> SheetsFile
+	> SheetDwgFilePath
+	> SheetDwgFolder
+	> SheetDwgFile
+
+
 
 SampleSheet / SampleSheets
 > the PDF files scanned to define the SheetRect's
@@ -18,6 +23,7 @@ SheetRect
 
 SheetData
 > the list of sheets used to define PDF SheetRect information
+	> need to have an office list
 * filepath / folder / file
 	> SheetDataFilePath
 	> SheetDataFolder

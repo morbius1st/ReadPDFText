@@ -1,0 +1,97 @@
+
+
+SharedCode
+misc shared code files - this is specific to a couple of projects
+this may have issues if used in any more projects
+
+ShCommonCode
+First attempt to fix the shared project setup
+says "common code" but is still to "non-common"
+
+ShCode
+this will hold code used by every project that subscribes to this SH project
+
+ShItextCode
+holds code that is specific to iText
+
+ShSheetData
+SheetData related code
+
+ShTempCode
+temporary / placeholder code
+
+                               (avoid)
+					 itext	 SharedCode   ShCode   ShItextCode   ShSheetData   ShTempCode
+CreatePDFBoxes		|	x	|			|	x	 |		x	  |		x		 |		x	 |
+CreatePDFSamples	|	x	|			|	x	 |		x	  |		x		 |		x	 |
+ExtractPdfText		|	x	|	x		|	x	 |		x	  |		x		 |		x	 |
+ReadPDFManager		|	x	|	x		|	x	 |		x	  |		x		 |		x	 |
+ReadPDFText			|	x	|	x		|	x	 |		x	  |		x		 |		x	 |
+ReadPDFTextTests	|	x	|	x		|	x	 |		x	  |		x		 |		x	 |
+ScanPDFBoxes		|	x	|			|	x	 |		x	  |		x		 |		x	 |
+
+
+
+CreatePDFBoxes 
+* uses the saved box information to create sample sheets
+	used to validate the rect information scanned
+
+CreatePDFElements
+* test routines to develope PDF element creation
+
+CreatePDFSamples 
+* uses the saved box information(v2) to create sample sheets
+	used to validate the rect information scanned
+
+ExtractPdfText
+* tests how to extract text from a pdf
+
+ReadPDFManager
+* test - shows the pre-created sample information (not scanned)
+
+ReadPDFText
+* primary program - but tests various methods to create the final PDF based on sample and pre-created information
+
+ReadPDFTextTests
+* test how to extract text from a pdf / scan boxes / save data to the file (data saved to file may be in the wrong format)
+
+ScanPDFBoxes
+* scan's a pdf with location boxes and saves the information to an xml file (used by CreatePDFBoxes and others)
+
+ManagePDFSheetDwg
+* nothing
+
+
+TO DO
+
+projects
+PDFSheets
+* prepares and processes PDF drawing sheet files
+	> primary sheet list storage system is via excel file
+	> user operations
+		* NON-PROGRAM operations
+			* user creates a sheet dwg list in Revit with the correct parameters (TBD) [e.g. header1, header2, etc./ sheet number / sheet title / sheet format / + flags such as "ignore"]
+			* user exports the sheet dwg list to excel / csv file.
+			* user imports the sheet dwg list CSV file to a sheet dwg list excel file and adjusts if needed - needs to be sorted in header1, header2, etc order
+	> operation 1
+		* validate sheet dwg list excel file
+			* look for missing fields
+	> operation 2
+		* scan PDF sheet files to create an excel file - use file name to create list - to allow user to assign sheet configuration files
+		* alternate to user operations
+		* look for issues
+			* sheet name in wrong format
+	> operation 3
+		* validate excel file versus PDF file names in the folder
+		?? note, for now, all PDF sheet files go into a single folder but can be in sub-folders
+		* look for mis-matches
+			* excel has a file but folder does not
+			* folder has a file but excel does not
+	> operation 4
+		* validate the sheet dwg list versus the information in the PDF file
+			> the SheetData file / list will be needed
+		* look for mis-matches
+			* SheetDwgList has sheet numbers / sheet names not in the folder
+			* folder has files with sheet numbers / sheet names not in the SheetDwgList
+	> operation 5
+		* create the Pdf Tree

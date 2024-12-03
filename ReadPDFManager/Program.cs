@@ -1,4 +1,5 @@
 ﻿using System;
+using DebugCode;
 using ReadPDFManager.Process;
 using ReadPDFManager.SheetDataSupport;
 
@@ -19,11 +20,12 @@ namespace ReadPDFManager
 
 			config();
 
-			// me.processB();
-			me.processC();
+			me.processB();
+			// me.processC();
 
 			Console.WriteLine("waiting ... ");
 			Console.ReadKey();
+
 		}
 
 		private static void config()
@@ -81,9 +83,9 @@ namespace ReadPDFManager
 		}
 
 		
-		private void processC()
-		{
-			toa2.Process();
-		}
+		// private void processC()
+		// {
+		// 	toa2.Process();
+		// }
 	}
 }

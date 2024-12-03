@@ -12,10 +12,9 @@ using iText.Kernel.Geom;
 
 namespace ShItextCode
 {
-	
 	public class PdfDocInfo
 	{
-		public PdfDocInfo(string name, string path) 
+		public PdfDocInfo(string name, string path)
 		{
 			Name = name;
 			Path = path;
@@ -35,7 +34,7 @@ namespace ShItextCode
 		public string Producer { get; set; }
 		public string Publisher { get; set; }
 
-		public string CreationData {get; set; }
+		public string CreationData { get; set; }
 		public string ModificationData { get; set; }
 
 		public int NumberOfPages { get; set; }
@@ -65,7 +64,6 @@ namespace ShItextCode
 			t = d.GetMoreInfo(PdfConst.Contributor);
 			t = d.GetMoreInfo(PdfConst.CreatorTool);
 			t = d.GetMoreInfo(PdfConst.Rights);
-
 		}
 	}
 
@@ -82,5 +80,4 @@ namespace ShItextCode
 			PageRotation = page.GetRotation();
 		}
 	}
-
 }

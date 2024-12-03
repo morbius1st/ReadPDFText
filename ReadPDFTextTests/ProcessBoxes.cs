@@ -22,9 +22,9 @@ namespace ReadPDFTextTests
 		{
 			bool result;
 
-			SheetRectSupport.FilePath = new FilePath<FileNameSimple>(SheetDataSetConsts.DataFilePath);
+			SheetRectConfigDataSupport.FilePath = new FilePath<FileNameSimple>(SheetDataSetConsts.DataFilePath);
 
-			SheetDataManager.Init(SheetRectSupport.FilePath);
+			SheetDataManager.Init(SheetRectConfigDataSupport.FilePath);
 
 			// ReadBoxes();
 
@@ -109,13 +109,13 @@ namespace ReadPDFTextTests
 
 					result = false;
 
-					foreach (KeyValuePair<string, SheetRectInfo<SheetRectId>> kvp2 in SheetRectSupport.ShtRectIdXref)
+					foreach (KeyValuePair<string, SheetRectConfigData<SheetRectId>> kvp2 in SheetRectConfigDataSupport.ShtRectIdXref)
 					{
 						if (kvp2.Value.Id == SheetRectId.SM_NA) continue;
 
 						if (!kvp.Value.ShtRects.ContainsKey(kvp2.Value.Id))
 						{
-							string name = SheetRectSupport.GetShtRectName(kvp2.Value.Id) ?? "no name";
+							string name = SheetRectConfigDataSupport.GetShtRectName(kvp2.Value.Id) ?? "no name";
 
 							Console.WriteLine($"\t{name}");
 						}
@@ -202,7 +202,7 @@ namespace ReadPDFTextTests
 				Debug.WriteLine($"for {kvp.Key}");
 
 				Debug.Write($"{"sheet rectangles",TITLE_WIDTH}| found {kvp.Value.ShtRects.Count}");
-				missing = SheetRectSupport.ShtRectsQty - kvp.Value.ShtRects.Count;
+				missing = SheetRectConfigDataSupport.ShtRectsQty - kvp.Value.ShtRects.Count;
 				if (missing > 0)
 				{
 					Debug.WriteLine($" | missing {missing}");
@@ -216,7 +216,7 @@ namespace ReadPDFTextTests
 				
 				foreach (KeyValuePair<SheetRectId, SheetRectData<SheetRectId>> kvp2 in kvp.Value.ShtRects)
 				{
-					string name = SheetRectSupport.GetShtRectName(kvp2.Key)!;
+					string name = SheetRectConfigDataSupport.GetShtRectName(kvp2.Key)!;
 					string type = kvp2.Value.Type.ToString();
 
 					Debug.WriteLine($"{name,TITLE_WIDTH}| {type,-18}| {FormatItextData.FormatRectangle(kvp2.Value.Rect)}");

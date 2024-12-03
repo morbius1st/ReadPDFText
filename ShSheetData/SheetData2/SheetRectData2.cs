@@ -15,6 +15,8 @@ using iText.Kernel.Geom;
 using iText.Layout.Properties;
 using Newtonsoft.Json;
 using ShSheetData.SheetData;
+using ShSheetData.Support;
+using ShTempCode.DebugCode;
 using UtilityLibrary;
 
 namespace ShSheetData.ShSheetData2
@@ -209,7 +211,17 @@ namespace ShSheetData.ShSheetData2
 		[IgnoreDataMember]
 		public Rectangle Rect
 		{
-			get => new Rectangle(rectangleA[0], rectangleA[1], rectangleA[2], rectangleA[3]);
+			get
+			{
+				// if (rectangleA == null)
+				// {
+				// 	DM.DbxLineEx(0, "rectA is null");
+				//
+				// 	return new Rectangle(0, 0, 100, 100);
+				// }
+
+				return new Rectangle(rectangleA[0], rectangleA[1], rectangleA[2], rectangleA[3]);
+			}
 			set
 			{
 				if (value != null)
@@ -223,39 +235,15 @@ namespace ShSheetData.ShSheetData2
 			}
 		}
 
-		[DataMember(Order =  2)]
+		[DataMember(Order =  0)]
+		public float TextBoxRotation { get; set; }
+
+		[DataMember(Order =  1)]
 		public float[] RectangleA
 		{
 			get => rectangleA;
 			set => rectangleA = value;
 		}
-
-
-		[DataMember(Order =  0)]
-		public float TextBoxRotation { get; set; }
-
-		[DataMember(Order = 1)]
-		public float BdrWidth { get; set; }
-
-		[IgnoreDataMember]
-		public Color BdrColor
-		{
-			get => Color.CreateColorWithColorSpace(bdrColor);
-			set => bdrColor = value?.GetColorValue() ?? new [] { 0f, 0f, 1f };
-		}
-
-		[DataMember(Order = 2)]
-		public float[] BdrColorA
-		{
-			get => bdrColor;
-			set => bdrColor = value;
-		}
-
-		[DataMember(Order = 3)]
-		public float BdrOpacity { get; set; }
-
-		[DataMember(Order = 4)]
-		public float[] BdrDashPattern { get; set; }
 
 		[IgnoreDataMember]
 		public Color FillColor
@@ -264,15 +252,38 @@ namespace ShSheetData.ShSheetData2
 			set => fillColor = value?.GetColorValue() ?? new [] { 0f, 1f, 1f };
 		}
 
-		[DataMember(Order = 5)]
+		[DataMember(Order = 2)]
 		public float[] FillColorA
 		{
 			get => fillColor;
 			set => fillColor = value;
 		}
 
-		[DataMember(Order = 6)]
+		[DataMember(Order = 3)]
 		public float FillOpacity { get; set; }
+
+		[IgnoreDataMember]
+		public Color BdrColor
+		{
+			get => Color.CreateColorWithColorSpace(bdrColor);
+			set => bdrColor = value?.GetColorValue() ?? new [] { 0f, 0f, 1f };
+		}
+
+		[DataMember(Order = 10)]
+		public float[] BdrColorA
+		{
+			get => bdrColor;
+			set => bdrColor = value;
+		}
+
+		[DataMember(Order = 11)]
+		public float BdrOpacity { get; set; }
+
+		[DataMember(Order = 12)]
+		public float BdrWidth { get; set; }
+
+		[DataMember(Order = 13)]
+		public float[] BdrDashPattern { get; set; }
 
 		public void Reset()
 		{
@@ -292,6 +303,7 @@ namespace ShSheetData.ShSheetData2
 			BoxSettings copy = new BoxSettings();
 
 			copy.TextBoxRotation = TextBoxRotation;
+			copy.Rect = Rect;
 
 			copy.BdrWidth = BdrWidth;
 			copy.BdrColor = BdrColor;
@@ -348,11 +360,11 @@ namespace ShSheetData.ShSheetData2
 
 			Reset();
 
-			Type = SheetRectSupport.GetShtRectType(name);
+			Type = SheetRectConfigDataSupport.GetShtRectType(name);
 
 			if (Type == SheetRectType.SRT_NA)
 			{
-				Type = SheetRectSupport.GetOptRectType(name);
+				Type = SheetRectConfigDataSupport.GetOptRectType(name);
 			}
 		}
 
@@ -540,6 +552,11 @@ namespace ShSheetData.ShSheetData2
 		public SheetRectData2<T> Clone2()
 		{
 			return (SheetRectData2<T>) Clone();
+		}
+
+		public override string ToString()
+		{
+			return $"{Id} {Type.ToString()} | {BoxSettings.Rect.GetX(),8:F2} {BoxSettings.Rect.GetY(),8:F2} {BoxSettings.Rect.GetWidth(),8:F2} {BoxSettings.Rect.GetHeight(),8:F2}";
 		}
 	}
 }

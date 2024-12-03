@@ -1,42 +1,38 @@
 ******************************
-7/8/2024 7:05:42 PM
+12/2/2024 12:32:07 AM
 ******************************
 
 
-Currently there are 3 saved
-data file folder DM| C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples
-data file name   DM| SheetData.xml
-
 Currently there are no sheets saved
-data file folder FM| ** null **
-data file name   FM| ** null **
+DM init          DM| False
 data file folder DM| ** null **
 data file name   DM| ** null **
 
-      + --- original data file options ---
-> A1  | *** Add Tests Original  (True / False / null / True) ***
-> R1  | *** Remove Sheet (fail - no match)  (True / True / True / False) ***
-> R3  | *** Remove Sheet (good - match)  (True / True / True / False) ***
-> Q   | *** Query orig sheet list  (True / True / True / False) ***
-> O1  | *** Open orig sheet types  (True / True / null / False) ***
-> L1  | *** List orig sheet types  (True / True / True / False) ***
-> C1  | *** Close the orig data file  (True / True / null / null) ***
-> 1   | *** Reset the orig list  (True / True / null / False) ***
+Got Sheet Folder   | False
+Got Sheet File List| False
+Sheet File folder  | ** null **
+DM sheet count     | -1
 
       + --- new list options ---
 
-      + --- General ---
-> I2  | *** Initialize  (True / null / null / null) ***
+      + --- Reports ---
+> RR  | *** Reports Menu  (False / False / False / False) ***
+
+      + --- Initialize ---
+> I2  | *** Initialize (using def data)  (True / null / null / null) ***
+> IS  | *** Initialize (select data)  (False / False / False / False) ***
 
       + --- Basic ---
 > O2  | *** Open sheet types  (True / True / null / null) ***
 > C2  | *** Close the data file  (True / True / null / null) ***
+> 0   | *** Reset full  (null / null / null / null) ***
 > 2   | *** Reset the data manager  (True / True / null / null) ***
 > 4   | *** Reset the data file  (True / True / null / null) ***
-> 6   | *** Reset full  (null / null / null / null) ***
+> 6   | *** Reset the sheet file manager  (True / False / null / null) ***
+> 8   | *** Reset for new sheets  (True / False / null / null) ***
 
       + --- Add ---
-> A2  | *** Add Tests  (True / False / False / True) ***
+> A2  | *** Add  (True / True / False / False) ***
 > R2  | *** Remove a sheet  (True / True / True / null) ***
 
       + --- Listings ---
@@ -46,6 +42,8 @@ data file name   DM| ** null **
 > AA  | *** Add single sheet  (True / False / False / True) ***
 
       + --- tests ---
+> T0  | *** test create samples  (False / False / False / null) ***
+> T1  | *** test query sel sheets  (null / null / null / null) ***
 > T2  | *** test get config  (null / null / null / null) ***
 
       + --- completion options ---
@@ -54,53 +52,40 @@ data file name   DM| ** null **
 > ? > I2
 
 
-Select Sample
->  1 | * Sample TestBoxes
->  2 | * Special Small Sample Set (3) with (3) different Rotations (new)
->  7 | *** current | * Special Small Sample Set (3) with (3) different Rotations (new)
->  c | *** Select Current
->  x | *** Exit
-
-** > 7
-
 *** Good  | Good (1) | (ConfigManager/initialize)
 *** IS ready - continue ***
 
 
-Currently there are 3 saved
+Currently there are no sheets saved
+DM init          DM| True
 data file folder DM| C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples
-data file name   DM| SheetData.xml
+data file name   DM| SheetData0.xml
 
-Currently there are 3 saved
-data file folder FM| C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples
-data file name   FM| SheetData7.xml
-data file folder DM| C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples
-data file name   DM| SheetData7.xml
-
-      + --- original data file options ---
-> A1  | *** Add Tests Original  (True / False / null / True) ***
-> R1  | *** Remove Sheet (fail - no match)  (True / True / True / False) ***
-> R3  | *** Remove Sheet (good - match)  (True / True / True / False) ***
-> Q   | *** Query orig sheet list  (True / True / True / False) ***
-> O1  | *** Open orig sheet types  (True / True / null / False) ***
-> L1  | *** List orig sheet types  (True / True / True / False) ***
-> C1  | *** Close the orig data file  (True / True / null / null) ***
-> 1   | *** Reset the orig list  (True / True / null / False) ***
+Got Sheet Folder   | True
+Got Sheet File List| True
+Sheet File folder  | C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\TestBoxes
+DM sheet count     | -1
 
       + --- new list options ---
 
-      + --- General ---
-> I2  | *** Initialize  (True / null / null / null) ***
+      + --- Reports ---
+> RR  | *** Reports Menu  (False / False / False / False) ***
+
+      + --- Initialize ---
+> I2  | *** Initialize (using def data)  (True / null / null / null) ***
+> IS  | *** Initialize (select data)  (False / False / False / False) ***
 
       + --- Basic ---
 > O2  | *** Open sheet types  (True / True / null / null) ***
 > C2  | *** Close the data file  (True / True / null / null) ***
+> 0   | *** Reset full  (null / null / null / null) ***
 > 2   | *** Reset the data manager  (True / True / null / null) ***
 > 4   | *** Reset the data file  (True / True / null / null) ***
-> 6   | *** Reset full  (null / null / null / null) ***
+> 6   | *** Reset the sheet file manager  (True / False / null / null) ***
+> 8   | *** Reset for new sheets  (True / False / null / null) ***
 
       + --- Add ---
-> A2  | *** Add Tests  (True / False / False / True) ***
+> A2  | *** Add  (True / True / False / False) ***
 > R2  | *** Remove a sheet  (True / True / True / null) ***
 
       + --- Listings ---
@@ -110,10 +95,11 @@ data file name   DM| SheetData7.xml
 > AA  | *** Add single sheet  (True / False / False / True) ***
 
       + --- tests ---
+> T0  | *** test create samples  (False / False / False / null) ***
+> T1  | *** test query sel sheets  (null / null / null / null) ***
 > T2  | *** test get config  (null / null / null / null) ***
 
       + --- completion options ---
 > X   | *** Exit ***
 
-> ? > X
-
+> ? > 

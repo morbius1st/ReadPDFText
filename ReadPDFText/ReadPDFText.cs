@@ -50,6 +50,14 @@ namespace SharedCode.ShDataSupport
 			HasDups    = 1 << 2,
 		}
 
+
+		private string pdfFolder_settings = "c:\\";
+		private string xlsxFolder_settings = "c:\\";
+		private string xlsxFile_settings = "file.xlsx";
+		private string destFolder_settings = "c:\\";
+
+
+
 		// private static int  test = 11;
 		private static int  test = 303;
 
@@ -1010,7 +1018,7 @@ namespace SharedCode.ShDataSupport
 			if (selectFiles)
 			{
 
-				response = getFolderCfd("Select the Folder with the PDF Files", UserSettings.Data.pdfFolder);
+				response = getFolderCfd("Select the Folder with the PDF Files",  pdfFolder_settings);
 
 				if (response == null) return false;
 
@@ -1023,7 +1031,7 @@ namespace SharedCode.ShDataSupport
 				}
 
 				response = getFileCfd("Select the .xlsx sheet list file",
-					UserSettings.Data.xlsxFolder, filter, UserSettings.Data.xlsxFile);
+					xlsxFolder_settings, filter, xlsxFile_settings);
 
 				if (response == null) return false;
 
@@ -1038,7 +1046,7 @@ namespace SharedCode.ShDataSupport
 
 
 
-				response = getFolderCfd("Select the Destination Folder", UserSettings.Data.destFolder);
+				response = getFolderCfd("Select the Destination Folder", destFolder_settings);
 
 				if (response == null) return false;
 
@@ -1051,7 +1059,7 @@ namespace SharedCode.ShDataSupport
 					return false;
 				}
 				
-				configSettingFilePath = new FilePath<FileNameSimple>(new [] { UserSettings.Data.xlsxFolder, TEMP_CONFIG_FILE });
+				configSettingFilePath = new FilePath<FileNameSimple>(new [] { xlsxFolder_settings, TEMP_CONFIG_FILE });
 
 			}
 
@@ -1076,10 +1084,10 @@ namespace SharedCode.ShDataSupport
 			Console.WriteLine($"{"Sheet Metrics Folder",-30}| {dataFile.FullFilePath}");
 			Console.WriteLine($"{"Sheet Metrics file",-30}| {dataFile.FileName}");
 
-			UserSettings.Data.pdfFolder = pdfFolder.FullFilePath;
-			UserSettings.Data.xlsxFolder = xlsxFilePath.FolderPath;
-			UserSettings.Data.xlsxFile = xlsxFilePath.FileName;
-			UserSettings.Data.destFolder = destFolderPath.FullFilePath;
+			pdfFolder_settings = pdfFolder.FullFilePath;
+			xlsxFolder_settings = xlsxFilePath.FolderPath;
+			xlsxFile_settings = xlsxFilePath.FileName;
+			destFolder_settings = destFolderPath.FullFilePath;
 
 			UserSettings.Admin.Write();
 

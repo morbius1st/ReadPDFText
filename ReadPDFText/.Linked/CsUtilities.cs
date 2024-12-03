@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -56,6 +57,12 @@ namespace UtilityLibrary
 		{
 			get
 			{
+				// Assembly ass = Assembly.GetExecutingAssembly();
+				//
+				// IEnumerable<CustomAttributeData> atb = ass.CustomAttributes;
+				//
+				// object[] a = ass.GetCustomAttributes(true);
+
 				object[] att = Assembly.GetExecutingAssembly()
 				.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
 				if (att.Length > 0)
@@ -64,6 +71,7 @@ namespace UtilityLibrary
 				}
 
 				throw new MissingFieldException("Company is Missing from Assembly Information");
+
 			}
 		}
 

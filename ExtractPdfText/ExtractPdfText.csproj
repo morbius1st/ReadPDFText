@@ -1,12 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Configurations>Debug;Release;DbgTests;DbgCreate;DbgScan;DbgReadText;DbgMgr</Configurations>
+    <!-- <Configurations>Debug;Release;DbgTests;DbgCreate;DbgScan;DbgReadText;DbgMgr</Configurations> -->
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);USER_SETTINGS; SUITE_SETTINGS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants);USER_SETTINGS; SUITE_SETTINGS</DefineConstants>
+  </PropertyGroup>
+
+  <!-- <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DbgTests|AnyCPU'"> -->
+  <!--   <DefineConstants>$(DefineConstants);USER_SETTINGS</DefineConstants> -->
+  <!-- </PropertyGroup> -->
 
   <ItemGroup>
     <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs" Link=".Linked\CsExtensions.cs" />
@@ -16,7 +29,6 @@
     <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsWindowsHelpers.cs" Link=".Linked\CsWindowsHelpers.cs" />
     <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsXmlUtilities.cs" Link=".Linked\CsXmlUtilities.cs" />
     <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\FilePath\V3.1\CsFilePath.cs" Link=".Linked\CsFilePath.cs" />
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.4\SettingsMgr.cs" Link=".Linked\SettingsMgr.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +37,7 @@
 
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
-    <PackageReference Include="envdte80" Version="17.9.37000" />
+    <PackageReference Include="envdte80" Version="17.10.40170" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.7.0" />
     <PackageReference Include="itext.bouncy-castle-adapter" Version="8.0.4" />
     <PackageReference Include="itext7" Version="8.0.4" />
@@ -34,8 +46,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
   </ItemGroup>
 
-  <Import Project="..\SharedCode\SharedCode.projitems" Label="Shared" />
-
   <Import Project="..\ShCode\ShCode.projitems" Label="Shared" />
 
   <Import Project="..\ShSheetData\ShSheetData.projitems" Label="Shared" />
@@ -43,5 +53,7 @@
   <Import Project="..\ShTempCode\ShTempCode.projitems" Label="Shared" />
 
   <Import Project="..\ShItextCode\ShItextCode.projitems" Label="Shared" />
+
+  <Import Project="..\SharedCode\SharedCode.projitems" Label="Shared" />
 
 </Project>

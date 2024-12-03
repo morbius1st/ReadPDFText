@@ -10,7 +10,7 @@ namespace Settings
 	{
 		public const string SHEET_DATA_FOLDER = @"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\";
 
-		public static string DataFilePath { get; } = SHEET_DATA_FOLDER + SheetDataSet.DataFileName;
+		// public static string DataFilePath { get; } = SHEET_DATA_FOLDER + SheetDataSet.DataFileName;
 
 		private static string DataFilePathJson = SHEET_DATA_FOLDER + "SheetData.json";
 	}

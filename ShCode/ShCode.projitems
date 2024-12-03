@@ -10,7 +10,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ConfigManager.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Settings\UserSettings.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)StatMgr.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataSupport\ScanData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Settings\HeadingSetting.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Settings\SuiteSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SheetDwg\SheetDwgReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StatusMgr.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory).Linked\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C:\Users\jeffs\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\SettingManager\v7.5\SettingsMgr.cs">
+      <Link>.Linked\SettingsMgr.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\PDFMerge1\AndyShared\FileSupport\FileLocationSupport.cs">
+      <Link>FileLocationSupport.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

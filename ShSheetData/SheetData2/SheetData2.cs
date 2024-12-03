@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using iText.Kernel.Geom;
 using ShSheetData.SheetData;
 using ShSheetData.ShSheetData2;
+using ShSheetData.Support;
 
 namespace ShSheetData.SheetData2
 {
@@ -14,13 +15,14 @@ namespace ShSheetData.SheetData2
 		private DateTime created;
 		private float[] sheetSizeWithRotationA;
 
-		public SheetData2()
+		public SheetData2(string name, string desc)
 		{
-			// ShtRects = new Dictionary<SheetMetricId, Rectangle>();
+			Name=name;
+			Description = desc;
+			CreatedDt = DateTime.Now;
+
 			ShtRects = new Dictionary<SheetRectId, SheetRectData2<SheetRectId>>();
 			OptRects = new Dictionary<SheetRectId, SheetRectData2<SheetRectId>>();
-
-			// ShtRects.Add(SheetMetricId.SM_SHT, new ShtRectData<SheetMetricId, Rectangle>(SheetRectType.SRT_NA, SheetMetricId.SM_SHT));
 		}
 
 		[DataMember(Order = 1)]
@@ -46,6 +48,10 @@ namespace ShSheetData.SheetData2
 		[DataMember(Order = 4)]
 		public int SheetRotation { get; set; }
 
+		/// <summary>
+		/// sets the rotated page size in the sheet rect<br/>
+		/// will add a sheet rect if one does not exist
+		/// </summary>
 		[IgnoreDataMember]
 		public Rectangle PageSizeWithRotation
 		{
@@ -96,12 +102,10 @@ namespace ShSheetData.SheetData2
 		public bool IsComplete => AllShtRectsFound;
 
 		[IgnoreDataMember]
-		public bool AllShtRectsFound => ShtRects.Count == SheetRectSupport.ShtRectsQty;
+		public bool AllShtRectsFound => ShtRects.Count >= SheetRectConfigDataSupport.ShtRectsMinQty;
 
 		[IgnoreDataMember]
 		public bool AnyOptRectsFound => OptRects.Count > 0;
-
-		// public Dictionary<SheetMetricId, Rectangle> ShtRects { get; set; }
 
 		[DataMember(Order = 5)]
 		public Dictionary<SheetRectId, SheetRectData2<SheetRectId>> ShtRects { get; set; }

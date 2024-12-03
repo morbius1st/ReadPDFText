@@ -7,6 +7,9 @@ using ShCode;
 using ShSheetData.SheetData;
 using UtilityLibrary;
 using ShItextCode;
+using ShSheetData.Support;
+using ShTempCode.DebugCode;
+
 
 #endregion
 
@@ -47,9 +50,9 @@ namespace ReadPDFTextTests.SheetData
 			if (SheetDataManager.SheetMetricsCount > 0
 				&& show && result)
 			{
-				ShowInfo.showShtRects(ShCode.ShowWhere.DEBUG);
-				ShowInfo.showShtRects(ShCode.ShowWhere.DEBUG);
-				ShowInfo.ShowValues(ShCode.ShowWhere.DEBUG);
+				ShowInfo.showShtRects(ShowWhere.DEBUG);
+				ShowInfo.showShtRects(ShowWhere.DEBUG);
+				ShowInfo.ShowValues(ShowWhere.DEBUG);
 			}
 
 		}
@@ -144,13 +147,13 @@ namespace ReadPDFTextTests.SheetData
 
 					result = false;
 
-					foreach (KeyValuePair<string, SheetRectInfo<SheetRectId>> kvp2 in SheetRectSupport.ShtRectIdXref)
+					foreach (KeyValuePair<string, SheetRectConfigData<SheetRectId>> kvp2 in SheetRectConfigDataSupport.ShtRectIdXref)
 					{
 						if (kvp2.Value.Id == SheetRectId.SM_NA) continue;
 
 						if (!kvp.Value.ShtRects.ContainsKey(kvp2.Value.Id))
 						{
-							string name = SheetRectSupport.GetShtRectName(kvp2.Value.Id) ?? "no name";
+							string name = SheetRectConfigDataSupport.GetShtRectName(kvp2.Value.Id) ?? "no name";
 
 							Console.WriteLine($"\t{name}");
 						}
@@ -239,7 +242,7 @@ namespace ReadPDFTextTests.SheetData
 				Debug.WriteLine($"for {kvp.Key}");
 
 				Debug.Write($"{"sheet rectangles",TITLE_WIDTH}| found {kvp.Value.ShtRects.Count}");
-				missing = SheetRectSupport.ShtRectsQty - kvp.Value.ShtRects.Count;
+				missing = SheetRectConfigDataSupport.ShtRectsQty - kvp.Value.ShtRects.Count;
 				if (missing > 0)
 				{
 					Debug.WriteLine($" | missing {missing}");
@@ -253,7 +256,7 @@ namespace ReadPDFTextTests.SheetData
 				
 				foreach (KeyValuePair<SheetMetricId, SheetRectData<SheetMetricId>> kvp2 in kvp.Value.ShtRects)
 				{
-					string name = SheetRectSupport.GetShtRectName(kvp2.Key)!;
+					string name = SheetRectConfigDataSupport.GetShtRectName(kvp2.Key)!;
 					string type = kvp2.Value.Type.ToString();
 
 					Debug.WriteLine($"{name,TITLE_WIDTH}| {type,TYPE_WIDTH}| {CsItextHelpers.FormatRect(kvp2.Value.Rect)}");

@@ -5,6 +5,8 @@
 // user name: jeffs
 // created:   6/2/2024 11:22:51 PM
 
+using System;
+using System.Collections.Generic;
 using System.IO;
 using UtilityLibrary;
 
@@ -91,7 +93,9 @@ namespace ShTempCode.DebugCode
 			// for scan
 			string scanPdfFolder,
 			// for create
-			string createPdfFilePathString
+			string createPdfFilePathString,
+			// for create
+			string blankSamples
 			) : this()
 		{
 			Index = idx;
@@ -108,8 +112,9 @@ namespace ShTempCode.DebugCode
 
 			if (baseFolder != null)
 			{
+				BaseFolder = baseFolder;
 				if (pdfFolderName != null) PdfFolder = new FilePath<FileNameSimple>(baseFolder + pdfFolderName);
-				if (sheetListFileName != null)SheetListFilePath = new FilePath<FileNameSimple>(baseFolder + sheetListFileName);
+				if (sheetListFileName != null) SheetListFilePath = new FilePath<FileNameSimple>(baseFolder + sheetListFileName);
 				if (destFileName != null)DestFilePath = new FilePath<FileNameSimple>(baseFolder + destFileName);
 				if (SheetListFilePath !=null) 
 					ConfigSettingFilePath = new FilePath<FileNameSimple>(new [] { SheetListFilePath.FolderPath, TEMP_CONFIG_FILE });
@@ -126,14 +131,36 @@ namespace ShTempCode.DebugCode
 			// for create
 			// CreatePdfFilePathString = createPdfFilePathString;
 			if (createPdfFilePathString != null) CreatePdfFilePath = new FilePath<FileNameSimple>(createPdfFilePathString);
+
+			// for create
+			// BlankSamplesFilePath = blankSamples
+			if (blankSamples != null) BlankSamplesFilePath = new FilePath<FileNameSimple>(blankSamples);
 		}
+
+		// general
+
+		/// <summary>
+		/// the folder used to derive / create the other folders<br/>
+		/// not used for scans
+		/// </summary>
+		public string? BaseFolder { get; }
+
+		public string BaseFolderNotes = "the folder used to derive / create the other folders\nused for pdf assembly only";
+
 
 		// for assembly
 
 		/// <summary>
-		/// for assembly: file path for the configuration file / assembly settings
+		/// for assembly: file path for the configuration file / assembly settings<br/>
+		/// /// for scan: not used<br/>
+		/// derived from "SheetListFilePath" and a constant == "PdfAssemblerSettings.xlsx"
 		/// </summary>
 		public FilePath<FileNameSimple> ConfigSettingFilePath { get; }
+
+		public string ConfigStgFpNotes = "for assembly: file path for the configuration file / assembly settings\n"
+			+ "for scan: not used\nderived from \"SheetListFilePath\" and a constant == \"PdfAssemblerSettings.xlsx\n"
+			+ "from USER / saved in SUITE_SETTINGS";
+
 
 		// /// <summary>
 		// /// for assembly: base folder for various files
@@ -142,45 +169,90 @@ namespace ShTempCode.DebugCode
 
 		/// <summary>
 		/// for assembly: folder with the PDF files to process<br/>
-		/// for scan: not used
+		/// for scan: not used<br/>
+		/// derived from baseFolder + pdfFolderName
 		/// </summary>
 		public FilePath<FileNameSimple> PdfFolder { get; }
 
+		public string PdfFolderNotes = "for assembly: folder with the PDF files to process\n"
+			+ "for scan: not used\nderived from baseFolder + pdfFolderName\n"
+			+ "from USER / saved in SUITE_SETTINGS";
+
+
+
 		/// <summary>
 		/// for assembly: path for the sheet list excel file<br/>
-		/// for scan: not used
+		/// for scan: not used<br/>
+		/// derived from baseFolder + sheetListFileName
 		/// </summary>
 		public FilePath<FileNameSimple> SheetListFilePath { get; }
 
+		public string ShtLstFpNotes = "for assembly: path for the sheet list excel file\n"
+			+ "for scan: not used\nderived from baseFolder + sheetListFileName\n"
+			+ "from USER / saved in SUITE_SETTINGS";
+
 		/// <summary>
 		/// for assembly: the complied output file<br/>
-		/// for scan: not used
+		/// for scan: not used<br/>
+		/// derived from baseFolder + destFileName
 		/// </summary>
 		public FilePath<FileNameSimple> DestFilePath { get; }
+
+		public string DestFpNotes = "for assembly: the complied output file\n"
+			+ "for scan: not used\nderived from baseFolder + destFileName\n"
+			+ "from USER / saved in SUITE_SETTINGS";
 
 		// for scan, create, and assembly
 
 		/// <summary>
 		/// for assembly: not used<br/>
 		/// for scan: the output list of sheet boxes
+		/// equals dataFilePathString
 		/// </summary>
 		public FilePath<FileNameSimple> DataFilePath  { get; }
+
+		public string DataFpNotes = "for assembly: not used\n"
+			+ "for scan: the output list of sheet boxes\nequals dataFilePathString\n"
+			+ "from USER / saved in SUITE_SETTINGS";
 
 		// for scan
 
 		/// <summary>
 		/// for assembly: not used<br/>
 		/// for scan: the location for the PDF's to scan
+		/// equals scanPdfFolder
 		/// </summary>
 		public FilePath<FileNameSimple> ScanPDfFolder  { get; }
+
+		public string ScanPdfFolderNotes = "for assembly: not used\n"
+			+ "for scan: the location for the PDF's to scan\nequals scanPdfFolder\n"
+			+ "from USER / saved in SUITE_SETTINGS";
 
 		// for create
 
 		/// <summary>
 		/// for assembly: not used<br/>
-		/// for scan: where the scan output PDF are located
+		/// for scan: not used<br/>
+		/// for create: where the scan output PDF are located
+		/// equals createPdfFilePathString
 		/// </summary>
 		public FilePath<FileNameSimple> CreatePdfFilePath  { get; }
+
+		public string CreatePdfFPNotes = "for assembly: not used\nfor scan: not used\n"
+			+ "for create: where the scan output PDF are located\nequals createPdfFilePathString\n"
+			+ "from USER / saved in SUITE_SETTINGS";
+
+		/// <summary>
+		/// for assembly: not used
+		/// for scan: not used
+		/// for create: folder with the blank titleblock samples are located which get used
+		/// rather than creating on a blank page - names must be a 1 to 1 match
+		/// </summary>
+		public FilePath<FileNameSimple> BlankSamplesFilePath  { get; }
+
+		public string BlankSampleFpNotes = "for assembly: not used\nfor scan: not used\n"
+			+ "for create: folder with the blank titleblock samples are located which get used\n"
+			+ "rather than creating on a blank page - names must be a 1 to 1 match";
 
 	}
 
@@ -224,6 +296,17 @@ namespace ShTempCode.DebugCode
 			return true;
 		}
 
+		public bool? SelectScanSample(int def, bool selectDefault)
+		{
+			return SelectSample(def, selectDefault, SampleScanData);
+		}
+
+		public bool? SelectAssemblySample(int def, bool selectDefault)
+		{
+			return SelectSample(def, selectDefault, SampleAssembleData);
+		}
+
+		/*
 		public bool SelectScanSample(int def, bool selectDefault)
 		{
 			bool repeat = true;
@@ -272,7 +355,7 @@ namespace ShTempCode.DebugCode
 				// Console.Write("\n");
 				// Console.Write("** > ");
 
-				showSampleOptions(def);
+				showSampleOptions(SampleScanData, def);
 
 				c = Console.ReadKey().KeyChar.ToString().ToLower();
 				
@@ -306,12 +389,34 @@ namespace ShTempCode.DebugCode
 
 			return true;
 		}
+		*/
+		// private void showScanSampleOptions(int def)
+		// {
+		// 	string desc = null;
+		//
+		// 	foreach (KeyValuePair<int, Sample> kvp in SampleScanData)
+		// 	{
+		// 		if (kvp.Key == def) desc = "*** current | ";
+		//
+		// 		desc += $"* {kvp.Value.Description}";
+		//
+		// 		Console.WriteLine($">{kvp.Key,3:F0} | {desc}");
+		//
+		// 		desc = null;
+		// 	}
+		//
+		// 	Console.WriteLine($">{'c',3} | *** Select Current");
+		// 	Console.WriteLine($">{'x',3} | *** Exit");
+		//
+		// 	Console.Write("\n");
+		// 	Console.Write("** > ");
+		// }
 
-		private void showSampleOptions(int def)
+		private void showSampleOptions(Dictionary<int, Sample> samples, int def)
 		{
 			string desc = null;
 
-			foreach (KeyValuePair<int, Sample> kvp in SampleScanData)
+			foreach (KeyValuePair<int, Sample> kvp in samples)
 			{
 				if (kvp.Key == def) desc = "*** current | ";
 
@@ -329,6 +434,85 @@ namespace ShTempCode.DebugCode
 			Console.Write("** > ");
 		}
 
+		// select a sample
+		// true - selected
+		// null = default selected
+		// false = cancel / exit
+		public bool? SelectSample(int def, bool selectDefault, Dictionary<int, Sample> samples)
+		{
+			bool repeat = true;
+			bool result;
+			string c;
+			int idx;
+			Sample s;
+			string desc = null;
+
+			DM.Start0("shs-1");
+
+
+			if (def < 0) def = 7;
+
+			result = samples.ContainsKey(def);
+
+			if (result)
+			{
+				if (selectDefault)
+				{
+					Selected = samples[def];
+					
+					return true;
+				}
+			}
+			else
+			{
+				def = 7;
+			}
+			
+			Selected = samples[def];
+
+			Console.Write("\n");
+			Console.WriteLine("Select Sample");
+
+			do
+			{
+				showSampleOptions(samples, def);
+
+				c = Console.ReadKey(true).KeyChar.ToString().ToLower();
+				
+				Console.WriteLine(c);
+
+				if (c.Equals("x")) return false;
+				if (c.Equals("c")) return true;
+
+				result = Int32.TryParse(c, out idx);
+
+				if (result)
+				{
+					result = samples.TryGetValue(idx, out s);
+
+					if (result)
+					{
+						Selected = s;
+						repeat = false;
+					}
+					else
+					{
+						Console.WriteLine("**********  Invalid Selection ************");
+					}
+				}
+				else
+				{
+					Console.WriteLine($"c = {c}, parse = {idx} **********  Invalid Selection ************");
+				}
+			}
+			while (repeat);
+
+			DM.End0();
+
+			return true;
+		}
+
+
 		// order matters
 		public static string[] FilesNames_01 { get; } = new []
 		{
@@ -342,72 +526,91 @@ namespace ShTempCode.DebugCode
 
 		public List<string> FilePathList { get; private set; }
 
-		public Sample Selected { get; private set; }
+		public Sample Selected
+		{
+			get => selected;
+			private set
+			{
+				selected = value;
+				DM.Stat0($"shs-2: selected: {value.Description}");
+				DM.Stat0($"shs-2: selected: {value.DataFilePath}");
+			}
+		}
 
 		// static data
 		public Dictionary<int, Sample> SampleAssembleData = new Dictionary<int, Sample>()
 		{
 			{
-				2,
-				new Sample(2, 
+				1,
+				new Sample(1, 
 					"Large Coliseum Set",
 					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Coliseum\",
 					@"PDF Files",
 					@"Sheet List.xlsx",
 					@"Combined.pdf",
-					null, null, null
+					null, null, null, null
+
+					)
+			},
+			{	2,
+				new Sample(2, "test Set",
+					DATA_FILE_FOLDER+@"Test\",
+					@"Sheet Files",
+					@"Sheet List2.xlsx",
+					@"Combined.pdf",
+					null, null, null, null
 
 					)
 			},
 			{
 				3,
 				new Sample(3, "Small Sample Set (7) of Coliseum and Simon Brea",
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Test3\",
+					DATA_FILE_FOLDER+@"Test3\",
 					@"PDF Files",
 					@"Sheet List.xlsx",
 					@"Combined-3.pdf",
-					null, null, null
+					null, null, null, null
 					)
 			},
 			{
 				4,
 				new Sample(4, "Small Sample Set (8) of Coliseum and Simon Brea",
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Test4\",
+					DATA_FILE_FOLDER+@"Test4\",
 					@"PDF Files",
 					@"Sheet List.xlsx",
 					@"Combined-6.pdf",
-					null, null, null
+					null, null, null, null
 					)
 			},
 			{
 				5,
 				new Sample(5, "Small Sample Set (6) with various rotations",
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Test5\",
+					DATA_FILE_FOLDER+@"Test5\",
 					@"PDF Files",
 					@"Sheet List.xlsx",
 					@"Combined-7.pdf",
-					null, null, null
+					null, null, null, null
 					)
 			},
 			{
 				6,
 				new Sample(6, "Small Sample Set (3)",
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Test6\",
+					DATA_FILE_FOLDER+@"Test6\",
 					@"PDF Files",
 					@"Sheet List.xlsx",
 					@"Combined-6.pdf",
-					null, null, null
+					null, null, null, null
 					)
 			},
 			{
 				7,
 				new Sample(7, 
 					"Special Small Sample Set (3) with (3) different Rotations",
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Test7\",
+					DATA_FILE_FOLDER+@"Test7\",
 					@"PDF Files",
 					@"Sheet List.xlsx",
 					@"Combined-7.pdf",
-					null, null, null
+					null, null, null, null
 					)
 			}
 		};
@@ -416,13 +619,25 @@ namespace ShTempCode.DebugCode
 		public Dictionary<int, Sample> SampleScanData = new Dictionary<int, Sample>()
 		{
 			{
-				1,
-				new Sample(1, 
+				0,
+				new Sample(0, 
 					"Sample TestBoxes",
 					null, null, null, null,
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\SheetData1.xml",
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\TestBoxes\",
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Sheet Sample.pdf"
+					DATA_FILE_FOLDER+@"SheetData0.xml",
+					ROOT_PATH_01,
+					DATA_FILE_FOLDER+@"Sheet Sample0.pdf",
+					null
+					)
+			},
+			{
+				1,
+				new Sample(1, 
+					"Three sheets to test PDF rotation",
+					null, null, null, null,
+					DATA_FILE_FOLDER+@"SheetData1.xml",
+					DATA_FILE_FOLDER+@"Test1\",
+					DATA_FILE_FOLDER+@"Sheet Sample1.pdf", 
+					null
 					)
 			},
 			{
@@ -430,9 +645,10 @@ namespace ShTempCode.DebugCode
 				new Sample(2, 
 					"Special Small Sample Set (3) with (3) different Rotations (new)",
 					null, null, null, null,
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\SheetData2.xml",
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Test7\PDF Files\",
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Sheet Sample2.pdf"
+					DATA_FILE_FOLDER+@"SheetData2.xml",
+					DATA_FILE_FOLDER+@"Test\title blocks\",
+					DATA_FILE_FOLDER+@"Sheet Sample2.pdf",
+					DATA_FILE_FOLDER+@"Test\title block samples\"
 					)
 			},
 			{
@@ -440,13 +656,26 @@ namespace ShTempCode.DebugCode
 				new Sample(7, 
 					"Special Small Sample Set (3) with (3) different Rotations (new)",
 					null, null, null, null,
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\SheetData7.xml",
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Test7\PDF Files\",
-					@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Sheet Sample7.pdf"
+					DATA_FILE_FOLDER+@"SheetData7.xml",
+					DATA_FILE_FOLDER+@"Test7\PDF Files\",
+					DATA_FILE_FOLDER+@"Sheet Sample7.pdf",
+					null
 					)
 			},
+			{
+				9,
+				new Sample(9, 
+					"Temp Example 'Z' but using type 7's sheet info",
+					null, null, null, null,
+					DATA_FILE_FOLDER+@"SheetDataZ.xml",
+					DATA_FILE_FOLDER+@"Test7\PDF Files\",
+					DATA_FILE_FOLDER+@"Sheet Sample7.pdf",
+					null
+					)
+			},
+
 		};
 
-
+		private Sample selected;
 	}
 }

@@ -1,36 +1,24 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Reflection;
+﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using EnvDTE;
-using EnvDTE100;
-using EnvDTE80;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Configuration;
-using Microsoft.VisualStudio.Shell.Interop;
-using Settings;
 using ShItextCode;
 using ShSheetData;
 using ShSheetData.SheetData;
 using ShSheetData.SheetData2;
 using ShTempCode.DebugCode;
 using UtilityLibrary;
-using ShowWhere = ShTempCode.DebugCode.ShowWhere;
 using ScanPDFBoxes.Process;
 using ScanPDFBoxes.SheetData;
-using SettingsManager;
 using ShSheetData.ShSheetData2;
-using Constants = EnvDTE.Constants;
-using System.Runtime.InteropServices;
+using DebugCode;
 using ShCode;
-using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
+using ShSheetData.Support;
+using iText.StyledXmlParser.Jsoup.Select;
+using Settings;
 
 
 namespace ScanPDFBoxes
 {
-	internal class Program
+	internal class Program : IWin
 	{
 		// [0] thru [4] == program - [0] show location msg
 		// [10] thru [19] = SheetManager - [10] show location msg
@@ -43,10 +31,14 @@ namespace ScanPDFBoxes
 		// true = worked / good | false = fail / error | null = cannot proceed / config issue
 		private static bool? lastOp = null;
 
-		public const string SHEET_METRIC_FOLDER = @"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\";
+		public const string SHEET_DATA_FILE_TEST = "SheetData";
+
+		public const string SHEET_METRIC_FOLDER =
+			@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\";
 		// private static string DataFilePath { get; } = SHEET_METRIC_FOLDER + SheetDataSet.DataFileName;
 
-		private string rootPath = @"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\TestBoxes\";
+		private string rootPath =
+			@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\TestBoxes\";
 
 		// order matters
 		private string[] filesNames = new []
@@ -62,11 +54,11 @@ namespace ScanPDFBoxes
 		// public static StatCodes StatusCode { get; private set; }
 
 		public static SheetManager2 sm2;
-
-		private ShSamples ss;
-
 		private static ConfigManager cm;
 		private static ProcessManager pm;
+
+		private static ShtDataSupport sds;
+
 		// private static SheetFileManager2 sfm2;
 
 		private int dataSetIdx = 1;
@@ -82,43 +74,49 @@ namespace ScanPDFBoxes
 		private static Guid clsid = new Guid("FBD3B83F-DAC1-431E-9C22-42C3F593620D");
 		private static IntPtr unk;
 
+
+		static Program()
+		{
+			ConsoleFile.Init(
+				@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\ReadPDFText\Console.txt");
+
+			DM.init(5);
+			DM.DbxSetDefaultWhere(0, ShowWhere.DEBUG);
+			DM.DbxSetIdx(0, 0);
+		}
+
+
 		static void Main(string[] args)
 		{
 			bool repeat;
 
-			ConsoleFile.Init(@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\ReadPDFText\Console.txt");
+			Debug.WriteLine("\n".Repeat(10));
 
-			DM.configDebugMsgList();
+			PdfShowInfo.StartMsg("starting ScanPDFBoxes", $"{DateTime.Now}");
 
-			DM.dmx[0, 0] = 0;
-			DM.dmx[0, 1] = (int) ShowWhere.DEBUG;
-			DM.dmx[10, 0] = 2;
-			DM.dmx[10, 1] = (int) ShowWhere.DEBUG;
-
-			Debug.WriteLine("\n\n");
-			Debug.WriteLine("*".Repeat(30));
-
-			DM.DbxLineEx(0, "start");
+			DM.Start0();
 
 			p = new Program();
 
-			SheetFileManager2 sfm3 = new SheetFileManager2();
+			SheetFileManager2 sfm2 = new SheetFileManager2();
 
 			// sfm2 = new SheetFileManager2();
-			sm2 = new SheetManager2(sfm3);
+			sm2 = new SheetManager2(sfm2);
 
-			cm = new ConfigManager(sfm3, sm2);
+			cm = new ConfigManager(sfm2, sm2);
 
-			pm = new ProcessManager(SHEET_METRIC_FOLDER);
-			pm.ConfigSheetData();
+			// pm = new ProcessManager(SHEET_METRIC_FOLDER);
+
+			// pm.ConfigSheetData();
+
+			sds = new ShtDataSupport(sm2);
 
 			// sm2 = new SheetManager2();
 			// p.configSheetDataManager();
 
-			p.ss = new ShSamples();
+			// p.ss = new ShSamples();
 
-
-			DM.DbxLineEx(0, "ready");
+			DM.Stat0("ready");
 
 			if (lastOp.HasValue)
 			{
@@ -127,16 +125,20 @@ namespace ScanPDFBoxes
 
 			do
 			{
-				Debug.Write("\n");
-				DM.DbxSetIdx(0, 1);
+				// Debug.Write("\n");
+
 				DM.DbxLineEx(0, "main switchboard"); // reset to level 1
 
 				repeat = p.switchboardMain();
 			}
 			while (repeat);
+
+			DM.End0();
 		}
 
 		// switchboards
+		// select
+
 		private bool switchboardMain()
 		{
 			bool repeat;
@@ -144,6 +146,7 @@ namespace ScanPDFBoxes
 			bool? answer = false;
 
 			Console.Write("\n");
+
 			ShowSheetRectInfo.showStatus(ShowWhere.CONSOLE);
 
 			sbOptionMainList(0);
@@ -174,7 +177,8 @@ namespace ScanPDFBoxes
 				dataSetName = "original";
 				Tuple<string, bool?, bool?, bool?, bool?> selected = findSbOptionMain(c);
 
-				if (selected != null) DM.DbxLineEx(0, $">>> selected | {selected.Item1}  ({selected.Item2})", 1);
+				// if (selected != null) DM.DbxLineEx(0, $">>> selected | {selected.Item1}  ({selected.Item2})", 1);
+				if (selected != null) DM.Start0(true,  $"*** switchboard choice {c} | >>> selected | {selected.Item1}  ({selected.Item2})");
 
 				bool? mustHaveDataFilePath = selected?.Item2 ?? null;
 				bool? mustHaveDataFile = selected?.Item3 ?? null;
@@ -189,73 +193,52 @@ namespace ScanPDFBoxes
 
 				switch (c)
 				{
-				case "A1":
-					{
-						int choice =  switchBoardTestAdd();
-
-						answer =cm.verifyConfig(c, choice, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
-
-
-						switchAddTestOrig(choice);
-						break;
-					}
+				// case "A1":
+				// 	{
+				// 		int choice =  switchBoardTestAdd();
+				//
+				// 		if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+				// 				mustHaveSheetFileList) != true) break;
+				//
+				//
+				// 		switchAddTestOrig(choice);
+				// 		break;
+				// 	}
 				case "A2":
 					{
 						dataSetName = "new";
 
-						int choice =  switchBoardTestAdd();
+						if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+								mustHaveSheetFileList) != true) break;
 
-						answer = cm.verifyConfig(c, choice, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-
-						showStatus(true, true);
-
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
-
-						switchAddTestNew(choice);
+						processAdd_F_Alt();
 
 						break;
-
 					}
 
 				case "AA":
 					{
 						dataSetName = "new";
 
-						// int choice =  switchBoardTestAdd();
+						if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+								mustHaveSheetFileList) != true) break;
 
-						answer =cm.verifyConfig(c, scanConfigIdxNew, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-						showStatus(true, true);
-						showScanReadyStatus(answer == true);
-
-						if (answer != true) break;
 
 						processAdd1_F_Alt();
 
 						break;
-
 					}
 
-				case "L1":
-					{
-						answer = cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
-
-						dataSetIdx = 1;
-						switchBoardListTypes();
-						break;
-					}
+				// case "L1":
+				// 	{
+				// 		dataSetIdx = 1;
+				// 		switchBoardListTypes();
+				// 		break;
+				// 	}
 				case "L2":
 					{
-						answer =cm.verifyConfig(c, scanConfigIdxNew, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
+						if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+								mustHaveSheetFileList) != true) break;
 
 						dataSetName = "new";
 						dataSetIdx = 2;
@@ -264,118 +247,110 @@ namespace ScanPDFBoxes
 					}
 
 
-				case "O1":
-					{
-						answer = cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
-
-						dataSetIdx = 1;
-						break;
-					}
+				// case "O1":
+				// 	{
+				// 		if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+				// 				mustHaveSheetFileList) != true) break;
+				//
+				// 		dataSetIdx = 1;
+				// 		break;
+				// 	}
 				case "O2":
 					{
 						dataSetName = "new";
 
-						answer =cm.verifyConfig(c, scanConfigIdxNew, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						answer = cm.verifyConfig2(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+							mustHaveSheetFileList);
 
-						if (StatMgr.Current != StatCodes.SC_CFG_DATA_FILE_PATH_MISSING)
+						if (StatusMgr.Current != StatusCodes.SC_CFG_DATA_FILE_PATH_MISSING)
 						{
 							showStatus(true, true);
 							showScanReadyStatus(answer == true);
 
 							if (answer != true) break;
 						}
-						
+
 						proceedOpen2();
 
 						showStatus(true, true);
 
-						
 						dataSetIdx = 2;
 						break;
 					}
-				case "Q":
-					{
-						answer =cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
-
-						// todo fix
-						// string s = switchBoardSampleFolders();
-						// processQuery(s);
-						break;
-					}
-				case "R1":
-					{
-						answer =cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
-
-						processRemove_A();
-						break;
-					}
-				case "R3":
-					{
-						answer =cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
-
-						processRemove_B();
-						break;
-					}
+				// case "Q":
+				// 	{
+				// 		if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+				// 				mustHaveSheetFileList) != true) break;
+				//
+				// 		// todo fix
+				// 		// string s = switchBoardSampleFolders();
+				// 		// processQuery(s);
+				// 		break;
+				// 	}
+				// case "R1":
+				// 	{
+				// 		if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+				// 				mustHaveSheetFileList) != true) break;
+				//
+				// 		processRemove_A();
+				// 		break;
+				// 	}
+				// case "R3":
+				// 	{
+				// 		if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+				// 				mustHaveSheetFileList) != true) break;
+				//
+				// 		processRemove_B();
+				// 		break;
+				// 	}
 
 				case "R2":
 					{
 						dataSetName = "new";
 
-						answer =cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-						showStatus(true, true);
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
+						if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+								mustHaveSheetFileList) != true) break;
 
 						processRemove2();
 						break;
 					}
 
-				case "C1":
+				case "RR":
 					{
-						answer =cm.verifyConfig(c, scanConfigIdxOrig, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+						if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+								mustHaveSheetFileList) != true) break;
 
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
-
-						proceedClose1();
+						// dataSetIdx = 1;
+						switchBoardReports();
 						break;
 					}
+
+				// case "C1":
+				// 	{
+				// 		if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+				// 				mustHaveSheetFileList) != true) break;
+				//
+				// 		proceedClose1();
+				// 		break;
+				// 	}
 				case "C2":
 					{
 						dataSetName = "new";
 
-						answer =cm.verifyConfig(c, scanConfigIdxNew, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
+						if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+								mustHaveSheetFileList) != true) break;
 
 						proceedClose2();
 						break;
 					}
 
-				case "1":
-					{
-						// original reset list
-						answer = cm.verifyConfig(c, -1, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
-
-						proceedReset1();
-						break;
-					}
+				// case "1":
+				// 	{
+				// 		if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+				// 				mustHaveSheetFileList) != true) break;
+				// 		proceedReset1();
+				// 		break;
+				// 	}
 				case "I2":
 					{
 						dataSetName = "new";
@@ -387,6 +362,45 @@ namespace ScanPDFBoxes
 						break;
 					}
 
+				case "IS":
+					{
+						dataSetName = "new";
+
+						if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+								mustHaveSheetFileList) != true) break;
+
+						// int choice =  switchBoardTestAdd();
+						//
+						// if (choice < 0) break;
+
+						answer = cm.initialize(c, 100);
+
+						showStatus(true, true);
+						showScanReadyStatus(answer == true);
+						showInitStatus();
+						break;
+					}
+
+				case "T0":
+					{
+						dataSetName = "new";
+
+						if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+								mustHaveSheetFileList) != true) break;
+
+						processCreateTestFile();
+
+						break;
+					}
+
+				case "T1":
+					{
+						dataSetName = "new";
+
+						proceedQuery2();
+						break;
+					}
+
 				case "T2":
 					{
 						dataSetName = "new";
@@ -395,18 +409,32 @@ namespace ScanPDFBoxes
 						break;
 					}
 
+				case "0":
+					{
+						dataSetName = "new";
+
+						if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+								mustHaveSheetFileList) != true) break;
+
+						proceedFullReset2();
+						break;
+					}
+
 				case "2":
 					{
 						dataSetName = "new";
 
 						// new reset the data manager
-						answer =cm.verifyConfig(c, -1, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+
+						answer = cm.verifyConfig2(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+							mustHaveSheetFileList);
+
 						showStatus(true, true);
 						showScanReadyStatus(answer == true);
+
 						showInitStatus();
 						if (answer != true) break;
 
-						
 						proceedResetDataManager2();
 						break;
 					}
@@ -414,28 +442,35 @@ namespace ScanPDFBoxes
 					{
 						dataSetName = "new";
 
-						// new reset the data manager
-						answer =cm.verifyConfig(c, -1, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-						showStatus(true, true);
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
+						if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+								mustHaveSheetFileList) != true) break;
 
 						proceedResetDataFile2();
 						break;
 					}
+
 				case "6":
 					{
 						dataSetName = "new";
 
-						// new reset the data manager
-						answer =cm.verifyConfig(c, -1, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
-						showStatus(true, true);
-						showScanReadyStatus(answer == true);
-						if (answer != true) break;
+						if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+								mustHaveSheetFileList) != true) break;
 
-						proceedFullReset2();
+						proceedResetSheetFileManager();
 						break;
 					}
+
+				case "8":
+					{
+						dataSetName = "new";
+
+						if (verifyConfig(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+								mustHaveSheetFileList) != true) break;
+
+						proceedResetForNewSheets();
+						break;
+					}
+
 				case "X":
 					{
 						result = false;
@@ -457,6 +492,19 @@ namespace ScanPDFBoxes
 			Console.Write("\n");
 
 			return result;
+		}
+
+		private bool verifyConfig(string c, bool? mustHaveDataFilePath, bool? mustHaveDataFile,
+			bool? mustHaveDataFileSheets,
+			bool? mustHaveSheetFileList)
+		{
+			bool answer = cm.verifyConfig2(c, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets,
+				mustHaveSheetFileList);
+
+			showStatus(true, true);
+			showScanReadyStatus(answer == true);
+
+			return answer;
 		}
 
 		private void switchBoardListTypes()
@@ -502,12 +550,56 @@ namespace ScanPDFBoxes
 
 			bool result = Int32.TryParse(c, out i);
 
+			if (!result) i = -1;
+
 			return i;
+		}
+
+		private void switchBoardReports()
+		{
+			bool repeat = true;
+			string selected = "";
+			string c = "";
+
+			Console.Write("\n");
+			Console.WriteLine($"*** {dataSetName} data set ***");
+
+			do
+			{
+				sbOptionMinorList(2);
+
+				c = Console.ReadKey().KeyChar.ToString().ToUpper();
+
+				Console.Write($"{c}\n\n");
+				if (c.Equals("X")) return;
+
+				selected = findSbOptionMinor(c)?.Item1;
+
+				if (selected == null)
+				{
+					Console.WriteLine("invalid selection - try again\n");
+				} else
+				{
+					repeat = false;
+				}
+			}
+			while (repeat);
+
+			if (selected != null) DM.DbxLineEx(0, $">>> selected | {selected}", 1);
+
+			if (c.Equals("1")) showBoxTypes();
+			else if (c.Equals("2")) showLocations();
+			else if (c.Equals("3")) sds.ShowClassifFiles(this);
+			else if (c.Equals("4")) sds.ShowShtMetricFiles(this);
+			else if (c.Equals("5")) sds.ShowScanSamples(this);
+			else if (c.Equals("6")) sds.ShowAssemblySamples(this);
+
+			if (selected != null) DM.DbxLineEx(0, $"<<< selected | {selected}", -1);
 		}
 
 		private bool switchboardSelectShtDataFile()
 		{
-			DM.DbxLineEx(0,"start", 1);
+			DM.DbxLineEx(0, "start", 1);
 
 			int i;
 			int idx = 1;
@@ -533,10 +625,10 @@ namespace ScanPDFBoxes
 
 			if (c.Equals("X"))
 			{
-				DM.DbxLineEx(0,"end 1", 0, -1);
+				DM.DbxLineEx(0, "end 1", 0, -1);
 				return false;
 			}
-			
+
 			Console.Write("\n\n");
 
 			bool result = Int32.TryParse(c, out i);
@@ -546,62 +638,62 @@ namespace ScanPDFBoxes
 				sbSelecteItem = items[i];
 			}
 
-			DM.DbxLineEx(0,"end", 0, -1);
+			DM.DbxLineEx(0, "end", 0, -1);
 
 			return result;
 		}
 
-		private void switchAddTestOrig(int c)
-		{
-			string selected = sbOptionsMinor[1][c.ToString()].Item1;
-
-			if (selected != null) DM.DbxLineEx(0, $">>> selected | {selected}", 1);
-
-			Console.Write("\n");
-
-			switch (c)
-			{
-			case 1:
-				{
-					processAdd_A();
-					break;
-				}
-			case 2:
-				{
-					processAdd_B();
-					break;
-				}
-			case 3:
-				{
-					processAdd_C();
-					break;
-				}
-			case 4:
-				{
-					processAdd_D();
-					break;
-				}
-			case 5:
-				{
-					processAdd_E();
-					break;
-				}
-			case 7:
-				{
-					processAdd_F();
-					break;
-				}
-			default:
-				{
-					Console.WriteLine("\n*****************\nInvalid Entry\n***************\n");
-					break;
-				}
-			}
-
-			Console.Write("\n");
-
-			if (selected != null) DM.DbxLineEx(0, $"<<< selected | {selected}", -1);
-		}
+		// private void switchAddTestOrig(int c)
+		// {
+		// 	string selected = sbOptionsMinor[1][c.ToString()].Item1;
+		//
+		// 	if (selected != null) DM.DbxLineEx(0, $">>> selected | {selected}", 1);
+		//
+		// 	Console.Write("\n");
+		//
+		// 	switch (c)
+		// 	{
+		// 	case 1:
+		// 		{
+		// 			processAdd_A();
+		// 			break;
+		// 		}
+		// 	case 2:
+		// 		{
+		// 			processAdd_B();
+		// 			break;
+		// 		}
+		// 	case 3:
+		// 		{
+		// 			processAdd_C();
+		// 			break;
+		// 		}
+		// 	case 4:
+		// 		{
+		// 			processAdd_D();
+		// 			break;
+		// 		}
+		// 	case 5:
+		// 		{
+		// 			processAdd_E();
+		// 			break;
+		// 		}
+		// 	case 7:
+		// 		{
+		// 			processAdd_F();
+		// 			break;
+		// 		}
+		// 	default:
+		// 		{
+		// 			Console.WriteLine("\n*****************\nInvalid Entry\n***************\n");
+		// 			break;
+		// 		}
+		// 	}
+		//
+		// 	Console.Write("\n");
+		//
+		// 	if (selected != null) DM.DbxLineEx(0, $"<<< selected | {selected}", -1);
+		// }
 
 		private void switchAddTestNew(int c)
 		{
@@ -660,78 +752,113 @@ namespace ScanPDFBoxes
 			if (selected != null) DM.DbxLineEx(0, $"<<< selected | {selected}", -1);
 		}
 
-		// config
+		private bool switchBoardGetBoxCount(out int[] stdBoxes, out int optBoxes)
+		{
+			stdBoxes = new [] { 1 };
+			optBoxes = 1;
+
+			Console.Write("\n");
+			Console.WriteLine($"*** choose which quantity of temp boxes ***");
+
+			sbOptionMinorList(3);
+
+			string c = Console.ReadKey().KeyChar.ToString().ToUpper();
+
+			Console.Write($"{c}\n\n");
+
+			if (c.Equals('X')) return false;
+
+			stdBoxes = selectTempStdBoxs(c);
+
+			optBoxes = selectTempOptBoxes();
+
+			return true;
+		}
+
+		public void DebugMsgLine(string msg)
+		{
+			Debug.WriteLine(msg);
+
+		}
+		public void DebugMsg(string msg)
+		{
+			Debug.Write(msg);
+		}
+
+
+		// config - setup
 
 		// setup
+		//
+		// private void processAdd_C()
+		// {
+		// 	Console.WriteLine("\n*** Add Files C ***");
+		// 	// ShowSheetRectInfo.showStatus(ShowWhere.CONSOLE);
+		// 	Console.WriteLine("Adding a file that does not exists ***");
+		//
+		// 	p.getFiles2();
+		//
+		// 	p.proceedAdd();
+		// }
+		//
+		// private void processAdd_B()
+		// {
+		// 	Console.WriteLine("\n*** Add Files B ***");
+		// 	// ShowSheetRectInfo.showStatus(ShowWhere.CONSOLE);
+		// 	Console.WriteLine("Adding a file that exists ***");
+		//
+		// 	p.getFiles4();
+		//
+		// 	p.proceedAdd();
+		// }
+		//
+		// private void processAdd_A()
+		// {
+		// 	Console.WriteLine("\n*** Add Files A ***");
+		// 	// ShowSheetRectInfo.showStatus(ShowWhere.CONSOLE);
+		// 	Console.WriteLine("Adding all files ***");
+		//
+		// 	p.getFiles1();
+		//
+		// 	p.proceedAdd();
+		// }
+		//
+		// private void processAdd_D()
+		// {
+		// 	Console.WriteLine("\n*** Add Files D ***");
+		// 	// ShowSheetRectInfo.showStatus(ShowWhere.CONSOLE);
+		// 	Console.WriteLine("Adding all files ***");
+		//
+		// 	p.getFiles_D();
+		//
+		// 	p.proceedAdd();
+		// }
+		//
+		// private void processAdd_E()
+		// {
+		// 	Console.WriteLine("\n*** Add Files E ***");
+		// 	// ShowSheetRectInfo.showStatus(ShowWhere.CONSOLE);
+		// 	Console.WriteLine("Adding all files ***");
+		//
+		// 	p.getFiles_R2();
+		//
+		// 	p.proceedAdd();
+		// }
+		//
+		// private void processAdd_F()
+		// {
+		// 	Console.WriteLine("\n*** Add Files F ***");
+		// 	Console.WriteLine("Adding all files ***");
+		//
+		// 	// init.
+		// 	//
+		// 	// string idx = switchBoardSampleFolders();
+		// 	//
+		// 	// configSampleFiles(idx);
+		//
+		// 	proceedAdd();
+		// }
 
-		private void processAdd_C()
-		{
-			Console.WriteLine("\n*** Add Files C ***");
-			// ShowSheetRectInfo.showStatus(ShowWhere.CONSOLE);
-			Console.WriteLine("Adding a file that does not exists ***");
-
-			p.getFiles2();
-
-			p.proceedAdd();
-		}
-
-		private void processAdd_B()
-		{
-			Console.WriteLine("\n*** Add Files B ***");
-			// ShowSheetRectInfo.showStatus(ShowWhere.CONSOLE);
-			Console.WriteLine("Adding a file that exists ***");
-
-			p.getFiles4();
-
-			p.proceedAdd();
-		}
-
-		private void processAdd_A()
-		{
-			Console.WriteLine("\n*** Add Files A ***");
-			// ShowSheetRectInfo.showStatus(ShowWhere.CONSOLE);
-			Console.WriteLine("Adding all files ***");
-
-			p.getFiles1();
-
-			p.proceedAdd();
-		}
-
-		private void processAdd_D()
-		{
-			Console.WriteLine("\n*** Add Files D ***");
-			// ShowSheetRectInfo.showStatus(ShowWhere.CONSOLE);
-			Console.WriteLine("Adding all files ***");
-
-			p.getFiles_D();
-
-			p.proceedAdd();
-		}
-
-		private void processAdd_E()
-		{
-			Console.WriteLine("\n*** Add Files E ***");
-			// ShowSheetRectInfo.showStatus(ShowWhere.CONSOLE);
-			Console.WriteLine("Adding all files ***");
-
-			p.getFiles_R2();
-
-			p.proceedAdd();
-		}
-
-		private void processAdd_F()
-		{
-			Console.WriteLine("\n*** Add Files F ***");
-			Console.WriteLine("Adding all files ***");
-
-			// init.
-			//
-			// string idx = switchBoardSampleFolders();
-			//
-			// configSampleFiles(idx);
-
-			proceedAdd();
-		}
 
 		private void processAdd_F_Alt()
 		{
@@ -771,96 +898,107 @@ namespace ScanPDFBoxes
 			DM.DbxLineEx(0, "end", 0, -1);
 		}
 
-
-
-		private void testEnumerators()
-		{
-			Debug.WriteLine($"\n\nname list ({SheetDataManager.Data.SheetRectangles.Count})\n");
-
-
-			foreach (KeyValuePair<string, SheetRects> kvp in SheetDataManager.GetSheets())
-			{
-				string s = kvp.Value.Name;
-				Debug.WriteLine($"{s}");
-			}
-
-			string fname = Path.GetFileNameWithoutExtension(filesNames[4]);
-
-			Debug.WriteLine($"\n\nrect list ({SheetDataManager.Data.SheetRectangles[fname].ShtRects.Count})\n");
-
-			foreach (KeyValuePair<SheetRectId, SheetRectData<SheetRectId>> kvp in SheetDataManager.GetRects(fname))
-			{
-				string s = kvp.Value.Id.ToString();
-				Debug.WriteLine($"{s}");
-			}
-		}
-
-		private void processRemove_A()
-		{
-			Console.WriteLine("\n*** Remove Files A ***");
-
-			p.getFiles3();
-
-			proceedRemove1();
-		}
-
-		private void processRemove_B()
-		{
-			Console.WriteLine("\n*** Remove Files B ***");
-
-			p.getFiles_R2();
-
-			proceedRemove1();
-		}
-
-		private void processQuery(string idx)
-		{
-			// configSampleFiles(idx);
-
-			proceedQuery1();
-		}
+		// private void testEnumerators()
+		// {
+		// 	Debug.WriteLine($"\n\nname list ({SheetDataManager.Data.SheetRectangles.Count})\n");
+		//
+		//
+		// 	foreach (KeyValuePair<string, SheetRects> kvp in SheetDataManager.GetSheets())
+		// 	{
+		// 		string s = kvp.Value.Name;
+		// 		Debug.WriteLine($"{s}");
+		// 	}
+		//
+		// 	string fname = Path.GetFileNameWithoutExtension(filesNames[4]);
+		//
+		// 	Debug.WriteLine($"\n\nrect list ({SheetDataManager.Data.SheetRectangles[fname].ShtRects.Count})\n");
+		//
+		// 	foreach (KeyValuePair<SheetRectId, SheetRectData<SheetRectId>> kvp in SheetDataManager.GetRects(fname))
+		// 	{
+		// 		string s = kvp.Value.Id.ToString();
+		// 		Debug.WriteLine($"{s}");
+		// 	}
+		// }
+		//
+		// private void processRemove_A()
+		// {
+		// 	Console.WriteLine("\n*** Remove Files A ***");
+		//
+		// 	p.getFiles3();
+		//
+		// 	proceedRemove1();
+		// }
+		//
+		// private void processRemove_B()
+		// {
+		// 	Console.WriteLine("\n*** Remove Files B ***");
+		//
+		// 	p.getFiles_R2();
+		//
+		// 	proceedRemove1();
+		// }
+		//
+		// private void processQuery(string idx)
+		// {
+		// 	// configSampleFiles(idx);
+		//
+		// 	proceedQuery1();
+		// }
 
 		private void processRemove2()
 		{
-			DM.DbxLineEx(0,"start", 1);
+			DM.DbxLineEx(0, "start", 1);
 
 			if (!switchboardSelectShtDataFile()) return;
 
-			DM.DbxLineEx(0,$"*** selected for removal {sbSelecteItem}");
+			DM.DbxLineEx(0, $"*** selected for removal {sbSelecteItem}");
 
 			proceedRemove2(sbSelecteItem);
 
-			DM.DbxLineEx(0,"end", 0, -1);
+			DM.DbxLineEx(0, "end", 0, -1);
+		}
+
+		private void processCreateTestFile()
+		{
+			int shtQty;
+			int[] stdBoxes;
+			int optBoxes;
+
+			if (!selectTempShtQty(out shtQty)) return;
+
+			if (!switchBoardGetBoxCount(out stdBoxes, out optBoxes)) return;
+
+			proceedCreateTestFile(shtQty, stdBoxes, optBoxes);
 		}
 
 		// action
 
 		// dataset 1
 
-		private void proceedAdd()
-		{
-			lastOp = pm.ScanSheets(files);
-		}
-
-		private void proceedRemove1()
-		{
-			lastOp = pm.RemoveSheets(files);
-		}
-
-		private void proceedQuery1()
-		{
-			pm.QuerySheets(files);
-		}
-
-		private void proceedClose1()
-		{
-			pm.Close();
-		}
-
-		private void proceedReset1()
-		{
-			pm.Reset();
-		}
+		// private void proceedAdd()
+		// {
+		// 	lastOp = pm.ScanSheets(files);
+		// }
+		//
+		// private void proceedRemove1()
+		// {
+		// 	lastOp = pm.RemoveSheets(files);
+		// }
+		//
+		// private void proceedQuery1()
+		// {
+		// 	pm.QuerySheets(files);
+		// }
+		//
+		// private void proceedClose1()
+		// {
+		// 	pm.Close();
+		// }
+		//
+		// private void proceedReset1()
+		// {
+		// 	pm.Reset();
+		// }
 
 
 		// dataset 2
@@ -881,7 +1019,7 @@ namespace ScanPDFBoxes
 
 		private void proceedOpen2()
 		{
-			SetStatus(StatCodes.SC_G_NONE);
+			SetStatus(StatusCodes.SC_G_NONE);
 
 			lastOp = sm2.OpenDataManager();
 
@@ -893,6 +1031,37 @@ namespace ScanPDFBoxes
 			lastOp = sm2.CloseDataManager();
 
 			showLastOpResult();
+		}
+
+		private void proceedQuery2()
+		{
+			SetStatus(StatusCodes.SC_G_NONE);
+
+			DM.DbxLineEx(0, $"start", 1);
+
+			if (!cm.configSheetPdfScanFiles(1))
+			{
+				showStatus(true);
+				SetStatus(StatusCodes.SC_RUN_LOAD_SHT_DATA_FILES_FAIL);
+				DM.DbxLineEx(0, "end 1", 0, -1);
+				return;
+			}
+
+			sm2.QueryShts();
+
+			SetStatus(StatusCodes.SC_G_GOOD);
+		}
+
+		// T0
+		private void proceedCreateTestFile(int shtQty, int[] stdBoxes, int optBoxes)
+		{
+			DM.Start0();
+
+			SetStatus(StatusCodes.SC_G_NONE);
+
+			sds.createTempSheetFile(shtQty, stdBoxes, optBoxes);
+
+			DM.End0();
 		}
 
 		/// <summary>
@@ -918,6 +1087,24 @@ namespace ScanPDFBoxes
 			DM.DbxLineEx(0, "start");
 
 			sm2.ResetFull();
+
+			DM.DbxLineEx(0, "end", 0, -1);
+		}
+
+		private void proceedResetSheetFileManager()
+		{
+			DM.DbxLineEx(0, "start");
+
+			sm2.ResetShtFileMgr();
+
+			DM.DbxLineEx(0, "end", 0, -1);
+		}
+
+		private void proceedResetForNewSheets()
+		{
+			DM.DbxLineEx(0, "start");
+
+			sm2.ResetForNewSheets();
 
 			DM.DbxLineEx(0, "end", 0, -1);
 		}
@@ -1197,7 +1384,6 @@ namespace ScanPDFBoxes
 			files[2] = rootPath + "no file.pdf";
 		}
 
-
 		// remove 2 - good - works
 		private void getFiles_R2()
 		{
@@ -1212,7 +1398,6 @@ namespace ScanPDFBoxes
 
 			files[0] = rootPath + filesNames[4];
 		}
-
 
 		// helpers
 
@@ -1231,15 +1416,15 @@ namespace ScanPDFBoxes
 			return s1;
 		}
 
-		private void SetStatus(StatCodes code,  string note = null,
+		private void SetStatus(StatusCodes code,  string note = null,
 			[CallerMemberName] string mx = null)
 		{
-			StatMgr.SetStatCode(code, note, mx);
+			StatusMgr.SetStatCode(code, note, mx);
 		}
 
 		private void showStatus(bool showFrom = false, bool showOk = false)
 		{
-			StatMgr.ShowStatus(showFrom, showOk);
+			StatusMgr.ShowStatus(showFrom, showOk);
 		}
 
 		private void showScanReadyStatus(bool which)
@@ -1261,7 +1446,7 @@ namespace ScanPDFBoxes
 
 		private void showInitStatus()
 		{
-			DM.DbxLineEx(0, "start", 1);		// 1, 1
+			DM.DbxLineEx(0, "start", 1); // 1, 1
 
 			int tw = -30;
 			int max = 30;
@@ -1271,29 +1456,40 @@ namespace ScanPDFBoxes
 
 			try
 			{
-				DM.DbxLineEx(0, "sfm2 (SheetFileManager2", 1);   // 1, 1
-				DM.DbxLineEx(0, "data manager", 1);   // 2, 3
-				// Debug.Write("\n");
-				DM.DbxLineEx(0, "status", 1, 1);
 
-				DM.DbxEx(0, $"{(string.Format(fmt, "GotDataFile"))}| {sm2.GotDataFile?.ToString() ?? "null",-10}");
-				Debug.WriteLine("(data file path not null & data file path exists)");
+				DM.Stat0("sfm2 (SheetFileManager2");
+				DM.DbxInc0();
+				DM.Stat0("data manager");
+				DM.DbxInc0();
+				DM.Stat0("status");
+				DM.DbxInc0();
+				DM.Stat0( $"{(string.Format(fmt, "GotDataFile"))}| {sm2.GotDataFile?.ToString() ?? "null",-10} (data file path not null & data file path exists)");
+
+				// DM.DbxLineEx(0, "sfm2 (SheetFileManager2", 1); // 1, 1
+				// DM.DbxLineEx(0, "data manager", 1);            // 2, 3
+				// // Debug.Write("\n");
+				// DM.DbxLineEx(0, "status", 1, 1);
+				//
+				// DM.DbxEx(0, $"{(string.Format(fmt, "GotDataFile"))}| {sm2.GotDataFile?.ToString() ?? "null",-10}");
+				// Debug.WriteLine("(data file path not null & data file path exists)");
+
+
 
 				DM.DbxEx(0, $"{(string.Format(fmt, "GotDataFilePath"))}| {sm2.GotDataFilePath,-10}");
 				Debug.WriteLine($"(data file path is not null)");
 
 				DM.DbxLineEx(0, "");
-
-				// Debug.Write("\n");
-				DM.DbxLineEx(0, "values", -1, 1);
-
-				DM.DbxLineEx(0, $"{(string.Format(fmt, "DataFilePath"))}| {sm2.DataFilePath?.FolderPath ?? "null"}");
+				//
+				// // Debug.Write("\n");
+				// DM.DbxLineEx(0, "values", -1, 1);
+				//
+				// DM.DbxLineEx(0, $"{(string.Format(fmt, "DataFilePath"))}| {sm2.DataFilePath?.FolderPath ?? "null"}");
 
 				// DM.DbxLineEx(0, "", -1);
 				DM.DbxLineEx(0, "");
 
 				// Debug.Write("\n");
-				DM.DbxLineEx(0, "sheet file", -2);
+				DM.DbxLineEx(0, "sheet file", -1);
 				// Debug.Write("\n");
 				DM.DbxLineEx(0, "status", 1, 1);
 
@@ -1312,7 +1508,8 @@ namespace ScanPDFBoxes
 				DM.DbxLineEx(0, "values", -1, 1);
 
 				DM.DbxLineEx(0, $"{(string.Format(fmt, "SheetFileFolder"))}| {sm2.SheetFileFolder ?? "null"}");
-				DM.DbxLineEx(0, $"{(string.Format(fmt, "SheetFileList"))}| {sm2.SheetFileList?.Count.ToString() ?? "null"}");
+				DM.DbxLineEx(0,
+					$"{(string.Format(fmt, "SheetFileList"))}| {sm2.SheetFileList?.Count.ToString() ?? "null"}");
 
 				DM.DbxLineEx(0, "");
 				// Debug.Write("\n");
@@ -1329,18 +1526,21 @@ namespace ScanPDFBoxes
 				DM.DbxEx(0, $"{(string.Format(fmt, "GotDataSheets"))}| {SheetDataManager2.GotDataSheets,-10}");
 				Debug.WriteLine("(data list exists and count > 0)");
 
-				DM.DbxEx(0, $"{(string.Format(fmt, "SettingsFileExists"))}| {SheetDataManager2.SettingsFileExists,-10}");
+				DM.DbxEx(0,
+					$"{(string.Format(fmt, "SettingsFileExists"))}| {SheetDataManager2.SettingsFileExists,-10}");
 				Debug.WriteLine("(file path configured and file exists)");
 
-				DM.DbxEx(0, $"{(string.Format(fmt, "Admin.Status"))}| {SheetDataManager2.Admin?.Status.ToString() ?? "null",-10}");
+				DM.DbxEx(0,
+					$"{(string.Format(fmt, "Admin.Status"))}| {SheetDataManager2.Admin?.Status.ToString() ?? "null",-10}");
 				Debug.WriteLine("(internal status)");
 
 				DM.DbxLineEx(0, "");
 
 				// Debug.Write("\n");
-				DM.DbxLineEx(0, "values",-1, 1);
+				DM.DbxLineEx(0, "values", -1, 1);
 
-				DM.DbxLineEx(0, $"{(string.Format(fmt, "SettingFilePath"))}| {SheetDataManager2.Path?.SettingFilePath ?? "null"}");
+				DM.DbxLineEx(0,
+					$"{(string.Format(fmt, "SettingFilePath"))}| {SheetDataManager2.Path?.SettingFilePath ?? "null"}");
 
 				// DM.DbxLineEx(0, "", -1);
 				DM.DbxLineEx(0, "", -3);
@@ -1354,11 +1554,10 @@ namespace ScanPDFBoxes
 			DM.DbxLineEx(0, "end", 0, -1);
 		}
 
-		private void showLastOpResult()
+		private bool? showLastOpResult()
 		{
 			if (lastOp == false)
 			{
-				Console.WriteLine("\n*** FAILED ***");
 				Console.WriteLine("\n*** FAILED ***");
 			}
 			else if (lastOp == true)
@@ -1369,6 +1568,8 @@ namespace ScanPDFBoxes
 			{
 				Console.WriteLine("\n*** NOT CONFIGURED ***");
 			}
+
+			return lastOp;
 		}
 
 		private string getWhichDataSet()
@@ -1393,14 +1594,14 @@ namespace ScanPDFBoxes
 
 			ShowSheetRectInfo.StartMsg($"Basic Rectangles ({which})", ShowWhere.CONSOLE, DateTime.Now.ToString());
 
-			if (dataSetIdx == 1)
-			{
-				ShowSheetRectInfo.showShtRects(ShowWhere.CONSOLE);
-			}
-			else
-			{
-				ShowSheetRectInfo.showShtRects2(ShowWhere.CONSOLE);
-			}
+			// if (dataSetIdx == 1)
+			// {
+			// 	ShowSheetRectInfo.showShtRects(ShowWhere.CONSOLE);
+			// }
+			// else
+			// {
+			// }
+			ShowSheetRectInfo.showShtRects2(ShowWhere.CONSOLE);
 		}
 
 		private void showRectValues()
@@ -1409,14 +1610,14 @@ namespace ScanPDFBoxes
 
 			ShowSheetRectInfo.StartMsg($"All Rectangle Values ({which})", ShowWhere.CONSOLE, DateTime.Now.ToString());
 
-			if (dataSetIdx == 1)
-			{
-				ShowSheetRectInfo.ShowValues(ShowWhere.CONSOLE);
-			}
-			else
-			{
-				ShowSheetRectInfo.ShowValues2(ShowWhere.CONSOLE);
-			}
+			// if (dataSetIdx == 1)
+			// {
+			// 	ShowSheetRectInfo.ShowValues(ShowWhere.CONSOLE);
+			// }
+			// else
+			// {
+			// }
+			ShowSheetRectInfo.ShowValues2(ShowWhere.CONSOLE);
 		}
 
 		private void showSheetNames()
@@ -1425,16 +1626,125 @@ namespace ScanPDFBoxes
 
 			ShowSheetRectInfo.StartMsg($"Sheet Names ({which})", ShowWhere.CONSOLE, DateTime.Now.ToString());
 
-			if (dataSetIdx == 1)
-			{
-				ShowSheetRectInfo.ShowSheetNames(ShowWhere.CONSOLE);
-			}
-			else
-			{
-				ShowSheetRectInfo.ShowSheetNames2(ShowWhere.CONSOLE);
-			}
+			// if (dataSetIdx == 1)
+			// {
+			// 	ShowSheetRectInfo.ShowSheetNames(ShowWhere.CONSOLE);
+			// }
+			// else
+			// {
+			// }
+			ShowSheetRectInfo.ShowSheetNames2(ShowWhere.CONSOLE);
 		}
 
+		private void showBoxTypes()
+		{
+			ShowInfo. showRectIdXrefInfo();
+		}
+
+		private void showLocations()
+		{
+			SettingsManager.FileLocationSupport.ShowLocations(this);
+		}
+
+		private void showClassifFiles()
+		{
+
+		}
+
+		private void showShtMetricFiles()
+		{
+
+		}
+
+		private int[] selectTempStdBoxs(string c)
+		{
+			int[] stdBoxes;
+
+			switch (c)
+			{
+			case "A":
+				{
+					stdBoxes = new int[] { 1};
+					break;
+				}
+			case "B":
+				{
+					stdBoxes = new int[] { 1, 2, 3, 4, 5 };
+					break;
+				}
+			case "C":
+				{
+					stdBoxes = new int[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+					break;
+				}
+			case "Z":
+				{
+					stdBoxes = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 13};
+					break;
+				}
+			default:
+				{
+					stdBoxes = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+					break;
+				}
+			}
+
+			return stdBoxes;
+		}
+
+		private int selectTempOptBoxes()
+		{
+			int i;
+
+			Console.Write("\n");
+			Console.WriteLine($"*** enter the quantity of optional boxes (0 through 9) ***");
+
+			Console.Write("quantity > ");
+
+			string c = Console.ReadKey().KeyChar.ToString().ToUpper();
+
+			Console.WriteLine($"{c}\n");
+
+			bool result = Int32.TryParse(c, out i);
+
+			if (!result) return 0;
+
+			return i;
+		}
+
+		private bool selectTempShtQty(out int qty)
+		{
+			int i = 0;
+			qty = -1;
+
+			Console.Write("\n");
+
+			do
+			{
+				Console.Write("\n");
+				Console.WriteLine($"*** enter the quantity of temp sheets (1 through 5) ***");
+
+				Console.Write("quantity > ");
+
+				string c = Console.ReadKey().KeyChar.ToString().ToUpper();
+
+				Console.WriteLine($"{c}");
+
+				if (c.Equals("X")) return false;
+
+				bool result = Int32.TryParse(c, out i);
+
+				if (!result) i = -1;
+
+			}
+			while (i <= 0 || i > 5);
+
+			qty = i;
+
+			return true;
+		}
+
+		// private static
 
 		private static void sbOptionMainList(int idx)
 		{
@@ -1477,6 +1787,8 @@ namespace ScanPDFBoxes
 					Console.WriteLine($"> {kvp.Key,-4}| *** {kvp.Value.Item1} ***");
 				}
 			}
+
+			Console.Write("choose > ");
 		}
 
 		private static new Tuple<string, bool?, bool?, bool?, bool?> findSbOptionMain(string selected)
@@ -1497,6 +1809,8 @@ namespace ScanPDFBoxes
 			return value;
 		}
 
+	// @formatter:off — disable formatter after this line
+		
 		// first bool? == data file path must exist (item 2 - mustHaveDataFilePath)
 		//		null == ignore / na / do not test | true == path must be assigned | false == path should not be assigned (should not occur)
 		// second bool? == data file must exist (item 3 - mustHaveDataFile)
@@ -1510,23 +1824,39 @@ namespace ScanPDFBoxes
 			// main switchboard / idx = 0
 			new Dictionary<string, Tuple<string, bool?, bool?, bool?, bool?>>()
 			{
-				//                                                                                       data  data   data  sheet
-				//                                                                                       file  file   file  file
+    
+				//                                                                                        +------------------------- data file path (the path and filename of the xml file)
+				//                                                                                        |                             true = the path to the data file is configured and valid
+				//                                                                                        |                             false & null = ignore path does not matter
+				//                                                                                        |                             
+				//                                                                                        |     +------------------- data file (data file opened and read)
+				//                                                                                        |     |                       (data file path must be true and pass)
+				//                                                                                        |     |                    |  null = sheet count >= 0 if yes, must be 0 if data file shts == false
+				//                                                                                        |     |       +--------->  |  true = sheet count >= 0 if yes, if data file shts != null , must have data sheets
+				//                                                                                        |     |       |               false = ignore
+				//                                                                                        |     |       |                
+				//                                                                                        v     v       v               
+				//                                                                                       data  data   data  sheet <- sheet file list = true, must have sheet file folder and, if true, must have sheet file list
+				//                                                                                       file  file   file  file          not true, ignore
 				//                                                                                       path         shts  list
-				{ ">01", new Tuple<string, bool?, bool?, bool?, bool?>("original data file options"    , null, null,  null, null) },
-				{ "A1" , new Tuple<string, bool?, bool?, bool?, bool?>("Add Tests Original"            , true, false, null, true) },
-				{ "R1" , new Tuple<string, bool?, bool?, bool?, bool?>("Remove Sheet (fail - no match)", true, true,  true, false) },
-				{ "R3" , new Tuple<string, bool?, bool?, bool?, bool?>("Remove Sheet (good - match)"   , true, true,  true, false) },
-				{ "Q"  , new Tuple<string, bool?, bool?, bool?, bool?>("Query orig sheet list"         , true, true,  true, false) },
-				{ "O1" , new Tuple<string, bool?, bool?, bool?, bool?>("Open orig sheet types"         , true, true,  null, false) },
-				{ "L1" , new Tuple<string, bool?, bool?, bool?, bool?>("List orig sheet types"         , true, true,  true, false) },
-				{ "C1" , new Tuple<string, bool?, bool?, bool?, bool?>("Close the orig data file"      , true, true,  null, null) },
-				{ "1"  , new Tuple<string, bool?, bool?, bool?, bool?>("Reset the orig list"           , true, true,  null, false) },
+				// { ">01", new Tuple<string, bool?, bool?, bool?, bool?>("original data file options"    , null, null,  null, null) },
+				// { "A1" , new Tuple<string, bool?, bool?, bool?, bool?>("Add Tests Original"            , true, false, null, true) },
+				// { "R1" , new Tuple<string, bool?, bool?, bool?, bool?>("Remove Sheet (fail - no match)", true, true,  true, false) },
+				// { "R3" , new Tuple<string, bool?, bool?, bool?, bool?>("Remove Sheet (good - match)"   , true, true,  true, false) },
+				// { "Q"  , new Tuple<string, bool?, bool?, bool?, bool?>("Query orig sheet list"         , true, true,  true, false) },
+				// { "O1" , new Tuple<string, bool?, bool?, bool?, bool?>("Open orig sheet types"         , true, true,  null, false) },
+				// { "L1" , new Tuple<string, bool?, bool?, bool?, bool?>("List orig sheet types"         , true, true,  true, false) },
+				// { "C1" , new Tuple<string, bool?, bool?, bool?, bool?>("Close the orig data file"      , true, true,  null, null) },
+				// { "1"  , new Tuple<string, bool?, bool?, bool?, bool?>("Reset the orig list"           , true, true,  null, false) },
 
 				{ ">02", new Tuple<string, bool?, bool?, bool?, bool?>("new list options"              , null, null,  null, null) },
-				{ ">05", new Tuple<string, bool?, bool?, bool?, bool?>("General"                       , null, null,  null, null) },
 
-				{ "I2" , new Tuple<string, bool?, bool?, bool?, bool?>("Initialize"                    , true, null,  null, null) },
+				{ ">10", new Tuple<string, bool?, bool?, bool?, bool?>("Reports"                       , null, null,  null, null) },
+				{ "RR" , new Tuple<string, bool?, bool?, bool?, bool?>("Reports Menu"                  , false, false,  false, false) },
+
+				{ ">11", new Tuple<string, bool?, bool?, bool?, bool?>("Initialize"                    , null, null,  null, null) },
+				{ "I2" , new Tuple<string, bool?, bool?, bool?, bool?>("Initialize (using def data)"   , true, null,  null, null) },
+				{ "IS" , new Tuple<string, bool?, bool?, bool?, bool?>("Initialize (select data)"      , false, false,  false, false) },
 
 				{ ">06", new Tuple<string, bool?, bool?, bool?, bool?>("Basic"                         , null, null,  null, null) },
 				// based on the paths, in the data manager, read the sheet data file
@@ -1536,15 +1866,20 @@ namespace ScanPDFBoxes
 				// saves the current information then does a "data manager reset"
 				{ "C2" , new Tuple<string, bool?, bool?, bool?, bool?>("Close the data file"           , true, true,  null, null) },
 				// does not save the current information then resets the data manager
+				// resets the current data manager data to blank then does a "close"
+				// resets the sheet file manager
+				{ "0"  , new Tuple<string, bool?, bool?, bool?, bool?>("Reset full"                    , null, null,  null, null) },
+				// does not save the current information then resets the data manager
 				// but does not remove the current data manager paths from the sheet file manager
 				{ "2"  , new Tuple<string, bool?, bool?, bool?, bool?>("Reset the data manager"        , true, true,  null, null) },
 				// resets the current data manager data to blank then does a "close" which
 				// does a data manager reset
 				{ "4"  , new Tuple<string, bool?, bool?, bool?, bool?>("Reset the data file"           , true, true,  null, null) },
-				{ "6"  , new Tuple<string, bool?, bool?, bool?, bool?>("Reset full"                    , null, null,  null, null) },
+				{ "6"  , new Tuple<string, bool?, bool?, bool?, bool?>("Reset the sheet file manager"  , true, false,  null, null) },
+				{ "8"  , new Tuple<string, bool?, bool?, bool?, bool?>("Reset for new sheets"          , true, false,  null, null) },
 
 				{ ">07", new Tuple<string, bool?, bool?, bool?, bool?>("Add"                           , true, null,  null, null) },
-				{ "A2" , new Tuple<string, bool?, bool?, bool?, bool?>("Add Tests"                     , true, false, false, true) },
+				{ "A2" , new Tuple<string, bool?, bool?, bool?, bool?>("Add"                           , true, true, false, false) },
 				{ "R2" , new Tuple<string, bool?, bool?, bool?, bool?>("Remove a sheet"                , true, true,  true, null) },
 
 				{ ">08", new Tuple<string, bool?, bool?, bool?, bool?>("Listings"                      , null, null,  null, null) },
@@ -1556,6 +1891,9 @@ namespace ScanPDFBoxes
 
 				{ ">03", new Tuple<string, bool?, bool?, bool?, bool?>("tests"                         , null, null,  null, null) },
 
+				{ "T0" , new Tuple<string, bool?, bool?, bool?, bool?>("test create samples"           , false, false,  false, null) },
+
+				{ "T1" , new Tuple<string, bool?, bool?, bool?, bool?>("test query sel sheets"         , null, null,  null, null) },
 				{ "T2" , new Tuple<string, bool?, bool?, bool?, bool?>("test get config"               , null, null,  null, null) },
 
 				{ ">04", new Tuple<string, bool?, bool?, bool?, bool?>("completion options"            , null, null,  null, null) },
@@ -1583,8 +1921,30 @@ namespace ScanPDFBoxes
 				{ "4" , new Tuple<string, bool?>("Add Files (add three good file)", true) },
 				{ "5" , new Tuple<string, bool?>("Add Files (add file removed"    , true) },
 				{ "7" , new Tuple<string, bool?>("Add (3) Special Files"          , true) },
-			}
+			},
+						// list switchboard // idx = 2
+			new Dictionary<string, Tuple<string, bool?>>()
+			{
+				{ "1", new Tuple<string, bool?>("Rect Id report"                   , true) },
+				{ "2", new Tuple<string, bool?>("Locations report"                 , true) },
+				{ "3", new Tuple<string, bool?>("Classification Files"             , true) },
+				{ "4", new Tuple<string, bool?>("Sheet Metric Files"               , true) },
+				{ "5", new Tuple<string, bool?>("Scan Samples"                     , true) },
+				{ "6", new Tuple<string, bool?>("Assembly Samples"                 , true) },
+				{ "X", new Tuple<string, bool?>("Exit"                             , true) },
+			},
+						// list switchboard // idx = 3 / std boxes
+			new Dictionary<string, Tuple<string, bool?>>()
+			{
+				{ "A", new Tuple<string, bool?>("1 box - Sheet Boundary"           , true) },
+				{ "B", new Tuple<string, bool?>("5 boxes - Sht Bdry to Sht Num"    , true) },
+				{ "C", new Tuple<string, bool?>("8 boxes - All Std"                , true) },
+				{ "Z", new Tuple<string, bool?>("10 boxes - All Std + Bnr1 + Wm1"  , true) },
+				{ "X", new Tuple<string, bool?>("Exit"                             , true) },
+			},
 		};
+
+
 
 		// first bool? == data file path must exist (item 2 - mustHaveDataFilePath)
 		//		null == ignore / na / do not test | true == path must be assigned | false == path should not be assigned (should not occur)
@@ -1741,11 +2101,12 @@ namespace ScanPDFBoxes
 			// },
 		};
 
+		// @formatter:on — enable formatter after this line
 
-		
 		// saved version for tests
 		private bool getConfig2(  string id, int def,
-			bool? mustHaveDataFilePath, bool? mustHaveDataFile, bool? mustHaveDataFileSheets, bool? mustHaveSheetFileList)
+			bool? mustHaveDataFilePath, bool? mustHaveDataFile, bool? mustHaveDataFileSheets,
+			bool? mustHaveSheetFileList)
 		{
 			DM.DbxLineEx(0, $"start", 1);
 			// DM.DbxLineEx(0, $"{mustHaveDataFilePath?.ToString() ?? "null"} | {mustHaveDataFile?.ToString() ?? "null"} | {mustHaveDataFileSheets?.ToString() ?? "null"} | {mustHaveSheetFileList?.ToString() ?? "null"}", 1);
@@ -1844,8 +2205,6 @@ namespace ScanPDFBoxes
 
 			return answerFinal;
 		}
-
-
 
 
 		//
@@ -2028,8 +2387,5 @@ namespace ScanPDFBoxes
 			return answerFinal;
 		}
 		*/
-
-
-
 	}
 }

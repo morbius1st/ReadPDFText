@@ -206,10 +206,10 @@ namespace ReadPDFTextTests
 
 			r = anno.GetRectangle().ToRectangle();
 
-			rectType = SheetRectSupport.GetOptRectType(rectname.ToUpper());
+			rectType = SheetRectConfigDataSupport.GetOptRectType(rectname.ToUpper());
 			if (!addOptRect(r))
 			{
-				rectType = SheetRectSupport.GetShtRectType(rectname.ToUpper());
+				rectType = SheetRectConfigDataSupport.GetShtRectType(rectname.ToUpper());
 				if (!addShtRect(r)) return;
 			}
 
@@ -218,7 +218,7 @@ namespace ReadPDFTextTests
 
 		private bool addOptRect(Rectangle r)
 		{
-			smId = SheetRectSupport.GetOptRectId(rectname);
+			smId = SheetRectConfigDataSupport.GetOptRectId(rectname);
 
 			if (smId == SheetRectId.SM_NA)
 			{
@@ -243,7 +243,7 @@ namespace ReadPDFTextTests
 
 		private bool addShtRect(Rectangle r)
 		{
-			smId = SheetRectSupport.GetShtRectId(rectname);
+			smId = SheetRectConfigDataSupport.GetShtRectId(rectname);
 
 			if (smId == SheetRectId.SM_NA)
 			{

@@ -7,6 +7,7 @@
 
 using System;
 using System.Diagnostics;
+using iText.Kernel.Geom;
 using ShSheetData.SheetData;
 using UtilityLibrary;
 
@@ -49,7 +50,7 @@ namespace ShItextCode.PdfCalculations
 
 	#region Get Text Box Origin
 
-		private static SheetRectData<SheetRectId> srd;
+		// private static SheetRectData<SheetRectId> srdx;
 
 		// private static string rectname;
 		// private static string longname;
@@ -85,12 +86,12 @@ namespace ShItextCode.PdfCalculations
 		// sheet rotation and text box rotation
 
 		public static void GetTextBoxOrigin(
-			SheetRectData<SheetRectId> sd, float sheetRotation,
+			Rectangle rect, float txBxRotation, float sheetRotation,
 			out float x, out float y)
 		{
-			srd = sd;
+			// srd = sd;
 			shtR = sheetRotation;
-			tbR = srd.TextBoxRotation;
+			tbR = txBxRotation;
 
 			sinTb = (float) Math.Abs(Math.Sin(FloatOps.ToRad(tbR)));
 			cosTb = (float) Math.Abs(Math.Cos(FloatOps.ToRad(tbR)));
@@ -100,7 +101,7 @@ namespace ShItextCode.PdfCalculations
 
 			setIndices();
 			getAdjFactors();
-			getLengthsIndicies();
+			getLengthsIndicies(rect);
 
 			if (show)
 			{
@@ -110,7 +111,7 @@ namespace ShItextCode.PdfCalculations
 			}
 
 
-			start = srd.Rect.GetX();
+			start = rect.GetX();
 			lenWidx = lenXwIdx;
 			lenHidx = lenXhIdx;
 			factWidx = 0;
@@ -118,7 +119,7 @@ namespace ShItextCode.PdfCalculations
 
 			float finalx = calcOriginValue();
 
-			start = srd.Rect.GetY();
+			start = rect.GetY();
 			lenWidx = lenYwIdx;
 			lenHidx = lenYhIdx;
 			factWidx = 2;
@@ -162,12 +163,12 @@ namespace ShItextCode.PdfCalculations
 			}
 		}
 
-		private static void getLengthsIndicies()
+		private static void getLengthsIndicies(Rectangle rect)
 		{
 			lengths = new []
 			{
-				srd.Rect.GetWidth(),
-				srd.Rect.GetHeight()
+				rect.GetWidth(),
+				rect.GetHeight()
 			};
 
 			bool swapX = swapValues[ShtRidx, tbRidx].Item1;

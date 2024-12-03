@@ -15,21 +15,38 @@ using UtilityLibrary;
 // user name: jeffs
 // created:   6/23/2024 5:59:36 PM
 
-namespace ShTempCode.DebugCode
+namespace DebugCode
 {
-	public enum ShowWhere
-	{
-		NONE = -1,
-		DEBUG = 0,
-		CONSOLE = 1,
-		DBG_CONS = 2
-	}
+	// public enum ShowWhere
+	// {
+	// 	NONE = -1,
+	// 	DEBUG = 0,		// debug window
+	// 	CONSOLE = 1,	// console window
+	// 	DBG_CONS = 2,	// debug and console windows
+	// 	WPF_TBX = 3,	// wpf text box
+	// 	DBG_TBX = 4,	// debug and text box
+	// 	
+	// }
 
-	public class DM
+	public class DM2
 	{
+
+		// number of debug channels
+		public static int Quantity { get; set; }
+
 		private static int prefaceWidth = -16;
 
+		// dmx[x,0] = tab depth
+		// dmx[x,1] = output location (per ShowWhere)
 		public static int[,] dmx;
+
+		public static void init(int qty)
+		{
+			Quantity = qty;
+
+			configDebugMsgList();
+		}
+
 
 		[DebuggerStepThrough]
 		public static void DbxSetIdx(int idx, int value)
@@ -137,21 +154,19 @@ namespace ShTempCode.DebugCode
 		{
 			if (dmx[idx,0] < 0) return;
 
-			string fmt = $"{{0,{prefaceWidth}}}| ";
-
-			// if (chgIdxPre > 0) dmx[idx, 0] += chgIdxPre;
 
 			dmx[idx, 0] = dmx[idx, 0] + chgIdxPre < 0 ? 0 : dmx[idx, 0] + chgIdxPre;
 
-			// if (chgIdxPost < 0 && dmx[idx, 0] != 0) dmx[idx, 0] += chgIdxPost;
+			string s2 = $"{dmx[idx, 0],3:F0}";
 
-			// string m = msg3 == null ? null : $"{msg3,prefaceWidth}|";
+			string fmt = $"{{0,{prefaceWidth}}}{s2}| ";
+
 			string m = msg3 == null ? null : string.Format(fmt, msg3);
 
 			if (dmx[idx,0] > 0) m += " ".Repeat(dmx[idx,0] * 2);
 
-			string s1 = $"  ({dmx[idx, 0].ToString("F0")})";
-			t1 = s1 + t1;
+			// string s1 = $"  ({dmx[idx, 0].ToString("F0")})";
+			// t1 = s1 + t1;
 
 			m += msg1;
 
@@ -161,9 +176,6 @@ namespace ShTempCode.DebugCode
 
 			ShowWhere w = where == ShowWhere.NONE ? (ShowWhere) dmx[idx, 1] : where;
 
-			// if (chgIdxPre < 0 && dmx[idx, 0] != 0) dmx[idx, 0] += chgIdxPre;
-			// // if (chgIdxPost > 0) dmx[idx, 0] += chgIdxPost;
-			// dmx[idx, 0] += chgIdxPost;
 
 			dmx[idx, 0] = dmx[idx, 0] + chgIdxPost < 0 ? 0 : dmx[idx, 0] + chgIdxPost;
 
@@ -180,23 +192,19 @@ namespace ShTempCode.DebugCode
 
 			if (where == ShowWhere.DEBUG  || where == ShowWhere.DBG_CONS)
 			{
-				
-				Debug.Write($"{SheetDataManager2.SheetsCount,-4:F0}");
-
 				Debug.Write(msg);
-
-				// ShowSheetRectInfo.showStatus(ShowWhere.DEBUG);
 			}
+
 		}
 
 		[DebuggerStepThrough]
 		public static void configDebugMsgList()
 		{
-			// setup the whold list
-			dmx = new int[50, 2];
+			// setup the whole list
+			dmx = new int[Quantity, 2];
 
 			// 0 through 49
-			for (var i = 0; i < 50; i++)
+			for (var i = 0; i < Quantity; i++)
 			{
 				dmx[i,0] = -1;
 				dmx[i,1] = (int) ShowWhere.DEBUG; // default location for all

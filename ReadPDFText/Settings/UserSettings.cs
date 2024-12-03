@@ -17,16 +17,16 @@ namespace SettingsManager
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
 	[DataContract(Namespace = "")]
-	public class UserSettingDataFile : IDataFile
+	public class UserSettingDataFilex : IDataFile
 	{
 		[IgnoreDataMember]
-		public string DataFileVersion => "user 7.4u";
+		public string DataFileVersion {get; set; }= "user 7.4u";
 
 		[IgnoreDataMember]
-		public string DataFileDescription => "user setting file for SettingsManager v7.4";
+		public string DataFileDescription  {get; set; }=  "user setting file for SettingsManager v7.4";
 
 		[IgnoreDataMember]
-		public string DataFileNotes => "user / any notes go here";
+		public string DataFileNotes  {get; set; }=  "user / any notes go here";
 
 		[DataMember(Order = 1)]
 		public string pdfFolder { get; set; } = "c:\\";

@@ -9,6 +9,7 @@
     <Import_RootNamespace>ShSheetData</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)SheetData2\SheetDataTemp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetFileManager2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings2\SheetDataSet2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings\SheetDataSet.cs" />
@@ -19,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)SheetData2\SheetRectData2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData\SheetRectData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SheetData\SheetRects.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SheetData\SheetRectSupport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\SheetRectConfigDataSupport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\QuerySheets.cs" />
   </ItemGroup>
 </Project>

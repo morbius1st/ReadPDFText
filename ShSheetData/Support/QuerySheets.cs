@@ -1,6 +1,8 @@
 ﻿#region + Using Directives
 
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using iText.Kernel.Pdf;
 using ShItextCode;
 using Path = System.IO.Path;
@@ -10,10 +12,8 @@ using Path = System.IO.Path;
 // user name: jeffs
 // created:   6/3/2024 7:29:33 PM
 
-namespace ScanPDFBoxes.Process
+namespace ShSheetData.Support
 {
-
-
 	public class QuerySheets
 	{
 		private PdfDocument doc;

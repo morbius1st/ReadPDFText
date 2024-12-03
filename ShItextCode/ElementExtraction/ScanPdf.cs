@@ -6,6 +6,7 @@ using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DebugCode;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Annot;
@@ -13,9 +14,9 @@ using SharedCode.ShPdfSupport;
 using ShSheetData.SheetData;
 using ShSheetData.SheetData2;
 using ShSheetData.ShSheetData2;
-using ShTempCode.DebugCode;
+using ShSheetData.Support;
 
-using Path = System.IO.Path;
+using UtilityLibrary;
 
 #endregion
 
@@ -47,7 +48,7 @@ namespace ShItextCode.ElementExtraction
 		private IList<PdfAnnotation> annos;
 
 		private string sheetName;
-		public string? subject;
+		public string subject;
 		public string rectname;
 		public SheetRectId smId;
 		public SheetRectType rectType;
@@ -99,10 +100,7 @@ namespace ShItextCode.ElementExtraction
 		{
 			sheetName = System.IO.Path.GetFileNameWithoutExtension(file);
 
-			sm = new SheetData2();
-			sm.Name = sheetName;
-			sm.Description = $"Sheet Boxes for {sheetName}";
-			sm.CreatedDt = DateTime.Now;
+			sm = new SheetData2(sheetName, $"Sheet Boxes for {sheetName}");
 		}
 
 		private bool checkStatus()
@@ -196,7 +194,7 @@ namespace ShItextCode.ElementExtraction
 
 			if (rectname == null) return false;
 
-			rectType = SheetRectSupport.GetRecType(rectname, out smId);
+			rectType = SheetRectConfigDataSupport.GetRecType(rectname, out smId);
 
 // Debug.Write($" | {rectType} | {smId}");
 

@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using DebugCode;
 using iText.Kernel.Geom;
-using ShItextCode.ElementExtraction;
 using ShSheetData.SheetData2;
 using ShSheetData.ShSheetData2;
 using ShTempCode.DebugCode;
 using Path = System.IO.Path;
 using ShSheetData.SheetData;
-using System.Diagnostics;
-using System.IO;
+using ShItextCode.ElementExtraction;
+using ShSheetData.Support;
+using UtilityLibrary;
+using static ShItextCode.ElementExtraction.ScanErrorLevel;
+
 
 
 // Solution:     ReadPDFText
@@ -117,7 +121,7 @@ namespace ShItextCode.ElementExtraction
 			if (!File.Exists(fullFilePath))
 			{
 				ScanStatus.AddError(
-					fname, "Sheet type found", ScanErrorLevel.ERROR_IS_FATAL);
+					fname, "Sheet type found", ERROR_IS_FATAL);
 
 				ScanStatus.HasFatalErrors = true;
 
@@ -202,13 +206,13 @@ namespace ShItextCode.ElementExtraction
 
 				result = false;
 
-				foreach (KeyValuePair<string, SheetRectInfo<SheetRectId>> kvp2 in SheetRectSupport.ShtRectIdXref)
+				foreach (KeyValuePair<string, SheetRectConfigData<SheetRectId>> kvp2 in SheetRectConfigDataSupport.ShtRectIdXref)
 				{
 					if (kvp2.Value.Id == SheetRectId.SM_NA) continue;
 
 					if (!kvp.Value.ShtRects.ContainsKey(kvp2.Value.Id))
 					{
-						string name = SheetRectSupport.GetShtRectName(kvp2.Value.Id) ?? "no name";
+						string name = SheetRectConfigDataSupport.GetShtRectName(kvp2.Value.Id) ?? "no name";
 
 						Console.WriteLine($"\t{name}");
 					}

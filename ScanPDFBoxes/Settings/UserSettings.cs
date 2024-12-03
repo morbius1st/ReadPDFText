@@ -19,16 +19,18 @@ namespace SettingsManager
 	public class UserSettingDataFile : IDataFile
 	{
 		[IgnoreDataMember]
-		public string DataFileVersion => "user 7.4u";
+		public string DataFileVersion {get; set; } = "1.0";
 
 		[IgnoreDataMember]
-		public string DataFileDescription => "user setting file for SettingsManager v7.4";
+		public string DataFileDescription {get; set; } = "user setting file forScanPDFBoxes";
 
 		[IgnoreDataMember]
-		public string DataFileNotes => "user / any notes go here";
+		public string DataFileNotes {get; set; } = "notes go here";
 
-		[DataMember(Order = 1)]
-		public int UserSettingsValue { get; set; } = 7;
+		// [DataMember(Order = 1)]
+		// public int UserSettingsValue { get; set; } = 7;
+		
+/*	save for now
 
 		// save last used information
 		// assemble PDF's
@@ -111,7 +113,7 @@ namespace SettingsManager
 		// for create
 		[IgnoreDataMember]
 		public FilePath<FileNameSimple> CreatePdfFilePath { get; set; }
-
+*/
 	}
 
 #endregion

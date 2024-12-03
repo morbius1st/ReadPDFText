@@ -10,7 +10,7 @@ using iText.Layout.Properties;
 using ShItextCode;
 using ShSheetData.SheetData;
 using ShItextCode.ElementCreation;
-
+using ShSheetData.Support;
 
 #endregion
 
@@ -53,7 +53,7 @@ namespace CreatePDFBoxes.PdfSupport
 
 		private CreateRectangle cr;
 		public static CreateText ct;
-		public static CreateText2 ct2;
+		public static CreateText1 ct2;
 
 		private string pdfFilePath;
 
@@ -72,7 +72,7 @@ namespace CreatePDFBoxes.PdfSupport
 
 			cr = new CreateRectangle();
 			ct = new CreateText(null);
-			ct2 = new CreateText2(null);
+			ct2 = new CreateText1(null);
 
 		}
 
@@ -257,9 +257,9 @@ namespace CreatePDFBoxes.PdfSupport
 
 		private string getName()
 		{
-			string name = SheetRectSupport.GetShtRectName(sampleSrd.Id);
+			string name = SheetRectConfigDataSupport.GetShtRectName(sampleSrd.Id);
 
-			if (name == null ) name = SheetRectSupport.GetOptRectName(sampleSrd.Id);
+			if (name == null ) name = SheetRectConfigDataSupport.GetOptRectName(sampleSrd.Id);
 
 			return name;
 		}

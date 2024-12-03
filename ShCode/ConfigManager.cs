@@ -5,11 +5,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using DebugCode;
 using SettingsManager;
 using ShSheetData;
+using ShSheetData.SheetData;
 using ShSheetData.SheetData2;
 using ShSheetData.ShSheetData2;
 using ShTempCode.DebugCode;
+using UtilityLibrary;
 
 #endregion
 
@@ -39,59 +42,69 @@ namespace ShCode
 		}
 
 		/// <summary>initialize the paths & variables / make sure
-		/// the needed information is found and loaded
+		/// the needed information is found and loaded<br/>
+		/// id = switchboard id (which file to use)
+		/// def = default
 		/// </summary>
 		public bool initialize(string id, int def)
 		{
 			switchboardIdx = id;
 
-			SetStatus(StatCodes.SC_G_NONE);
+			SetStatus(StatusCodes.SC_G_NONE);
 
-			DM.DbxLineEx(0, $"start", 1);
+			DM.Start0($"cm-1a: start");
 
+			// simulates getting the information from the user setting file
 			if (!configGetScanInfo(def))
 			{
 				showStatus(true);
-				SetStatus(StatCodes.SC_INIT_GET_PATHS_FAIL);
-				DM.DbxLineEx(0, "end 1", 0, -1);
+				SetStatus(StatusCodes.SC_INIT_GET_PATHS_FAIL);
+				DM.Stat0("cm-1b: end 1");
 				return false;
 			}
 
+			// init sheet data manager based on the info from the user settings file
+			// init just creates an instance using the provided file path
 			if (configSheetDataFilePath() != true)
 			{
 				showStatus(true);
-				SetStatus(StatCodes.SC_INIT_CFG_DATA_PATH_FAIL);
-				DM.DbxLineEx(0, "end 2", 0, -1);
+				SetStatus(StatusCodes.SC_INIT_CFG_DATA_PATH_FAIL);
+				DM.Stat0("cm-1c: end 2");
 				return false;
 			}
 
+			// sets the path for the sheet folder
 			if (configSheetPdfScanFolderPath() != true)
 			{
 				showStatus(true);
-				SetStatus(StatCodes.SC_INIT_CFG_SHT_DATA_PATH_FAIL);
-				DM.DbxLineEx(0, "end 3", 0, -1);
+				SetStatus(StatusCodes.SC_INIT_CFG_SHT_DATA_PATH_FAIL);
+				DM.Stat0("cm-1d: end 3");
 				return false;
 			}
 
+			// "starts" the sheet data manager - probably not needed
+			// but left, for now ...
 			if (!sm2.StartDataManager())
 			{
 				showStatus( true);
-				SetStatus(StatCodes.SC_INIT_START_DATA_MGR_FAIL);
-				DM.DbxLineEx(0, "end 4", 0, -1);
+				SetStatus(StatusCodes.SC_INIT_START_DATA_MGR_FAIL);
+				DM.Stat0("cm-1e: end 4");
 				return false;
 			}
 
+			// reads the sheet files from the folder in prep
+			// for scanning
 			if (!sm2.LoadSheetFiles())
 			{
 				showStatus( true);
-				SetStatus(StatCodes.SC_INIT_LOAD_SHT_DATA_FILES_FAIL);
-				DM.DbxLineEx(0, "end 5", 0, -1);
+				SetStatus(StatusCodes.SC_INIT_LOAD_SHT_DATA_FILES_FAIL);
+				DM.Stat0("cm-1f: end 5");
 				return false;
 			}
 
-			DM.DbxLineEx(0, "end", 0, -1);
+			DM.End0("cm-1z: end - config manager initialized");
 
-			SetStatus(StatCodes.SC_G_GOOD);
+			SetStatus(StatusCodes.SC_G_GOOD);
 
 			return true;
 		}
@@ -116,34 +129,63 @@ namespace ShCode
 		/// </summary>
 		private bool getScanData(int which, int def, bool selectDefault)
 		{
-			DM.DbxLineEx(0, "\tselectScanFromSample");
+			DM.Stat0("\tselectScanFromSample");
+
 			ShSamples samp = new ShSamples();
 
-			if (!samp.SelectScanSample(def, selectDefault)) return false;
+			if (samp.SelectScanSample(def, selectDefault) != true) return false;
 			
 			Sample s = samp.Selected;
 
 			if (which == 0 || which == 2)
 			{
-				UserSettings.Data.DataFilePath = s.DataFilePath;
+				SuiteSettings.Data.DataFilePath = s.DataFilePath;
 			}
 
 			if (which == 1 || which == 2)
 			{
-				UserSettings.Data.ScanPDfFolder = s.ScanPDfFolder;
+				SuiteSettings.Data.ScanPDfFolder = s.ScanPDfFolder;
 			}
+
+			DM.End0();
 
 			return true;
 		}
 
-		/// <summary>depending on the planned operation, verify that the
-		/// various parts are configured
-		/// </summary>
-		public bool verifyConfig(  string id, int def,
+
+		public bool verifyConfig1(string id,
 			bool? mustHaveDataFilePath, bool? mustHaveDataFile, 
 			bool? mustHaveDataFileSheets, bool? mustHaveSheetFileList)
 		{
-			DM.DbxLineEx(0, $"start", 1);
+			DM.Start0();
+
+			switchboardIdx = id;
+
+			bool answer1 = true;
+			bool answer2 = true;
+			bool answer3 = true;
+			bool answer9 = true;
+
+			bool answerFinal = false;
+
+
+			return answerFinal;
+		}
+
+
+		/// <summary>depending on the planned operation, verify that the
+		/// various parts are configured
+		/// </summary>
+		public bool verifyConfig2(string id,
+			bool? mustHaveDataFilePath, bool? mustHaveDataFile, 
+			bool? mustHaveDataFileSheets, bool? mustHaveSheetFileList)
+		{
+			DM.Start0($"option {id}");
+
+			DM.Stat0($"1) must have data file path   {mustHaveDataFilePath}");
+			DM.Stat0($"2) must have data file        {mustHaveDataFile}");
+			DM.Stat0($"3) must have data file sheets {mustHaveDataFileSheets}");
+			DM.Stat0($"9) must have data file list   {mustHaveSheetFileList}");
 
 			switchboardIdx = id;
 
@@ -154,6 +196,7 @@ namespace ShCode
 
 			bool answerFinal;
 
+
 			// so far, always true
 			if (mustHaveDataFilePath == true)
 			{
@@ -161,8 +204,11 @@ namespace ShCode
 
 				if (!answer1)
 				{
-					SetStatus(StatCodes.SC_CFG_DATA_FILE_PATH_MISSING);
+					SetStatus(StatusCodes.SC_CFG_DATA_FILE_PATH_MISSING);
 					DM.DbxLineEx(0, $"end 1", -1);
+
+					showVerifyConfigResults(false, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+
 					return false;
 				}
 
@@ -172,7 +218,6 @@ namespace ShCode
 				// bool b2 = SheetDataManager2.GotDataSheets;
 				// bool b3 = SheetDataManager2.SettingsFileExists;
 				// bool b4 = SheetDataManager2.GotDataPath;
-
 
 				if (!mustHaveDataFile.HasValue) // ie == null
 				{
@@ -186,7 +231,8 @@ namespace ShCode
 						}
 					}
 				}
-				else if (mustHaveDataFile == true)
+				else 
+				if (mustHaveDataFile == true)
 				{
 					answer2 = SheetDataManager2.SheetsCount >= 0;
 
@@ -199,6 +245,13 @@ namespace ShCode
 						}
 					}
 				}
+			} 
+			else 
+			if (mustHaveDataFilePath == false)
+			{
+				answer1 = !(sm2.GotDataFilePath && SheetDataManager2.GotDataPath);
+				answer2 = SheetDataManager2.SheetsCount > 0 == mustHaveDataFile;
+				answer3 = !(SheetDataManager2.SheetsCount <=0) == mustHaveDataFileSheets;
 			}
 
 			if (mustHaveSheetFileList == true)
@@ -211,27 +264,32 @@ namespace ShCode
 				}
 			}
 
-			DM.DbxLineEx(0, $"ans1 {answer1} | ans2 {answer2} | ans3 {answer3} | {answer9}");
+			DM.DbxLineEx(0, $"ans1 {answer1} | ans2 {answer2} | ans3 {answer3} | ans9 {answer9}");
 
-			answerFinal = answer2 && answer3 && answer9;
+			answerFinal = answer1 && answer2 && answer3 && answer9;
 
 			if (answerFinal)
 			{
-				SetStatus(StatCodes.SC_G_GOOD);
+				SetStatus(StatusCodes.SC_G_GOOD);
 			}
 			else
 			{
+				if (!answer1)
+				{
+					SetStatus(StatusCodes.SC_CFG_DATA_HAS_FILE_PATH);
+				}
+				else
 				if (!answer2)
 				{
-					SetStatus(StatCodes.SC_CFG_DATA_FILE_MISSING);
+					SetStatus(StatusCodes.SC_CFG_DATA_FILE_MISSING);
 				}
 				else if (!answer3)
 				{
-					SetStatus(StatCodes.SC_CFG_DATA_FILE_HAS_SHEETS_INVALID);
+					SetStatus(StatusCodes.SC_CFG_DATA_FILE_HAS_SHEETS_INVALID);
 				}
 				else if (!answer9)
 				{
-					SetStatus(StatCodes.SC_CFG_DATA_FILE_SHEET_LIST_INVALID);
+					SetStatus(StatusCodes.SC_CFG_DATA_FILE_SHEET_LIST_INVALID);
 				}
 			}
 
@@ -242,27 +300,26 @@ namespace ShCode
 			return answerFinal;
 		}
 
-
 		/// <summary>
 		/// select the configuration settings
 		/// </summary>
 		public bool configGetScanInfo(int def)
 		{
-			DM.DbxLineEx(0, "start", 1);
+			DM.Start0();
 
 			if (def < 0 || SheetDataManager2.GotDataPath)
 			{
-				DM.DbxLineEx(0, "end 1", 0, -1);
+				DM.End0("end 1");
 				return false;
 			}
 
 			if (!SelectScanConfigFiles(2, def, true))
 			{
-				DM.DbxLineEx(0, "end 2", 0, -1);
+				DM.End0("end 2");
 				return false;
 			}
 
-			DM.DbxLineEx(0, "end", 0, -1);
+			DM.End0();
 
 			return true;
 		}
@@ -296,7 +353,7 @@ namespace ShCode
 
 			DM.DbxLineEx(0, "end", 0, -1);
 
-			return sfm2.GotDataFilePath;
+			return SheetDataManager2.GotDataPath;
 		}
 
 		/// <summary>
@@ -331,36 +388,65 @@ namespace ShCode
 		}
 
 		/// <summary>
-		/// ** config list of scan PDF files
+		/// ** config get list of PDF files
 		/// </summary>
-		public bool configSheetPdfScanFiles()
+		public bool configSheetPdfScanFiles(int def)
 		{
-			DM.DbxLineEx(0, "start", 1);
+			SetStatus(StatusCodes.SC_G_NONE);
 
-			if (!sfm2.SheetFolderExists)
+			DM.DbxLineEx(0, $"start", 1);
+
+			if (!configGetScanInfo(def))
 			{
+				showStatus(true);
+				SetStatus(StatusCodes.SC_INIT_GET_PATHS_FAIL);
 				DM.DbxLineEx(0, "end 1", 0, -1);
 				return false;
 			}
 
+			if (!configSheetPdfScanFolderPath())
+			{
+				showStatus(true);
+				SetStatus(StatusCodes.SC_INIT_CFG_SHT_DATA_PATH_FAIL);
+				DM.DbxLineEx(0, "end 3", 0, -1);
+				return false;
+			}
+
+			if (!sm2.LoadSheetFiles())
+			{
+				showStatus( true);
+				SetStatus(StatusCodes.SC_INIT_LOAD_SHT_DATA_FILES_FAIL);
+				DM.DbxLineEx(0, "end 5", 0, -1);
+				return false;
+			}
+
+			Console.Write("\n");
+			Console.WriteLine($"\nScan PDf Folder {SuiteSettings.Data.ScanPDfFolder}");
+			Console.WriteLine($"got sheet file list {sm2.GotSheetFileList}");
+			Console.WriteLine($"number of sheet file {sm2.SheetFileListCount}");
+			Console.Write("\n");
+
+
 			DM.DbxLineEx(0, "end", 0, -1);
 
-			return sfm2.GetSheetFiles();
+			SetStatus(StatusCodes.SC_G_GOOD);
+
+			return true;
 		}
 
 		/// <summary>
 		/// shortcut to set the operation status
 		/// </summary>
-		private void SetStatus(StatCodes code,  string note = null,
+		private void SetStatus(StatusCodes code,  string note = null,
 			[CallerMemberName] string mx = null)
 		{
-			StatMgr.SetStatCode(code, note, mx);
+			StatusMgr.SetStatCode(code, note, mx);
 		}
 
 		// show status information
 		private void showStatus(bool showFrom = false, bool showOk = false)
 		{
-			StatMgr.ShowStatus(showFrom, showOk);
+			StatusMgr.ShowStatus(showFrom, showOk);
 		}
 
 		// show the results of the verify config method
@@ -392,8 +478,8 @@ namespace ShCode
 			DM.DbxLineEx(0, $"{"got data file?",-32}{s2}");
 			DM.DbxLineEx(0, $"{"data file got path?",-32}{SheetDataManager2.GotDataPath}");
 			DM.DbxLineEx(0, $"{"data file got sheets?",-32}{SheetDataManager2.GotDataSheets}");
-			DM.DbxLineEx(0, $"{UserSettings.Data.DataFilePath?.FullFilePath ?? "data file path is null"}");
-			DM.DbxLineEx(0, $"{UserSettings.Data.ScanPDfFolder?.FullFilePath ?? "PDF folder path is null"}", -1);
+			DM.DbxLineEx(0, $"{SuiteSettings.Data.DataFilePath?.FullFilePath ?? "data file path is null"}");
+			DM.DbxLineEx(0, $"{SuiteSettings.Data.ScanPDfFolder?.FullFilePath ?? "PDF folder path is null"}", -1);
 
 			DM.DbxLineEx(0, "end", 0, -1);
 		}

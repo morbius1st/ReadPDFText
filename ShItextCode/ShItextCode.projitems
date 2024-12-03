@@ -14,8 +14,10 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateRectangle2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateSupport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateRectangle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateText2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ElementCreation\CreateText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ElementExtraction\ExtractSupport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ElementExtraction\PdfFreeTextExtract.cs" />
@@ -25,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ElementExtraction\ScanStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfCalculations\PdfCalcTbOrigin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfCalculations\PdfCalcTxOrigin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PdfCalculations\PdfCalcTxOrigin2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfFreeTextRead.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfCalculations\PdfMath.cs" />

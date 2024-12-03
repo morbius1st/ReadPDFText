@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using DebugCode;
 using Settings;
 using SettingsManager;
 using ShSheetData.SheetData;
 using ShSheetData.SheetData2;
 using ShSheetData.ShSheetData2;
+using ShSheetData.Support;
 using ShTempCode.DebugCode;
 using UtilityLibrary;
 
@@ -12,7 +15,9 @@ namespace ShSheetData.ShSheetData2
 {
 	public static class SheetDataManager2
 	{
-		public static string DataFileName => SheetDataSet2.DataFileName;
+		// public static string DataFileName => SheetDataSet2.DataFileName;
+		public static string DataFilePath => Path.SettingFilePath;
+		public static FilePath<FileNameSimple> DataPath => Path.FilePath;
 
 		public static bool Initialized => Manager != null;
 		public static bool Configured => Initialized && GotDataPath;
@@ -116,6 +121,11 @@ namespace ShSheetData.ShSheetData2
 		{
 			DM.DbxLineEx(0, "\t\tdata manager - read");
 			Admin.Read();
+
+			SheetDataSet2 data = Data;
+
+			DataManager<SheetDataSet2> manager = Manager;
+
 		}
 
 		public static void Write()

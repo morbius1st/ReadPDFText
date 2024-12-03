@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using DebugCode;
 using iText.Kernel.Geom;
 using iText.Layout.Properties;
 using ShItextCode;
 using ShSheetData.SheetData;
+using ShSheetData.Support;
+
 using UtilityLibrary;
-using ShowWhere = ShTempCode.DebugCode.ShowWhere;
+using ShowWhere = UtilityLibrary.ShowWhere;
 
 #endregion
 
@@ -84,6 +87,43 @@ namespace ShItextCode
 			showMsgLine("Done\n");
 		}
 
+		public static void ShowPdfInfoEx(List<PdfDocInfo> docs, ShowWhere where = ShowWhere.DEBUG)
+		{
+			StartMsg("Show Pdf Doc Info", DateTime.Now.ToString(), where);
+
+			showWhere = where;
+			string s;
+			PdfPageInfo p;
+
+			foreach (PdfDocInfo di in docs)
+			{
+				showMsgLine($"{di.Name}");
+
+				for (int i = 1; i < di.PageInfo.Count + 1; i++)
+				{
+					p = di.PageInfo[i];
+
+					DM.DbxLineEx(1, $"page {i}",0,1);
+
+					DM.DbxLineEx(1, $"{"doc info| name",-20} {di.Name}");
+					DM.DbxLineEx(1, $"{"doc info| author",-20} {di.Author}");
+					DM.DbxLineEx(1, $"{"doc info| c date",-20} {di.CreationData}");
+					DM.DbxLineEx(1, $"{"doc info| creator",-20} {di.Creator}");
+					DM.DbxLineEx(1, "");
+					
+					DM.DbxLineEx(1, $"{"page rotation",-20} {p.PageRotation}");
+					DM.DbxLineEx(1, $"{"page size",-20} {p.PageSize}");
+					DM.DbxLineEx(1, $"{"page size w/ rotation",-20} {p.PageSizeWithRotation}");
+
+					DM.DbxLineEx(1, $"",-2,0);
+				}
+
+				showMsg("\n");
+			}
+
+			showMsgLine("Done\n");
+		}
+
 
 		// location is to debug
 
@@ -94,25 +134,25 @@ namespace ShItextCode
 			Debug.WriteLine($"{"page size w ro",-TITLE_WIDTH} | w {psWrot.GetWidth():F2} | h {psWrot.GetHeight():F2}");
 		}
 
-		public static void ShowRectParams(SheetRectData<SheetRectId> pStr)
-		{
-			Debug.Write("\n");
-			string temp = FormatItextData.FormatRectangle(pStr.Rect);
-			Debug.WriteLine($"{"rectangle",-TITLE_WIDTH} | {temp}");
-
-			temp = FormatItextData.FormatColor(pStr.BdrColor);
-			Debug.WriteLine($"{"bdr color",-TITLE_WIDTH} | [ {temp} ]");
-			Debug.WriteLine($"{"bdr opacity",-TITLE_WIDTH} | {pStr.BdrOpacity}");
-			Debug.WriteLine($"{"bdr width",-TITLE_WIDTH} | {pStr.BdrWidth}");
-
-			temp = FormatItextData.FormatDashArray(pStr.BdrDashPattern);
-			Debug.WriteLine($"{"bdr width",-TITLE_WIDTH} | {temp}");
-
-			temp = FormatItextData.FormatColor(pStr.FillColor);
-			Debug.WriteLine($"{"fill color",-TITLE_WIDTH} | [ {temp} ]");
-			Debug.WriteLine($"{"fill opacity",-TITLE_WIDTH} | {pStr.FillOpacity}");
-
-		}
+		// public static void ShowRectParams(SheetRectData<SheetRectId> pStr)
+		// {
+		// 	Debug.Write("\n");
+		// 	string temp = FormatItextData.FormatRectangle(pStr.Rect);
+		// 	Debug.WriteLine($"{"rectangle",-TITLE_WIDTH} | {temp}");
+		//
+		// 	temp = FormatItextData.FormatColor(pStr.BdrColor);
+		// 	Debug.WriteLine($"{"bdr color",-TITLE_WIDTH} | [ {temp} ]");
+		// 	Debug.WriteLine($"{"bdr opacity",-TITLE_WIDTH} | {pStr.BdrOpacity}");
+		// 	Debug.WriteLine($"{"bdr width",-TITLE_WIDTH} | {pStr.BdrWidth}");
+		//
+		// 	temp = FormatItextData.FormatDashArray(pStr.BdrDashPattern);
+		// 	Debug.WriteLine($"{"bdr width",-TITLE_WIDTH} | {temp}");
+		//
+		// 	temp = FormatItextData.FormatColor(pStr.FillColor);
+		// 	Debug.WriteLine($"{"fill color",-TITLE_WIDTH} | [ {temp} ]");
+		// 	Debug.WriteLine($"{"fill opacity",-TITLE_WIDTH} | {pStr.FillOpacity}");
+		//
+		// }
 
 
 

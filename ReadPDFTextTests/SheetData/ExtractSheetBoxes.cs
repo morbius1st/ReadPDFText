@@ -8,6 +8,7 @@ using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Annot;
 using SharedCode.ShPdfSupport;
 using ShSheetData.SheetData;
+using ShSheetData.Support;
 
 #endregion
 
@@ -108,7 +109,7 @@ namespace ReadPDFTextTests.SheetData
 
 				rectname = anno.GetContents().GetValue().ToUpper();
 
-				rectType = SheetRectSupport.GetRecType(rectname, out smId);
+				rectType = SheetRectConfigDataSupport.GetRecType(rectname, out smId);
 
 				getAnnoData(anno);
 			}
@@ -129,7 +130,7 @@ namespace ReadPDFTextTests.SheetData
 		//
 		// 	rectname = anno.GetContents().GetValue().ToUpper();
 		//
-		// 	rectType = SheetRectSupport.GetRecType(rectname, out smId);
+		// 	rectType = SheetRectConfigDataSupport.GetRecType(rectname, out smId);
 		//
 		//
 		// 	return results;
@@ -142,16 +143,16 @@ namespace ReadPDFTextTests.SheetData
 
 			Rectangle r = anno.GetRectangle().ToRectangle();
 
-			rectType = SheetRectSupport.GetOptRectType(rectname.ToUpper());
-			smId = SheetRectSupport.GetOptRectId(rectname);
+			rectType = SheetRectConfigDataSupport.GetOptRectType(rectname.ToUpper());
+			smId = SheetRectConfigDataSupport.GetOptRectId(rectname);
 
 			if (smId!= SheetRectId.SM_NA) 
 			{
 				if (addAnnoData(anno, r, sm.OptRects)) return;
 			}
 
-			rectType = SheetRectSupport.GetShtRectType(rectname.ToUpper());
-			smId = SheetRectSupport.GetShtRectId(rectname);
+			rectType = SheetRectConfigDataSupport.GetShtRectType(rectname.ToUpper());
+			smId = SheetRectConfigDataSupport.GetShtRectId(rectname);
 
 			addAnnoData(anno, r, sm.ShtRects);
 		}

@@ -2,9 +2,6 @@
 
 #endregion
 
-
-// this is a preface file that will apply to all saved data files
-// setting files as well as data files
 // in code, after creating the data file for the first time, set the
 // header values for 
 // {dataset}.Info.Description
@@ -17,22 +14,31 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using SettingsManager;
 using ShSheetData.SheetData;
+using ShSheetData.SheetData2;
 
 namespace Settings
 {
 #region data class
 
 	[DataContract(Namespace = "")]
-	public class DataSet : IDataFile
+	public class ScanData: IDataFile
 	{
 		[IgnoreDataMember]
-		public string DataFileDescription { get; set; } = "Sheet Box Information";
+		public static string DataFileName { get; } = "ScanData.xml";
 
 		[IgnoreDataMember]
-		public string DataFileNotes { get; set; } = "Sheet Box Info is user specific / created";
+		public string DataFileDescription { get; set; } = "Scan Data Information";
 
 		[IgnoreDataMember]
-		public string DataFileVersion { get; set; } = "v1.1";
+		public string DataFileNotes { get; set; } = "Scan Data is user specific / created";
+
+		[IgnoreDataMember]
+		public string DataFileVersion { get; set; } = "v1.0";
+
+		// actual data saved to the data file
+
+
+
 
 	}
 #endregion

@@ -19,7 +19,7 @@ namespace ShItextCode.ElementExtraction
 		{
 			DuplicateRects = new List<Tuple<string, string, Rectangle>>();
 			ExtraRects = new List<Tuple<string, string, Rectangle>>();
-			Errors = new List<Tuple<string?, string?, ScanErrorLevel>>();
+			Errors = new List<Tuple<string, string, ScanErrorLevel>>();
 
 			HasFatalErrors = false;
 		}
@@ -28,7 +28,7 @@ namespace ShItextCode.ElementExtraction
 
 		private static List<Tuple<string, string, Rectangle>> DuplicateRects { get; set; }
 		private static List<Tuple<string, string, Rectangle>> ExtraRects { get; set; }
-		private static List<Tuple<string?, string?, ScanErrorLevel>> Errors { get; set; }
+		private static List<Tuple<string, string, ScanErrorLevel>> Errors { get; set; }
 
 		public static int DupsCount => DuplicateRects.Count;
 		public static int XtraCount => ExtraRects.Count;
@@ -36,7 +36,7 @@ namespace ShItextCode.ElementExtraction
 
 		public static void AddError(string title, string description, ScanErrorLevel errorLevel)
 		{
-			Errors.Add(new Tuple<string?, string?, ScanErrorLevel>(title, description, errorLevel));
+			Errors.Add(new Tuple<string, string, ScanErrorLevel>(title, description, errorLevel));
 		}
 
 		public static void AddExtra(string title, string description, Rectangle rect)

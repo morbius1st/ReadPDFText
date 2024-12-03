@@ -152,6 +152,8 @@ namespace ShSheetData
 
 	#region data file operations
 
+		/*
+
 		// select the location of the data file
 		// select the location of the sheet files
 		// process the sheet files - make a list of only the PDF files
@@ -235,6 +237,8 @@ namespace ShSheetData
 			DataFilePath = null;
 		}
 
+		*/
+
 	#endregion
 
 	#region sheet file operations
@@ -256,22 +260,10 @@ namespace ShSheetData
 
 		/// <summary> Folder status - true, got and exists / false not got or does not exist
 		/// </summary>
-		public bool GotSheetFolder
-		{
-			get
-			{
-				return sheetFileFolder != null;
-			}
-		}
+		public bool GotSheetFolder => sheetFileFolder != null;
 
-		public bool SheetFolderExists
-		{
-			get
-			{
-				return GotSheetFolder && 
-					Directory.Exists(sheetFileFolder);
-			}
-		}
+		public bool SheetFolderExists => GotSheetFolder && 
+			Directory.Exists(sheetFileFolder);
 
 		/// <summary> access to folder
 		/// </summary>
@@ -284,6 +276,8 @@ namespace ShSheetData
 		/// <summary> access to file list
 		/// </summary>
 		public List<string> SheetFileList { get; set; }
+
+		public int SheetFileListCount => SheetFileList?.Count ?? -1;
 
 		/// <summary> get the SheetFileList as a dictionary with
 		/// index number (string, 1 based) as the key and the value is a
@@ -300,7 +294,7 @@ namespace ShSheetData
 
 				string filename;
 
-				Dictionary<string, Tuple<string, string>> dict = new ();
+				Dictionary<string, Tuple<string, string>> dict = new Dictionary<string, Tuple<string, string>>();
 
 				fmt = SheetFileList.Count > 9 ? "00" : "0";
 
@@ -344,6 +338,8 @@ namespace ShSheetData
 		{
 			if (!SheetFolderExists) return false;
 
+			DM.Start0();
+
 			try
 			{
 				// get the list of PDF files
@@ -354,6 +350,8 @@ namespace ShSheetData
 				Console.WriteLine(e);
 				return false;
 			}
+
+			DM.End0();
 
 			return SheetFileList != null && SheetFileList.Count > 0;
 		}
@@ -480,7 +478,7 @@ namespace ShSheetData
 
 		public override string ToString()
 		{
-			return $"data {DataFilePath?.FileName ?? "not set"} | sht count {SheetFileList?.Count.ToString() ?? "not set"} | output {OutputFilePath?.FileName ?? "not set"}";
+			return $"data | sht count {SheetFileList?.Count.ToString() ?? "not set"} | output {OutputFilePath?.FileName ?? "not set"}";
 		}
 	}
 }

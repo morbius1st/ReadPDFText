@@ -3,15 +3,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using static ShSheetData.SheetData.SheetRectType;
-using static ShSheetData.SheetData.SheetRectId;
+using static ShSheetData.Support.SheetRectType;
+using static ShSheetData.Support.SheetRectId;
 
 #endregion
 
 // user name: jeffs
 // created:   5/11/2024 1:22:54 PM
 
-namespace ShSheetData.SheetData
+namespace ShSheetData.Support
 {
 	[Flags]
 	public enum SheetRectType
@@ -92,19 +92,19 @@ namespace ShSheetData.SheetData
 		}
 	}
 
-	public class SheetRectInfo<T>
+	public class SheetRectConfigData<T>
 	{
 		public SheetRectType Type { get; private set; }
 		public T Id { get; private set; }
 
-		public SheetRectInfo(SheetRectType type, T id)
+		public SheetRectConfigData(SheetRectType type, T id)
 		{
 			Type = type;
 			Id = id;
 		}
 	}
 
-	public class SheetRectSupport
+	public class SheetRectConfigDataSupport
 	{
 		// common
 
@@ -124,9 +124,8 @@ namespace ShSheetData.SheetData
 			return ShtRectIdXref[name].Type;
 		}
 
-
 		// sheet rects
-		public static int ShtRectsQty => ShtRectIdXref.Count - 1; // don't count NA
+		public static int ShtRectsMinQty => ShtRectIdXref.Count - 1 - 3 - 1; // don't count NA, incl only 1 banner and only 1 watermark
 
 		public static SheetRectId GetShtRectId(string name)
 		{
@@ -137,7 +136,7 @@ namespace ShSheetData.SheetData
 
 		public static string GetShtRectName(SheetRectId id)
 		{
-			foreach (KeyValuePair<string, SheetRectInfo<SheetRectId>> kvp in ShtRectIdXref)
+			foreach (KeyValuePair<string, SheetRectConfigData<SheetRectId>> kvp in ShtRectIdXref)
 			{
 				if (id == kvp.Value.Id) return kvp.Key;
 			}
@@ -152,27 +151,24 @@ namespace ShSheetData.SheetData
 			return ShtRectIdXref[name].Type;
 		}
 
-
-		 
-
-		public static Dictionary<string, SheetRectInfo<SheetRectId>> ShtRectIdXref { get; } = new Dictionary<string, SheetRectInfo<SheetRectId>>()
+		public static Dictionary<string, SheetRectConfigData<SheetRectId>> ShtRectIdXref { get; } = new Dictionary<string, SheetRectConfigData<SheetRectId>>()
 		{
-			{ "Not Available"    , new SheetRectInfo<SheetRectId>(SRT_NA,SM_NA) }                    ,  // default / not configured
-			{ "Sheet Boundary"   , new SheetRectInfo<SheetRectId>(SRT_NA,SM_SHT) }                    , // size of sheet
-			{ "SHEET XREF"       , new SheetRectInfo<SheetRectId>(SRT_LOCATION,SM_XREF) }             , // the box style for sheet xrefs
-			{ "SHEET NUMBER FIND", new SheetRectInfo<SheetRectId>(SRT_LOCATION,SM_SHT_NUM_FIND) }     , // limits to find the sheet number
-			{ "SHEET TITLE"      , new SheetRectInfo<SheetRectId>(SRT_LOCATION,SM_SHT_TITLE) }        , // where to find the title of the sheet
+			{ "Not Available"    , new SheetRectConfigData<SheetRectId>(SRT_NA,SM_NA) }                     , // 0  default / not configured
+			{ "Sheet Boundary"   , new SheetRectConfigData<SheetRectId>(SRT_NA,SM_SHT) }                    , // 1  size of sheet
+			{ "SHEET XREF"       , new SheetRectConfigData<SheetRectId>(SRT_BOX,SM_XREF) }                  , // 2  the box style for sheet xrefs
+			{ "SHEET NUMBER FIND", new SheetRectConfigData<SheetRectId>(SRT_LOCATION,SM_SHT_NUM_FIND) }     , // 3  limits to find the sheet number
+			{ "SHEET TITLE"      , new SheetRectConfigData<SheetRectId>(SRT_LOCATION,SM_SHT_TITLE) }        , // 4  where to find the title of the sheet
 
-			{ "SHEET NUMBER"     , new SheetRectInfo<SheetRectId>(SRT_BOX,SM_SHT_NUM) }               , // where to place the sheet number box
-			{ "AUTHOR"           , new SheetRectInfo<SheetRectId>(SRT_LINK_N_BOX,SM_AUTHOR) }         , // the information for the author box
-			{ "DISCLAIMER"       , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_DISCLAIMER) }, // the information for the disclaimer
-			{ "FOOTER"           , new SheetRectInfo<SheetRectId>(SRT_TEXT_N_BOX,SM_FOOTER) }         , // the information for the footer
-			{ "FIRST BANNER"     , new SheetRectInfo<SheetRectId>(SRT_TEXT_N_BOX,SM_BANNER_1ST) }     , // the information for the banner
-			{ "SECOND BANNER"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_N_BOX,SM_BANNER_2ND) }     , // ditto
-			{ "THIRD BANNER"     , new SheetRectInfo<SheetRectId>(SRT_TEXT_N_BOX,SM_BANNER_3RD) }     , // ditto
-			{ "FOURTH BANNER"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_N_BOX,SM_BANNER_4TH) }     , // ditto
-			{ "WATERMARK1"       , new SheetRectInfo<SheetRectId>(SRT_TEXT,SM_WATERMARK1) }           , // the information for the main watermark
-			{ "WATERMARK2"       , new SheetRectInfo<SheetRectId>(SRT_TEXT,SM_WATERMARK2) }           , // the information for the title block watermark
+			{ "SHEET NUMBER"     , new SheetRectConfigData<SheetRectId>(SRT_LINK_N_BOX,SM_SHT_NUM) }        , // 5  where to place the sheet number box
+			{ "AUTHOR"           , new SheetRectConfigData<SheetRectId>(SRT_LINK_N_BOX,SM_AUTHOR) }         , // 6  the information for the author box
+			{ "DISCLAIMER"       , new SheetRectConfigData<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_DISCLAIMER) }, // 7  the information for the disclaimer
+			{ "FOOTER"           , new SheetRectConfigData<SheetRectId>(SRT_TEXT_N_BOX,SM_FOOTER) }         , // 8  the information for the footer
+			{ "FIRST BANNER"     , new SheetRectConfigData<SheetRectId>(SRT_TEXT_N_BOX,SM_BANNER_1ST) }     , // 9  the information for the banner
+			{ "SECOND BANNER"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_N_BOX,SM_BANNER_2ND) }     , // 10 ditto
+			{ "THIRD BANNER"     , new SheetRectConfigData<SheetRectId>(SRT_TEXT_N_BOX,SM_BANNER_3RD) }     , // 11 ditto
+			{ "FOURTH BANNER"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_N_BOX,SM_BANNER_4TH) }     , // 12 ditto
+			{ "WATERMARK1"       , new SheetRectConfigData<SheetRectId>(SRT_TEXT,SM_WATERMARK1) }           , // 13 the information for the main watermark
+			{ "WATERMARK2"       , new SheetRectConfigData<SheetRectId>(SRT_TEXT,SM_WATERMARK2) }           , // 14 the information for the title block watermark
 		};
 
 		/*
@@ -246,7 +242,7 @@ namespace ShSheetData.SheetData
 
 		public static string GetOptRectName(SheetRectId id)
 		{
-			foreach (KeyValuePair<string, SheetRectInfo<SheetRectId>> kvp in OptRectIdXref)
+			foreach (KeyValuePair<string, SheetRectConfigData<SheetRectId>> kvp in OptRectIdXref)
 			{
 				if (id == kvp.Value.Id) return kvp.Key;
 			}
@@ -261,20 +257,20 @@ namespace ShSheetData.SheetData
 			return OptRectIdXref[name].Type;
 		}
 
-		public static Dictionary<string, SheetRectInfo<SheetRectId>> OptRectIdXref { get; } = new Dictionary<string, SheetRectInfo<SheetRectId>>()
+		public static Dictionary<string, SheetRectConfigData<SheetRectId>> OptRectIdXref { get; } = new Dictionary<string, SheetRectConfigData<SheetRectId>>()
 		{
-			{ "Not Available" , new SheetRectInfo<SheetRectId>(SRT_NA,SM_NA) }               , // default / not configured
-			{ "OPTIONAL 0"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT0) }, // the information for an optional box
-			{ "OPTIONAL 1"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT1) }, // ditto
-			{ "OPTIONAL 2"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT2) }, // ditto
-			{ "OPTIONAL 3"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT3) }, // ditto
-			{ "OPTIONAL 4"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT4) }, // ditto
-			{ "OPTIONAL 5"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT5) }, // ditto
-			{ "OPTIONAL 6"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT6) }, // ditto
-			{ "OPTIONAL 7"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT7) }, // ditto
-			{ "OPTIONAL 8"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT8) }, // ditto
-			{ "OPTIONAL 9"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT9) }, // ditto
-			{ "OPTIONAL10"    , new SheetRectInfo<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT10) }, // ditto
+			{ "Not Available" , new SheetRectConfigData<SheetRectId>(SRT_NA,SM_NA) }               , // default / not configured
+			{ "OPTIONAL 0"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT0) }, // the information for an optional box
+			{ "OPTIONAL 1"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT1) }, // ditto
+			{ "OPTIONAL 2"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT2) }, // ditto
+			{ "OPTIONAL 3"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT3) }, // ditto
+			{ "OPTIONAL 4"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT4) }, // ditto
+			{ "OPTIONAL 5"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT5) }, // ditto
+			{ "OPTIONAL 6"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT6) }, // ditto
+			{ "OPTIONAL 7"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT7) }, // ditto
+			{ "OPTIONAL 8"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT8) }, // ditto
+			{ "OPTIONAL 9"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT9) }, // ditto
+			{ "OPTIONAL10"    , new SheetRectConfigData<SheetRectId>(SRT_TEXT_LINK_N_BOX,SM_OPT10) }, // ditto
 		};
 
 		/*
@@ -442,7 +438,7 @@ namespace ShSheetData.SheetData
 
 		public override string ToString()
 		{
-			return $"this is {nameof(SheetRectSupport)}";
+			return $"this is {nameof(SheetRectConfigDataSupport)}";
 		}
 	}
 

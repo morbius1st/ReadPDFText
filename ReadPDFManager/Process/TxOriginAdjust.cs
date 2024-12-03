@@ -6,6 +6,7 @@ using System.Diagnostics;
 using ShCode;
 using ShItextCode.PdfCalculations;
 using ShSheetData.SheetData;
+using ShTempCode.DebugCode;
 
 #endregion
 
@@ -16,6 +17,8 @@ namespace ReadPDFManager.Process
 {
 	public class TxOriginAdjust
 	{
+
+		/*
 		private List<SampleBox> SampleBoxes;
 
 		private SheetRectData<SheetRectId> srd;
@@ -96,5 +99,6 @@ namespace ReadPDFManager.Process
 
 			Debug.WriteLine($"{results}\tcorrect {sb.CorrectX,8:f2} {sb.CorrectY,8:F2} | calc'd {tbOrigin.Item1,8:F2} {xmatch} {tbOrigin.Item2,8:F2} {ymatch}\n");
 		}
+		*/
 	}
 }

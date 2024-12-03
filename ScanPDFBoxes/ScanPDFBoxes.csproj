@@ -1,23 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+		<OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Configurations>Debug;Release;DbgScan;DbgReadText;DbgMgr</Configurations>
-  </PropertyGroup>
+    <Configurations>Debug;Release</Configurations>
+    <Title>ScanPDFBoxes</Title>
+    <Authors>Jeff Stuyvesant</Authors>
+    <Company>CyberStudio</Company>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DbgScan|AnyCPU'">
-    <DefineConstants>$(DefineConstants);USER_SETTINGS</DefineConstants>
+  <!-- <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DbgScan|AnyCPU'"> -->
+  <!--   <DefineConstants>$(DefineConstants);USER_SETTINGS</DefineConstants> -->
+  <!-- </PropertyGroup> -->
+  <!-- -->
+  <!-- <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'"> -->
+  <!--   <DefineConstants>$(DefineConstants);USER_SETTINGS</DefineConstants> -->
+  <!-- </PropertyGroup> -->
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);USER_SETTINGS; SUITE_SETTINGS</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>$(DefineConstants);USER_SETTINGS</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);USER_SETTINGS</DefineConstants>
+    <DefineConstants>$(DefineConstants);USER_SETTINGS; SUITE_SETTINGS</DefineConstants>
+		<Optimize>True</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,16 +40,14 @@
     <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsWindowsHelpers.cs" Link=".Linked\CsWindowsHelpers.cs" />
     <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsXmlUtilities.cs" Link=".Linked\CsXmlUtilities.cs" />
     <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\FilePath\V3.1\CsFilePath.cs" Link=".Linked\CsFilePath.cs" />
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.4\SettingsMgr.cs" Link=".Linked\SettingsMgr.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include=".Linked\" />
-    <Folder Include="Process2\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="envdte80" Version="17.9.37000" />
+    <PackageReference Include="envdte80" Version="17.10.40170" />
     <PackageReference Include="itext" Version="8.0.4" />
     <PackageReference Include="itext.bouncy-castle-adapter" Version="8.0.4" />
     <PackageReference Include="itext7" Version="8.0.4" />
@@ -56,5 +62,9 @@
   <Import Project="..\ShCode\ShCode.projitems" Label="Shared" />
 
   <Import Project="..\ShTempCode\ShTempCode.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <Compile Remove="Settings\SheetDataSet.cs" />
+  </ItemGroup>
 
 </Project>
