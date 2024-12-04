@@ -67,19 +67,25 @@ namespace ShItextCode.ElementExtraction
 		/// <param name="file"></param>
 		public void ProcessPdf(string file)
 		{
-			DM.DbxLineEx(0,"start", 1, 1);
+			DM.Start0();
+
+			// DM.DbxLineEx(0,"start", 1, 1);
 
 			config(file);
 			
 			src = new PdfDocument(new PdfReader(file));
 
-			DM.DbxLineEx(0,$"{sheetName}");
+			// DM.DbxLineEx(0,$"{sheetName}");
+
+			DM.Stat0($"scanning {sheetName}");
 
 			if (src.GetNumberOfPages() > 1)
 			{
 				ScanStatus.AddError(sheetName, "Pdf has too many pages", ScanErrorLevel.ERROR_IS_FATAL);
 
-				DM.DbxLineEx(0,"end 1", -1, -1);
+				DM.End0("end 1 - too many pages");
+
+				// DM.DbxLineEx(0,"end 1", -1, -1);
 				return;
 			}
 
@@ -89,15 +95,21 @@ namespace ShItextCode.ElementExtraction
 
 			if (!checkStatus())
 			{
-				DM.DbxLineEx(0,"end 2", -1, -1);
+				DM.End0("end 2 - status no good");
+
+				// DM.DbxLineEx(0,"end 2", -1, -1);
 				return;
 			}
 
-			DM.DbxLineEx(0,"end", -1, -1);
+			// DM.DbxLineEx(0,"end", -1, -1);
+
+			DM.End0("end");
 		}
 
 		private void config(string file)
 		{
+			DM.InOut0();
+
 			sheetName = System.IO.Path.GetFileNameWithoutExtension(file);
 
 			sm = new SheetData2(sheetName, $"Sheet Boxes for {sheetName}");
@@ -116,18 +128,21 @@ namespace ShItextCode.ElementExtraction
 
 		private void scanPdf()
 		{
-			DM.DbxLineEx(0,"start", 1);
+			DM.Start0();
+
+			// DM.DbxLineEx(0,"start", 1);
 
 			if (!initSheet())
 			{
 				ScanStatus.AddError(sheetName, "Page has no annotations to scan", ScanErrorLevel.ERROR_IS_FATAL);
-				DM.DbxLineEx(0,"end 1", -1);
+				// DM.DbxLineEx(0,"end 1", -1);
+
+				DM.End0($"end 1 - no annotations");
 				return;
 			}
 
 			foreach (PdfAnnotation anno in annos)
 			{
-				
 				pd = anno.GetPdfObject();
 
 				if (!getSubject()) continue;
@@ -151,11 +166,15 @@ namespace ShItextCode.ElementExtraction
 
 			SheetDataManager2.Data.SheetDataList.Add(sm.Name, sm);
 
-			DM.DbxLineEx(0,"end", -1);
+			// DM.DbxLineEx(0,"end", -1);
+
+			DM.End0("end");
 		}
 
 		private bool initSheet()
 		{
+			DM.InOut0("init sheet");
+
 			page = src.GetPage(1);
 			pageSize = page.GetPageSize();
 
@@ -171,6 +190,8 @@ namespace ShItextCode.ElementExtraction
 
 		private bool processRect(PdfAnnotation anno)
 		{
+			DM.InOut0();
+
 			rects = smId >= SheetRectId.SM_OPT0 ?  sm.OptRects :  sm.ShtRects;
 
 			return getAnnoData(anno);
@@ -178,6 +199,8 @@ namespace ShItextCode.ElementExtraction
 
 		private bool getSubject()
 		{
+			// DM.InOut0();
+
 			subject = exs.GetSubject(pd);
 
 			// got annotation that is not a box to deal with - normal condition
@@ -188,19 +211,27 @@ namespace ShItextCode.ElementExtraction
 
 		private bool getBasicRectInfo(PdfAnnotation anno)
 		{
+			DM.Start0();
+
 			rectname = exs.GetRectName(anno);
 
-// Debug.Write($"rect name| {rectname}");
-
-			if (rectname == null) return false;
+			if (rectname == null)
+			{
+				DM.End0("end 1");
+				return false;
+			}
 
 			rectType = SheetRectConfigDataSupport.GetRecType(rectname, out smId);
 
-// Debug.Write($" | {rectType} | {smId}");
-
-			if (rectType == SheetRectType.SRT_NA || smId == SheetRectId.SM_NA) return false;
+			if (rectType == SheetRectType.SRT_NA || smId == SheetRectId.SM_NA)
+			{
+				DM.End0("end 2");
+				return false;
+			}
 
 			rect = exs.GetAnnoRect(anno);
+
+			DM.End0("end");
 
 			return true;
 
@@ -208,24 +239,36 @@ namespace ShItextCode.ElementExtraction
 
 		private void getPdfAnnoData(PdfAnnotation anno)
 		{
+			DM.InOut0();
+
 			pftx.ExtractPfaData((PdfFreeTextAnnotation) anno, 
 				srd.Type, srd.BoxSettings, srd.TextSettings);
 		}
 
 		private bool getAnnoData(PdfAnnotation anno)
 		{
-			if (!verifyRect(anno)) return false;
+			DM.Start0();
+
+			if (!verifyRect(anno))
+			{
+				DM.End0("end 1");
+				return false;
+			}
 
 			srd = new SheetRectData2<SheetRectId>(rectType, smId, rect);
 
 			srd.BoxSettings.TextBoxRotation = 
 				360 - (pd.GetAsNumber(new PdfName("Rotation"))?.FloatValue() ?? 360);
 
+			DM.End0("end");
+
 			return true;
 		}
 
 		private bool verifyRect(PdfAnnotation anno)
 		{
+			DM.InOut0();
+
 			if (smId == SheetRectId.SM_NA)
 			{
 				ScanStatus.AddExtra(sheetName, rectname, 

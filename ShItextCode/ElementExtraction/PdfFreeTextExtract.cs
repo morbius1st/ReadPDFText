@@ -12,6 +12,7 @@ using iText.Layout.Properties;
 using ShSheetData.SheetData;
 using ShSheetData.ShSheetData2;
 using ShSheetData.Support;
+using UtilityLibrary;
 using static ShItextCode.Constants;
 
 #endregion
@@ -44,6 +45,8 @@ namespace ShItextCode.ElementExtraction
 		public void ExtractPfaData(PdfFreeTextAnnotation pfa, SheetRectType type,
 			BoxSettings bs, TextSettings ts)
 		{
+			DM.Start0();
+
 			bsx = bs;
 			tsx = ts;
 
@@ -55,7 +58,11 @@ namespace ShItextCode.ElementExtraction
 			// Debug.Write(" a");
 
 			if (type == SheetRectType.SRT_NA ||
-				type == SheetRectType.SRT_LOCATION) return;
+				type == SheetRectType.SRT_LOCATION)
+			{
+				DM.End0("end 1");
+				return;
+			}
 
 
 			p = pfa.GetPdfObject();
@@ -68,10 +75,14 @@ namespace ShItextCode.ElementExtraction
 			// Debug.Write(" d");
 			if (SheetDataManager2.RectIsType(type, SheetRectType.SRT_LINK)) getUrlText();
 			// Debug.Write(" e");
+
+			DM.End0("end");
 		}
 
 		private void adjustRect()
 		{
+			DM.Start0();
+
 			if (bsx.TextBoxRotation % 90 != 0)
 			{
 				PdfArray pa = PdfSupport.GetBBoxFromAnnotation(pfa);
@@ -84,6 +95,8 @@ namespace ShItextCode.ElementExtraction
 						bsx.Rect.GetX(), bsx.Rect.GetY(), r.GetWidth(), r.GetHeight());
 				}
 			}
+
+			DM.End0("end");
 		}
 
 
@@ -91,20 +104,28 @@ namespace ShItextCode.ElementExtraction
 
 		private void getBoxData()
 		{
+			DM.Start0();
 			getFillColor();
 			getFillOpacity();
 			getBorderData();
 			getBorderStyle();
+
+			DM.End0("end");
 		}
 
 		private void getTextData()
 		{
+			DM.Start0();
 			getExtraText();
 			getTextSettings();
+
+			DM.End0("end");
 		}
 
 		private void getUrlText()
 		{
+			DM.InOut0();
+
 			tsx.UrlLink = exs.GetUrlText(subType);
 		}
 
@@ -113,22 +134,30 @@ namespace ShItextCode.ElementExtraction
 
 		private void getFillColor()
 		{
+			DM.InOut0();
+
 			bsx.FillColor = pSupport.makeColor(pfa.GetColorObject());
 		}
 
 		private void getFillOpacity()
 		{
+			DM.InOut0();
+
 			bsx.FillOpacity =  p.GetAsNumber(new PdfName("FillOpacity"))?.FloatValue() ?? 100;
 		}
 
 		private void getBorderData()
 		{
+			DM.InOut0();
+
 			bsx.BdrColor = pSupport.makeColor(pfa.GetDefaultAppearance());
 			bsx.BdrOpacity = pfa.GetStrokingOpacity();
 		}
 
 		private void getBorderStyle()
 		{
+			DM.InOut0();
+
 			PdfDictionary bs = pfa.GetBorderStyle();
 
 			if (bs == null)
@@ -155,6 +184,8 @@ namespace ShItextCode.ElementExtraction
 
 		private void getExtraText()
 		{
+			DM.InOut0();
+			
 			tsx.InfoText = null;
 
 			int pos1 = subType.IndexOf('(');
@@ -165,9 +196,13 @@ namespace ShItextCode.ElementExtraction
 
 		public void getTextSettings()
 		{
+			DM.Start0();
+
 			getStrokeOpacity();
 
 			PdfString ps = pfa.GetPdfObject().GetAsString(PdfName.RC);
+
+			DM.Stat0($"text info string| {ps.GetValue()}");
 
 			string[] ss = ps.GetValue().Split(new [] { '"', '<', '>', '=', ';' });
 			string[] s2;
@@ -181,6 +216,8 @@ namespace ShItextCode.ElementExtraction
 					getTextStyleValue(s2);
 				}
 			}
+
+			DM.End0("end");
 		}
 
 
@@ -188,11 +225,17 @@ namespace ShItextCode.ElementExtraction
 
 		private void getStrokeOpacity()
 		{
+			DM.InOut0();
+
 			tsx.TextOpacity = pfa.GetStrokingOpacity();
 		}
 
+
+		// todo add?  "color" "line-height" "margin" "xfa" "font-family" "margin-left" "Margin-right" (etc)
 		private void getTextStyleValue(string[] s2)
 		{
+			DM.Start0($"switching on {s2[0]}");
+
 			switch (s2[0].Trim())
 			{
 			case "font":
@@ -236,10 +279,14 @@ namespace ShItextCode.ElementExtraction
 					break;
 				}
 			}
+
+			DM.End0();
 		}
 
 		private void getTextHorizAlign(string s2)
 		{
+			DM.InOut0();
+
 			for (int i = 1; i < TextHorzAlignment.Length; i++)
 			{
 				if (s2.ToLower().Equals(TextHorzAlignment[i].Item1.ToLower()))
@@ -254,6 +301,8 @@ namespace ShItextCode.ElementExtraction
 
 		private void getTextVertAlign(string s2)
 		{
+			DM.InOut0();
+
 			foreach (Tuple<string, VerticalAlignment, char, float> va in TextVertAlignment)
 			{
 				if (s2.ToLower().Equals(va.Item1.ToLower()))
@@ -265,6 +314,8 @@ namespace ShItextCode.ElementExtraction
 
 		private void setFontData(string s2)
 		{
+			DM.InOut0();
+
 			// two options
 			// font name is one or multiple words
 			// if has >'< - multiple work font name
@@ -312,6 +363,8 @@ namespace ShItextCode.ElementExtraction
 
 		private void getTextDecoration(string s2)
 		{
+			DM.InOut0();
+
 			string[] s3 = s2.Split(' ');
 			int len = s3.Length;
 
@@ -330,6 +383,8 @@ namespace ShItextCode.ElementExtraction
 
 		private void getFontSize(string s2)
 		{
+			DM.InOut0();
+
 			float fontSize = float.Parse(s2.Substring(0, s2.Length - 2));
 
 			if (fontSize > tsx.TextSize)

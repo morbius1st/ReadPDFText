@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Annot;
 using ShSheetData.ShSheetData2;
+using UtilityLibrary;
 using Rectangle = iText.Kernel.Geom.Rectangle;
 
 #endregion
@@ -27,11 +28,15 @@ namespace ShItextCode.ElementExtraction
 
 		public string GetRectName(PdfAnnotation anno)
 		{
+			DM.InOut0();
+
 			return anno.GetContents()?.GetValue()?.Trim().ToUpper() ?? null;
 		}
 
 		public Rectangle GetAnnoRect(PdfAnnotation anno)
 		{
+			DM.InOut0();
+
 			return anno.GetRectangle().ToRectangle();
 		}
 

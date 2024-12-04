@@ -216,7 +216,7 @@ namespace ScanPDFBoxes
 						break;
 					}
 
-				case "AA":
+				case "AS":
 					{
 						dataSetName = "new";
 
@@ -862,14 +862,19 @@ namespace ScanPDFBoxes
 
 		private void processAdd_F_Alt()
 		{
-			DM.DbxSetIdx(0, 2);
-			DM.DbxLineEx(0, "start");
-
 			PdfShowInfo.StartMsg("Add Files F", DateTime.Now.ToString());
+
+
+			DM.Start0("*** start | processAdd_F_Alt ***");
+
+			// DM.DbxSetIdx(0, 2);
+			// DM.DbxLineEx(0, "start");
 
 			proceedAdd2();
 
-			DM.DbxLineEx(0, "end", 0, -1);
+			// DM.DbxLineEx(0, "end", 0, -1);
+
+			DM.End0("*** end | processAdd_F_Alt ***");
 		}
 
 		private void processAdd1_F_Alt()
@@ -1005,9 +1010,13 @@ namespace ScanPDFBoxes
 
 		private void proceedAdd2()
 		{
+			DM.Start0();
+
 			lastOp = sm2.ScanShts();
 
 			showLastOpResult();
+
+			DM.End0();
 		}
 
 		private void proceedAdd2_1(string file)
@@ -1269,135 +1278,137 @@ namespace ScanPDFBoxes
 		}
 
 		*/
-
-		/// <summary>
-		/// run second
-		/// configure the paths and file names for the<br/>
-		/// output file, pdf folder, etc.<br/>
-		/// initialize the sheet data file
-		/// </summary>
-		// private bool configSheetInfo(string idx)
-		// {
-		// 	DM.DbxLineEx(0, "start", 1);
-		//
-		// 	bool? result;
-		//
-		// 	int index;
-		//
-		// 	if (!int.TryParse(idx, out index)) return false;
-		//
-		// 	if (!sm2.InitSheetFiles(index))
-		// 	{
-		// 		DM.DbxLineEx(0, "end 1 - (", -1);
-		// 		return false;
-		// 	}
-		//
-		// 	result = sm2.InitSheetData();
-		//
-		// 	if (result == false)
-		// 	{
-		// 		Console.WriteLine("\n*** cannot proceed, the data file is not initialized ***");
-		// 		DM.DbxLineEx(0, "end 2 (data file not init)", -1);
-		// 		return false;
-		// 	}
-		// 	else if (!result.HasValue)
-		// 	{
-		// 		Console.WriteLine("\n*** cannot proceed, sheet data exists ***");
-		// 		DM.DbxLineEx(0, "end 3 (sheet data exists)", -1);
-		// 		return false;
-		// 	}
-		//
-		// 	DM.DbxLineEx(0, "end", 0, -1);
-		//
-		// 	return true;
-		// }
-
+		
 		// /// <summary>
-		// /// run first or only
-		// /// config the path / file name for the data manager
+		// /// run second
+		// /// configure the paths and file names for the<br/>
+		// /// output file, pdf folder, etc.<br/>
+		// /// initialize the sheet data file
 		// /// </summary>
-		// private bool configSheetDataManager()
+		// // private bool configSheetInfo(string idx)
+		// // {
+		// // 	DM.DbxLineEx(0, "start", 1);
+		// //
+		// // 	bool? result;
+		// //
+		// // 	int index;
+		// //
+		// // 	if (!int.TryParse(idx, out index)) return false;
+		// //
+		// // 	if (!sm2.InitSheetFiles(index))
+		// // 	{
+		// // 		DM.DbxLineEx(0, "end 1 - (", -1);
+		// // 		return false;
+		// // 	}
+		// //
+		// // 	result = sm2.InitSheetData();
+		// //
+		// // 	if (result == false)
+		// // 	{
+		// // 		Console.WriteLine("\n*** cannot proceed, the data file is not initialized ***");
+		// // 		DM.DbxLineEx(0, "end 2 (data file not init)", -1);
+		// // 		return false;
+		// // 	}
+		// // 	else if (!result.HasValue)
+		// // 	{
+		// // 		Console.WriteLine("\n*** cannot proceed, sheet data exists ***");
+		// // 		DM.DbxLineEx(0, "end 3 (sheet data exists)", -1);
+		// // 		return false;
+		// // 	}
+		// //
+		// // 	DM.DbxLineEx(0, "end", 0, -1);
+		// //
+		// // 	return true;
+		// // }
+		//
+		// // /// <summary>
+		// // /// run first or only
+		// // /// config the path / file name for the data manager
+		// // /// </summary>
+		// // private bool configSheetDataManager()
+		// // {
+		// // 	DM.DbxLineEx(0, "start", 1);
+		// //
+		// //
+		// // 	// if (!sm2.InitDataFile())
+		// // 	// {
+		// // 	// 	DM.DbxLineEx(0, "end 2", 0, -1);
+		// // 	// 	return false;
+		// // 	// }
+		// //
+		// // 	if (!sm2.initDataManager())
+		// // 	{
+		// // 		DM.DbxLineEx(0, "end 3", 0, -1);
+		// // 		return false;
+		// // 	}
+		// //
+		// // 	DM.DbxLineEx(0, "end", 0, -1);
+		// //
+		// // 	return true;
+		// // }
+		//
+		// // get files
+		// private void getFiles1()
 		// {
-		// 	DM.DbxLineEx(0, "start", 1);
+		// 	files = new string[4];
 		//
+		// 	files[0] = rootPath + filesNames[0];
+		// 	files[1] = rootPath + filesNames[1];
+		// 	files[2] = rootPath + filesNames[2];
+		// 	files[3] = rootPath + filesNames[3];
+		// }
 		//
-		// 	// if (!sm2.InitDataFile())
-		// 	// {
-		// 	// 	DM.DbxLineEx(0, "end 2", 0, -1);
-		// 	// 	return false;
-		// 	// }
+		// private void getFiles2()
+		// {
+		// 	files = new string[3];
 		//
-		// 	if (!sm2.initDataManager())
-		// 	{
-		// 		DM.DbxLineEx(0, "end 3", 0, -1);
-		// 		return false;
-		// 	}
+		// 	files[0] = rootPath + filesNames[2];
+		// 	files[1] = rootPath + filesNames[3];
+		// 	files[2] = rootPath + "no name.pdf";
+		// }
 		//
-		// 	DM.DbxLineEx(0, "end", 0, -1);
+		// private void getFiles4()
+		// {
+		// 	files = new string[1];
 		//
-		// 	return true;
+		// 	files[0] = rootPath + filesNames[2];
+		// }
+		//
+		// private void getFiles_D()
+		// {
+		// 	files = new string[3];
+		//
+		// 	files[0] = rootPath + filesNames[0];
+		// 	files[1] = rootPath + filesNames[4];
+		// 	files[2] = rootPath + filesNames[5];
+		// }
+		//
+		// // remove 1 - bad - fails
+		// private void getFiles3()
+		// {
+		// 	files = new string[3];
+		//
+		// 	files[0] = rootPath + filesNames[3];
+		// 	files[1] = rootPath + filesNames[4];
+		// 	files[2] = rootPath + "no file.pdf";
+		// }
+		//
+		// // remove 2 - good - works
+		// private void getFiles_R2()
+		// {
+		// 	files = new string[1];
+		//
+		// 	files[0] = rootPath + filesNames[4];
+		// }
+		//
+		// private void getFiles_Q()
+		// {
+		// 	files = new string[1];
+		//
+		// 	files[0] = rootPath + filesNames[4];
 		// }
 
-		// get files
-		private void getFiles1()
-		{
-			files = new string[4];
 
-			files[0] = rootPath + filesNames[0];
-			files[1] = rootPath + filesNames[1];
-			files[2] = rootPath + filesNames[2];
-			files[3] = rootPath + filesNames[3];
-		}
-
-		private void getFiles2()
-		{
-			files = new string[3];
-
-			files[0] = rootPath + filesNames[2];
-			files[1] = rootPath + filesNames[3];
-			files[2] = rootPath + "no name.pdf";
-		}
-
-		private void getFiles4()
-		{
-			files = new string[1];
-
-			files[0] = rootPath + filesNames[2];
-		}
-
-		private void getFiles_D()
-		{
-			files = new string[3];
-
-			files[0] = rootPath + filesNames[0];
-			files[1] = rootPath + filesNames[4];
-			files[2] = rootPath + filesNames[5];
-		}
-
-		// remove 1 - bad - fails
-		private void getFiles3()
-		{
-			files = new string[3];
-
-			files[0] = rootPath + filesNames[3];
-			files[1] = rootPath + filesNames[4];
-			files[2] = rootPath + "no file.pdf";
-		}
-
-		// remove 2 - good - works
-		private void getFiles_R2()
-		{
-			files = new string[1];
-
-			files[0] = rootPath + filesNames[4];
-		}
-
-		private void getFiles_Q()
-		{
-			files = new string[1];
-
-			files[0] = rootPath + filesNames[4];
-		}
 
 		// helpers
 
@@ -1851,9 +1862,6 @@ namespace ScanPDFBoxes
 
 				{ ">02", new Tuple<string, bool?, bool?, bool?, bool?>("new list options"              , null, null,  null, null) },
 
-				{ ">10", new Tuple<string, bool?, bool?, bool?, bool?>("Reports"                       , null, null,  null, null) },
-				{ "RR" , new Tuple<string, bool?, bool?, bool?, bool?>("Reports Menu"                  , false, false,  false, false) },
-
 				{ ">11", new Tuple<string, bool?, bool?, bool?, bool?>("Initialize"                    , null, null,  null, null) },
 				{ "I2" , new Tuple<string, bool?, bool?, bool?, bool?>("Initialize (using def data)"   , true, null,  null, null) },
 				{ "IS" , new Tuple<string, bool?, bool?, bool?, bool?>("Initialize (select data)"      , false, false,  false, false) },
@@ -1868,7 +1876,7 @@ namespace ScanPDFBoxes
 				// does not save the current information then resets the data manager
 				// resets the current data manager data to blank then does a "close"
 				// resets the sheet file manager
-				{ "0"  , new Tuple<string, bool?, bool?, bool?, bool?>("Reset full"                    , null, null,  null, null) },
+				{ "0"  , new Tuple<string, bool?, bool?, bool?, bool?>("Reset full"                    , true, null,  null, null) },
 				// does not save the current information then resets the data manager
 				// but does not remove the current data manager paths from the sheet file manager
 				{ "2"  , new Tuple<string, bool?, bool?, bool?, bool?>("Reset the data manager"        , true, true,  null, null) },
@@ -1879,14 +1887,16 @@ namespace ScanPDFBoxes
 				{ "8"  , new Tuple<string, bool?, bool?, bool?, bool?>("Reset for new sheets"          , true, false,  null, null) },
 
 				{ ">07", new Tuple<string, bool?, bool?, bool?, bool?>("Add"                           , true, null,  null, null) },
-				{ "A2" , new Tuple<string, bool?, bool?, bool?, bool?>("Add"                           , true, true, false, false) },
+				{ "A2" , new Tuple<string, bool?, bool?, bool?, bool?>("Add to empty only"             , true, true, false, false) },
 				{ "R2" , new Tuple<string, bool?, bool?, bool?, bool?>("Remove a sheet"                , true, true,  true, null) },
 
-				{ ">08", new Tuple<string, bool?, bool?, bool?, bool?>("Listings"                      , null, null,  null, null) },
+
+				{ ">10", new Tuple<string, bool?, bool?, bool?, bool?>("Reports"                       , null, null,  null, null) },
+				{ "RR" , new Tuple<string, bool?, bool?, bool?, bool?>("Reports Menu"                  , false, false,  false, false) },
 				{ "L2" , new Tuple<string, bool?, bool?, bool?, bool?>("List sheet types"              , true, true,  true, null) },
 
 				{ ">09", new Tuple<string, bool?, bool?, bool?, bool?>("new item"                      , null, null,  null, null) },
-				{ "AA" , new Tuple<string, bool?, bool?, bool?, bool?>("Add single sheet"              , true, false, false, true) },
+				{ "AS" , new Tuple<string, bool?, bool?, bool?, bool?>("Add single sheet"              , true, false, false, true) },
 
 
 				{ ">03", new Tuple<string, bool?, bool?, bool?, bool?>("tests"                         , null, null,  null, null) },

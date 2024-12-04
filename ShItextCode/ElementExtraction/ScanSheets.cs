@@ -35,7 +35,9 @@ namespace ShItextCode.ElementExtraction
 		/// </summary>
 		public bool Process(List<string> sheets)
 		{
-			DM.DbxLineEx(0, "start", 1);
+			DM.Start0();
+
+			// DM.DbxLineEx(0, "start", 1);
 
 			// ss = new ScanStatus();
 
@@ -51,20 +53,23 @@ namespace ShItextCode.ElementExtraction
 
 			if (!processStatus())
 			{
-				DM.DbxLineEx(0, "end 1", 0, -1);
+				// DM.DbxLineEx(0, "end 1", 0, -1);
+				DM.End0("end 1");
 				return false;
 			}
 
-			DM.DbxLineEx(0, "end", 0, -1);
-
 			Console.WriteLine($"{SheetDataManager2.SheetsCount - count} >= 0? | {ScanStatus.ErrCount} == 0? | {!ScanStatus.HasFatalErrors} | all must be true");
+
+			// DM.DbxLineEx(0, "end", 0, -1);
+			DM.End0("end");
 
 			return SheetDataManager2.SheetsCount - count >= 0 && ScanStatus.ErrCount == 0 && !ScanStatus.HasFatalErrors;
 		}
 
 		private bool processStatus()
 		{
-			DM.DbxLineEx(0, "start", 1);
+			// DM.DbxLineEx(0, "start", 1);
+			DM.Start0();
 
 			if (ScanStatus.ErrCount > 0)
 			{
@@ -80,14 +85,16 @@ namespace ShItextCode.ElementExtraction
 			SheetDataManager2.Write();
 			Console.WriteLine("\nData Written");
 
-			DM.DbxLineEx(0, "end", 0, -1);
+			// DM.DbxLineEx(0, "end", 0, -1);
+			DM.End0("end");
 
 			return true;
 		}
 
 		private void scanSheets(List<string> sheets)
 		{
-			DM.DbxLineEx(0, "start", 1);
+			DM.Start0();
+			// DM.DbxLineEx(0, "start", 1);
 
 			string fileName;
 
@@ -113,11 +120,14 @@ namespace ShItextCode.ElementExtraction
 				checkForDupsAndExtras(fileName);
 			}
 
-			DM.DbxLineEx(0, "end", 0, -1);
+			// DM.DbxLineEx(0, "end", 0, -1);
+			DM.End0("end");
 		}
 
 		private bool checkFileExists(string fullFilePath, string fname)
 		{
+			DM.InOut0();
+
 			if (!File.Exists(fullFilePath))
 			{
 				ScanStatus.AddError(
@@ -133,6 +143,8 @@ namespace ShItextCode.ElementExtraction
 
 		private bool checkDuplicateFile(string fname)
 		{
+			DM.InOut0();
+
 			if ((SheetDataManager2.Data?.SheetDataList) == null) return true;
 
 			if (SheetDataManager2.Data.SheetDataList.ContainsKey(fname))
@@ -148,6 +160,8 @@ namespace ShItextCode.ElementExtraction
 
 		private void checkForDupsAndExtras(string fileName)
 		{
+			DM.InOut0();
+
 			dupsAdded =  ScanStatus.DupsCount - startDupCount;
 			extrasAdded =  ScanStatus.XtraCount - startExtraCount;
 
@@ -178,6 +192,8 @@ namespace ShItextCode.ElementExtraction
 
 		private void showScanReport()
 		{
+			DM.InOut0();
+
 			bool result;
 
 			Console.WriteLine($"\nScan forSheet Boxes Report");
@@ -192,6 +208,8 @@ namespace ShItextCode.ElementExtraction
 
 		private void showReportShtRects(KeyValuePair<string, SheetData2> kvp)
 		{
+			DM.InOut0();
+
 			bool result;
 
 			Console.WriteLine($"\nfor {kvp.Value.Name}");
@@ -224,6 +242,8 @@ namespace ShItextCode.ElementExtraction
 
 		private void showReportOptRects(KeyValuePair<string, SheetData2> kvp)
 		{
+			DM.InOut0();
+
 			if (kvp.Value.OptRects.Count == 0)
 			{
 				Console.WriteLine($"\tno optional boxes found");

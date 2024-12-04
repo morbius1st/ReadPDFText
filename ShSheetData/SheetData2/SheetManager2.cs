@@ -207,7 +207,7 @@ namespace ShSheetData.SheetData2
 
 			result = ss.Process(sfm2.SheetFileList);
 
-			showScanResults(0);
+			// showScanResults(0);
 
 			DM.End0();
 

@@ -7,6 +7,7 @@ using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Annot;
 using iText.Layout.Properties;
+using UtilityLibrary;
 using static ShItextCode.Constants;
 #endregion
 
@@ -83,6 +84,8 @@ namespace ShItextCode
 
 		public static PdfArray GetBBoxFromAnnotation(PdfAnnotation pa)
 		{
+			DM.InOut0();
+
 			PdfArray pax;
 
 			try

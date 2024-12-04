@@ -67,12 +67,21 @@ namespace ShSheetData.ShSheetData2
 
 		public static void ResetSheetDataList()
 		{
+			DM.InOut0("clear the sheet data list");
+
 			Data.SheetDataList = new Dictionary<string, SheetData2.SheetData2>();
 		}
 
 		public static void UpdateHeader()
 		{
-			DM.DbxLineEx(0, "\tdata manager - update header");
+			if (Info == null)
+			{
+				DM.InOut0("data manager - update header - info is null - exit");
+				return;
+			}
+ 
+			DM.InOut0("data manager - update header");
+			// DM.DbxLineEx(0, "\tdata manager - update header");
 			Info.FileType = SettingFileType.SETTING_MGR_DATA;
 			Info.DataClassVersion = Data.DataFileVersion;
 			Info.Description = Data.DataFileDescription;

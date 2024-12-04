@@ -1,5 +1,5 @@
 ******************************
-12/2/2024 12:32:07 AM
+12/4/2024 7:05:41 AM
 ******************************
 
 
@@ -15,9 +15,6 @@ DM sheet count     | -1
 
       + --- new list options ---
 
-      + --- Reports ---
-> RR  | *** Reports Menu  (False / False / False / False) ***
-
       + --- Initialize ---
 > I2  | *** Initialize (using def data)  (True / null / null / null) ***
 > IS  | *** Initialize (select data)  (False / False / False / False) ***
@@ -25,21 +22,22 @@ DM sheet count     | -1
       + --- Basic ---
 > O2  | *** Open sheet types  (True / True / null / null) ***
 > C2  | *** Close the data file  (True / True / null / null) ***
-> 0   | *** Reset full  (null / null / null / null) ***
+> 0   | *** Reset full  (True / null / null / null) ***
 > 2   | *** Reset the data manager  (True / True / null / null) ***
 > 4   | *** Reset the data file  (True / True / null / null) ***
 > 6   | *** Reset the sheet file manager  (True / False / null / null) ***
 > 8   | *** Reset for new sheets  (True / False / null / null) ***
 
       + --- Add ---
-> A2  | *** Add  (True / True / False / False) ***
+> A2  | *** Add to empty only  (True / True / False / False) ***
 > R2  | *** Remove a sheet  (True / True / True / null) ***
 
-      + --- Listings ---
+      + --- Reports ---
+> RR  | *** Reports Menu  (False / False / False / False) ***
 > L2  | *** List sheet types  (True / True / True / null) ***
 
       + --- new item ---
-> AA  | *** Add single sheet  (True / False / False / True) ***
+> AS  | *** Add single sheet  (True / False / False / True) ***
 
       + --- tests ---
 > T0  | *** test create samples  (False / False / False / null) ***
@@ -49,27 +47,38 @@ DM sheet count     | -1
       + --- completion options ---
 > X   | *** Exit ***
 
-> ? > I2
+> ? > IS
 
+
+*** Good  | Good (1) | (ConfigManager/verifyConfig2)
+*** IS ready - continue ***
+
+Select Sample
+>  0 | * Sample TestBoxes
+>  1 | * Three sheets to test PDF rotation
+>  2 | * Special Small Sample Set (3) with (3) different Rotations (new)
+>  7 | *** current | * Special Small Sample Set (3) with (3) different Rotations (new)
+>  9 | * Temp Example 'Z' but using type 7's sheet info
+>  c | *** Select Current
+>  x | *** Exit
+
+** > 7
 
 *** Good  | Good (1) | (ConfigManager/initialize)
 *** IS ready - continue ***
 
 
-Currently there are no sheets saved
+Currently there are 3 saved
 DM init          DM| True
 data file folder DM| C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples
-data file name   DM| SheetData0.xml
+data file name   DM| SheetData7.xml
 
 Got Sheet Folder   | True
 Got Sheet File List| True
-Sheet File folder  | C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\TestBoxes
-DM sheet count     | -1
+Sheet File folder  | C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Test7\PDF Files
+DM sheet count     | 3
 
       + --- new list options ---
-
-      + --- Reports ---
-> RR  | *** Reports Menu  (False / False / False / False) ***
 
       + --- Initialize ---
 > I2  | *** Initialize (using def data)  (True / null / null / null) ***
@@ -78,21 +87,146 @@ DM sheet count     | -1
       + --- Basic ---
 > O2  | *** Open sheet types  (True / True / null / null) ***
 > C2  | *** Close the data file  (True / True / null / null) ***
-> 0   | *** Reset full  (null / null / null / null) ***
+> 0   | *** Reset full  (True / null / null / null) ***
 > 2   | *** Reset the data manager  (True / True / null / null) ***
 > 4   | *** Reset the data file  (True / True / null / null) ***
 > 6   | *** Reset the sheet file manager  (True / False / null / null) ***
 > 8   | *** Reset for new sheets  (True / False / null / null) ***
 
       + --- Add ---
-> A2  | *** Add  (True / True / False / False) ***
+> A2  | *** Add to empty only  (True / True / False / False) ***
 > R2  | *** Remove a sheet  (True / True / True / null) ***
 
-      + --- Listings ---
+      + --- Reports ---
+> RR  | *** Reports Menu  (False / False / False / False) ***
 > L2  | *** List sheet types  (True / True / True / null) ***
 
       + --- new item ---
-> AA  | *** Add single sheet  (True / False / False / True) ***
+> AS  | *** Add single sheet  (True / False / False / True) ***
+
+      + --- tests ---
+> T0  | *** test create samples  (False / False / False / null) ***
+> T1  | *** test query sel sheets  (null / null / null / null) ***
+> T2  | *** test get config  (null / null / null / null) ***
+
+      + --- completion options ---
+> X   | *** Exit ***
+
+> ? > 8
+
+*** Good  | Good (1) | (ConfigManager/verifyConfig2)
+*** IS ready - continue ***
+
+
+Currently there are no sheets saved
+DM init          DM| True
+data file folder DM| C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples
+data file name   DM| SheetData7.xml
+
+Got Sheet Folder   | True
+Got Sheet File List| True
+Sheet File folder  | C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Test7\PDF Files
+DM sheet count     | 0
+
+      + --- new list options ---
+
+      + --- Initialize ---
+> I2  | *** Initialize (using def data)  (True / null / null / null) ***
+> IS  | *** Initialize (select data)  (False / False / False / False) ***
+
+      + --- Basic ---
+> O2  | *** Open sheet types  (True / True / null / null) ***
+> C2  | *** Close the data file  (True / True / null / null) ***
+> 0   | *** Reset full  (True / null / null / null) ***
+> 2   | *** Reset the data manager  (True / True / null / null) ***
+> 4   | *** Reset the data file  (True / True / null / null) ***
+> 6   | *** Reset the sheet file manager  (True / False / null / null) ***
+> 8   | *** Reset for new sheets  (True / False / null / null) ***
+
+      + --- Add ---
+> A2  | *** Add to empty only  (True / True / False / False) ***
+> R2  | *** Remove a sheet  (True / True / True / null) ***
+
+      + --- Reports ---
+> RR  | *** Reports Menu  (False / False / False / False) ***
+> L2  | *** List sheet types  (True / True / True / null) ***
+
+      + --- new item ---
+> AS  | *** Add single sheet  (True / False / False / True) ***
+
+      + --- tests ---
+> T0  | *** test create samples  (False / False / False / null) ***
+> T1  | *** test query sel sheets  (null / null / null / null) ***
+> T2  | *** test get config  (null / null / null / null) ***
+
+      + --- completion options ---
+> X   | *** Exit ***
+
+> ? > A2
+
+
+*** Good  | Good (1) | (ConfigManager/verifyConfig2)
+*** IS ready - continue ***
+... done
+
+
+Scan forSheet Boxes Report
+
+for A1.0 - 36x48 Portrait Rotate 0
+	All sheet boxes found
+	11 optional boxes found
+
+for A2.0 - 36x48 Portrait Rotate 90 CW
+	All sheet boxes found
+	11 optional boxes found
+
+for A3.0 - 36x48 Portrait Rotate 90 CCW
+	All sheet boxes found
+	11 optional boxes found
+
+PDF Sheet Box Scan Error Report | no issues | all boxes found
+
+Data Written
+0 >= 0? | 0 == 0? | True | all must be true
+
+*** WORKED ***
+
+
+Currently there are 3 saved
+DM init          DM| True
+data file folder DM| C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples
+data file name   DM| SheetData7.xml
+
+Got Sheet Folder   | True
+Got Sheet File List| True
+Sheet File folder  | C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\Test7\PDF Files
+DM sheet count     | 3
+
+      + --- new list options ---
+
+      + --- Initialize ---
+> I2  | *** Initialize (using def data)  (True / null / null / null) ***
+> IS  | *** Initialize (select data)  (False / False / False / False) ***
+
+      + --- Basic ---
+> O2  | *** Open sheet types  (True / True / null / null) ***
+> C2  | *** Close the data file  (True / True / null / null) ***
+> 0   | *** Reset full  (True / null / null / null) ***
+> 2   | *** Reset the data manager  (True / True / null / null) ***
+> 4   | *** Reset the data file  (True / True / null / null) ***
+> 6   | *** Reset the sheet file manager  (True / False / null / null) ***
+> 8   | *** Reset for new sheets  (True / False / null / null) ***
+
+      + --- Add ---
+> A2  | *** Add to empty only  (True / True / False / False) ***
+> R2  | *** Remove a sheet  (True / True / True / null) ***
+
+      + --- Reports ---
+> RR  | *** Reports Menu  (False / False / False / False) ***
+> L2  | *** List sheet types  (True / True / True / null) ***
+
+      + --- new item ---
+> AS  | *** Add single sheet  (True / False / False / True) ***
 
       + --- tests ---
 > T0  | *** test create samples  (False / False / False / null) ***

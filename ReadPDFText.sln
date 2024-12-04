@@ -46,6 +46,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Excluded", "Excluded", "{26
 		Solution Items\Excluded\SheetDataSet.cs = Solution Items\Excluded\SheetDataSet.cs
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Referenced", "Referenced", "{71904719-4B9E-4A11-B6ED-C7D70A6DDE60}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\UtilityLibrary\UtilityLibrary\ApiCalls.cs = ..\..\UtilityLibrary\UtilityLibrary\ApiCalls.cs
+		..\..\UtilityLibrary\UtilityLibrary\CsDebugMessages.cs = ..\..\UtilityLibrary\UtilityLibrary\CsDebugMessages.cs
+		..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs = ..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs
+		..\..\UtilityLibrary\UtilityLibrary\FilePath\v3.1\CsFilePath.cs = ..\..\UtilityLibrary\UtilityLibrary\FilePath\v3.1\CsFilePath.cs
+		..\..\UtilityLibrary\UtilityLibrary\CsFloatOps.cs = ..\..\UtilityLibrary\UtilityLibrary\CsFloatOps.cs
+		..\..\UtilityLibrary\UtilityLibrary\CsStringUtil.cs = ..\..\UtilityLibrary\UtilityLibrary\CsStringUtil.cs
+		..\..\UtilityLibrary\UtilityLibrary\CsUtilities.cs = ..\..\UtilityLibrary\UtilityLibrary\CsUtilities.cs
+		..\..\UtilityLibrary\UtilityLibrary\CsWindowsHelpers.cs = ..\..\UtilityLibrary\UtilityLibrary\CsWindowsHelpers.cs
+		..\..\UtilityLibrary\UtilityLibrary\CsXmlUtilities.cs = ..\..\UtilityLibrary\UtilityLibrary\CsXmlUtilities.cs
+		..\PDFMerge1\AndyShared\FileSupport\FileLocationSupport.cs = ..\PDFMerge1\AndyShared\FileSupport\FileLocationSupport.cs
+		..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.5\SettingsMgr.cs = ..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.5\SettingsMgr.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		DbgCreateBx|Any CPU = DbgCreateBx|Any CPU
@@ -171,6 +186,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{26D9B011-025C-4F38-9130-139B72E5833F} = {C9B2649F-B29C-4438-9695-86CEBDDF840C}
+		{71904719-4B9E-4A11-B6ED-C7D70A6DDE60} = {C9B2649F-B29C-4438-9695-86CEBDDF840C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8ABC32C9-D744-4629-8475-CA4C837C44B2}

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UtilityLibrary;
 using static ShSheetData.Support.SheetRectType;
 using static ShSheetData.Support.SheetRectId;
 
@@ -110,6 +111,8 @@ namespace ShSheetData.Support
 
 		public static SheetRectType GetRecType(string name, out SheetRectId id)
 		{
+			DM.InOut0();
+
 			id = SM_NA;
 
 			if (OptRectIdXref.ContainsKey(name))

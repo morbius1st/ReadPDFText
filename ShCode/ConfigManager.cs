@@ -180,12 +180,8 @@ namespace ShCode
 			bool? mustHaveDataFilePath, bool? mustHaveDataFile, 
 			bool? mustHaveDataFileSheets, bool? mustHaveSheetFileList)
 		{
-			DM.Start0($"option {id}");
+			DM.Start0(false, $"option {id}");
 
-			DM.Stat0($"1) must have data file path   {mustHaveDataFilePath}");
-			DM.Stat0($"2) must have data file        {mustHaveDataFile}");
-			DM.Stat0($"3) must have data file sheets {mustHaveDataFileSheets}");
-			DM.Stat0($"9) must have data file list   {mustHaveSheetFileList}");
 
 			switchboardIdx = id;
 
@@ -198,42 +194,80 @@ namespace ShCode
 
 
 			// so far, always true
+			// working on answer 1, answer 2, and answer 3
+			// DM.Stat0($"1 data file path status (mustHaveDataFilePath) {mustHaveDataFilePath}");
+			
 			if (mustHaveDataFilePath == true)
 			{
+				// DM.Stat0($"1a required");
+
 				answer1 = sm2.GotDataFilePath && SheetDataManager2.GotDataPath;
+
+				// DM.Stat0($"1b answer1 is {answer1}");
 
 				if (!answer1)
 				{
-					SetStatus(StatusCodes.SC_CFG_DATA_FILE_PATH_MISSING);
-					DM.DbxLineEx(0, $"end 1", -1);
+					// DM.Stat0($"1b1 answer1 is false - exit");
 
-					showVerifyConfigResults(false, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+					SetStatus(StatusCodes.SC_CFG_DATA_FILE_PATH_MISSING);
+					DM.End0("end 1");
+
+					showVerifyConfigResults(false, 
+						mustHaveDataFilePath, 
+						mustHaveDataFile, 
+						mustHaveDataFileSheets, 
+						mustHaveSheetFileList,
+						answer1);
 
 					return false;
 				}
 
-				// answer1 is true;
+				// DM.Stat0($"1b2 answer1 is true - cont");
 
-				// bool b1 = SheetDataManager2.Initialized;
-				// bool b2 = SheetDataManager2.GotDataSheets;
-				// bool b3 = SheetDataManager2.SettingsFileExists;
-				// bool b4 = SheetDataManager2.GotDataPath;
+				// answer 1 good
+				// work on answer 2
+
+				// if null - does not matter as much but must
+				// check answer 3
+
+				// DM.Stat0($"2 data file status (mustHaveDataFile) {mustHaveDataFile}");
 
 				if (!mustHaveDataFile.HasValue) // ie == null
 				{
+					// DM.Stat0($"2a is null");
+
 					answer2 = SheetDataManager2.SheetsCount >= 0;
+
+					// DM.Stat0($"2a1 sheet count >= 0 (answer2) {answer2}");
 
 					if (answer2)
 					{
+						// DM.Stat0($"2b1 answer1 is true - check (mustHaveDataFileSheets = {mustHaveDataFileSheets})");
+
 						if (mustHaveDataFileSheets == false)
 						{
+							// DM.Stat0($"2c1 is false - (answer3) check sheet count");
+
 							answer3 = SheetDataManager2.SheetsCount == 0;
-						}
-					}
+
+							// DM.Stat0($"3 sheet count == 0? (answer3) {answer3}");
+						} 
+						// else
+						// {
+						// 	DM.Stat0($"2c1 is true - (answer3) no change == {answer3}");
+						// }
+					} 
+					// else
+					// {
+					// 	DM.Stat0($"2b2 answer1 is false - ignore (mustHaveDataFileSheets)");
+					// }
 				}
 				else 
+				// answer 2
 				if (mustHaveDataFile == true)
 				{
+					// DM.Stat0($"2a must be true");
+
 					answer2 = SheetDataManager2.SheetsCount >= 0;
 
 					if (answer2)
@@ -254,6 +288,8 @@ namespace ShCode
 				answer3 = !(SheetDataManager2.SheetsCount <=0) == mustHaveDataFileSheets;
 			}
 
+
+			// work on answer9
 			if (mustHaveSheetFileList == true)
 			{
 				answer9 = sm2.GotSheetFolder;
@@ -263,8 +299,6 @@ namespace ShCode
 					answer9 = sm2.GotSheetFileList;
 				}
 			}
-
-			DM.DbxLineEx(0, $"ans1 {answer1} | ans2 {answer2} | ans3 {answer3} | ans9 {answer9}");
 
 			answerFinal = answer1 && answer2 && answer3 && answer9;
 
@@ -293,7 +327,10 @@ namespace ShCode
 				}
 			}
 
-			showVerifyConfigResults(answerFinal, mustHaveDataFilePath, mustHaveDataFile, mustHaveDataFileSheets, mustHaveSheetFileList);
+			showVerifyConfigResults(answerFinal, 
+				mustHaveDataFilePath, mustHaveDataFile, 
+				mustHaveDataFileSheets, mustHaveSheetFileList,
+				answer1, answer2, answer3, answer9);
 
 			DM.DbxLineEx(0, $"end", -1);
 
@@ -450,34 +487,56 @@ namespace ShCode
 		}
 
 		// show the results of the verify config method
-		private void showVerifyConfigResults(bool answer, bool? mustHaveDataFilePath,
-			bool? mustHaveDataFile, bool? mustHaveDataFileSheets, bool? mustHaveSheetFileList)
+		private void showVerifyConfigResults(bool finalAnswer, 
+			bool? mustHaveDataFilePath,
+			bool? mustHaveDataFile, 
+			bool? mustHaveDataFileSheets, 
+			bool? mustHaveSheetFileList,
+			bool A1,
+			bool? A2 = null,
+			bool? A3 = null,
+			bool? A9 = null
+			)
 		{
-			// string s1 = sfm2.ScanOkToProceed.HasValue ?  sfm2.ScanOkToProceed.Value.ToString() : "is null";
-			string s2 = sm2.GotDataFile.HasValue ?  sm2.GotDataFile.Value.ToString() : "is null";
-			string s3 = mustHaveDataFile.HasValue ?  mustHaveDataFile.Value.ToString() : "is null";
-			string s4 = mustHaveSheetFileList.HasValue ?  mustHaveSheetFileList.Value.ToString() : "is null";
-			string s5 = mustHaveDataFilePath.HasValue ?  mustHaveDataFilePath.Value.ToString() : "is null";
-			string s6 = mustHaveDataFileSheets.HasValue ?  mustHaveDataFileSheets.Value.ToString() : "is null";
 
+			// string s1 = sfm2.ScanOkToProceed.HasValue ?  sfm2.ScanOkToProceed.Value.ToString() : "is null";
+			string s1 = mustHaveDataFilePath.HasValue    ?  mustHaveDataFilePath.Value.ToString()    : "null (T or F)";
+			string s2 = mustHaveDataFile.HasValue        ?  mustHaveDataFile.Value.ToString()        : "null (T or F)";
+			string s3 = mustHaveDataFileSheets.HasValue  ?  mustHaveDataFileSheets.Value.ToString()  : "null (T or F)";
+			string s9 = mustHaveSheetFileList.HasValue   ?  mustHaveSheetFileList.Value.ToString()   : "null (T or F)";
+
+			string a1 = A1.ToString();
+			string a2 = A2.HasValue ? A2.Value.ToString() : "undefined";
+			string a3 = A3.HasValue ? A3.Value.ToString() : "undefined";
+			string a9 = A9.HasValue ? A9.Value.ToString() : "undefined";
+
+			DM.Stat0($"required");
+			DM.Stat0($"{" ".Repeat(24)}required       actual");
+			DM.Stat0($"1) must have data file path    {s1,-16}vs {a1}");
+			DM.Stat0($"2) must have data file         {s2,-16}vs {a2}");
+			DM.Stat0($"3) must have data file sheets  {s3,-16}vs {a3}");
+			DM.Stat0($"9) must have data file list    {s9,-16}vs {a9}");
+			DM.Stat0($"Final answer| {finalAnswer}");
+
+			string s12a = sm2.GotDataFile.HasValue ?  sm2.GotDataFile.Value.ToString() : "is null";
+			string s12b = (SheetDataManager2.SheetsCount >= 0).ToString();
+			string s13a = SheetDataManager2.GotDataSheets.ToString();
+			string s13b = (SheetDataManager2.GotDataSheets == mustHaveDataFileSheets).ToString();
+			string s19a = sm2.GotSheetFileList.ToString();
+			string s19b = sm2.GotSheetFolder.ToString();
 
 			DM.DbxLineEx(0, $"start", 1);
 			DM.DbxLineEx(0, $"option {switchboardIdx}", 1);
 
-			DM.DbxLineEx(0, $"{"get config?",-32}{answer}");
-			DM.DbxLineEx(0, $"{"must have data file path",-32}{s5,-8} | got path?   {SheetDataManager2.GotDataPath}");
-			DM.DbxLineEx(0, $"{"must have data file?",-32}{s3,-8} | got file?   {s2}");
-			DM.DbxLineEx(0, $"{"data file must have sheets?",-32}{s6,-8} | got sheets? {s2} | count {SheetDataManager2.SheetsCount}");
+			DM.DbxLineEx(0, $"{"final answer",-32}{finalAnswer}");
+			DM.DbxLineEx(0, $"{"1 must have data file path"     ,-32}{s1,-8} | got path?   {SheetDataManager2.GotDataPath}");
+			DM.DbxLineEx(0, $"{"2a must have data file?"        ,-32}{s2,-8} | got file?   {s12a}");
+			DM.DbxLineEx(0, $"{"2a and can have sheets?"        ,-32}{s2,-8} | sht count   {s12b}");
+			DM.DbxLineEx(0, $"{"3a data file may need sheets?"  ,-32}{s3,-8} | got sheets? {s13a ,-8}| count {SheetDataManager2.SheetsCount}");
+			DM.DbxLineEx(0, $"{"3b but must match"              ,-32}{s3,-8} | got match?  {s13b}");
+			DM.DbxLineEx(0, $"{"9a must have sht file list?"    ,-32}{s9,-8} | got list?   {s19a ,-8}| count {sm2.SheetFileList?.Count.ToString() ?? "null" }");
+			DM.DbxLineEx(0, $"{"9b and must have folder?"       ,-32}{s9,-8} | got path?   {s19b}");
 
-			DM.DbxLineEx(0, $"{"must have sht file path?",-32}{s4,-8} | got path?  {sm2.GotSheetFolder}");
-			DM.DbxLineEx(0, $"{"must have sht Files?",-32}{s4,-8} | got files? {sm2.GotSheetFileList}");
-
-			DM.DbxLineEx(0, $"{"got sheet folder?",-32}{sm2.GotSheetFolder}");
-			DM.DbxLineEx(0, $"{"got sheet file?",-32}{sm2.GotSheetFileList} ({sm2.SheetFileList?.Count.ToString() ?? "null" })");
-
-			DM.DbxLineEx(0, $"{"got data file?",-32}{s2}");
-			DM.DbxLineEx(0, $"{"data file got path?",-32}{SheetDataManager2.GotDataPath}");
-			DM.DbxLineEx(0, $"{"data file got sheets?",-32}{SheetDataManager2.GotDataSheets}");
 			DM.DbxLineEx(0, $"{SuiteSettings.Data.DataFilePath?.FullFilePath ?? "data file path is null"}");
 			DM.DbxLineEx(0, $"{SuiteSettings.Data.ScanPDfFolder?.FullFilePath ?? "PDF folder path is null"}", -1);
 
