@@ -31,7 +31,7 @@ namespace ScanPDFBoxes
 		// true = worked / good | false = fail / error | null = cannot proceed / config issue
 		private static bool? lastOp = null;
 
-		public const string SHEET_DATA_FILE_TEST = "SheetData";
+		public const string SHEET_DATA_FILE_TEST = "Sheet Data";
 
 		public const string SHEET_METRIC_FOLDER =
 			@"C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\_Samples\";

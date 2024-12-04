@@ -18,4 +18,19 @@
 		<DefineConstants>$(DefineConstants);USER_SETTINGS; SUITE_SETTINGS</DefineConstants>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Include=".Referenced\CsDebugMessages.cs" />
+	  <Compile Include=".Referenced\CsExtensions.cs" />
+	  <Compile Include=".Referenced\CsFilePath.cs" />
+	  <Compile Include=".Referenced\CsFloatOps.cs" />
+	  <Compile Include=".Referenced\CsItextHelpers.cs" />
+	  <Compile Include=".Referenced\CsMath.cs" />
+	  <Compile Include=".Referenced\CsStringUtil.cs" />
+	  <Compile Include=".Referenced\CsUtilities.cs" />
+	  <Compile Include=".Referenced\CsWindowsHelpers.cs" />
+	  <Compile Include=".Referenced\CsXmlUtilities.cs" />
+	  <Compile Include=".Referenced\FileLocationSupport.cs" />
+	  <Compile Include=".Referenced\SettingsMgr.cs" />
+	</ItemGroup>
+
 </Project>
