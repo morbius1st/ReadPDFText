@@ -39,25 +39,25 @@
   <!-- </PropertyGroup> -->
 
   <ItemGroup>
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs">
+    <Compile Include="..\ManageData\.Referenced\CsExtensions.cs">
       <Link>.Linked\CsExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsFloatOps.cs">
+    <Compile Include="..\ManageData\.Referenced\CsFloatOps.cs">
       <Link>.Linked\CsFloatOps.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsStringUtil.cs">
+    <Compile Include="..\ManageData\.Referenced\CsStringUtil.cs">
       <Link>.Linked\CsStringUtil.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsUtilities.cs">
+    <Compile Include="..\ManageData\.Referenced\CsUtilities.cs">
       <Link>.Linked\CsUtilities.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsWindowsHelpers.cs">
+    <Compile Include="..\ManageData\.Referenced\CsWindowsHelpers.cs">
       <Link>.Linked\CsWindowsHelpers.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsXmlUtilities.cs">
+    <Compile Include="..\ManageData\.Referenced\CsXmlUtilities.cs">
       <Link>.Linked\CsXmlUtilities.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\FilePath\V3.1\CsFilePath.cs">
+    <Compile Include="..\ManageData\.Referenced\CsFilePath.cs">
       <Link>.Linked\CsFilePath.cs</Link>
     </Compile>
   </ItemGroup>

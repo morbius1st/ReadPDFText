@@ -16,7 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Settings\SheetDataSetConsts.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="C:\Users\jeffs\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\CsDebugMessages.cs">
+    <Compile Include="..\ManageData\.Referenced\CsDebugMessages.cs">
       <Link>.Linked\CsDebugMessages.cs</Link>
     </Compile>
   </ItemGroup>

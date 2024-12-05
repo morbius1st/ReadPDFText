@@ -33,10 +33,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)PdfCalculations\PdfMath.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfShowInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PdfSupport.cs" />
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsItextHelpers.cs">
+    <Compile Include="..\ManageData\.Referenced\CsItextHelpers.cs">
       <Link>.Linked\CsItextHelpers.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsMath.cs">
+    <Compile Include="..\ManageData\.Referenced\CsMath.cs">
       <Link>.Linked\CsMath.cs</Link>
     </Compile>
   </ItemGroup>
