@@ -20,10 +20,10 @@
     <Folder Include="$(MSBuildThisFileDirectory).Linked\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="C:\Users\jeffs\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\SettingManager\v7.5\SettingsMgr.cs">
+    <Compile Include="..\ManageData\.Referenced\SettingsMgr.cs">
       <Link>.Linked\SettingsMgr.cs</Link>
     </Compile>
-    <Compile Include="C:\Users\jeffs\Documents\Programming\VisualStudioProjects\PDF SOLUTIONS\PDFMerge1\AndyShared\FileSupport\FileLocationSupport.cs">
+    <Compile Include="..\ManageData\.Referenced\FileLocationSupport.cs">
       <Link>FileLocationSupport.cs</Link>
     </Compile>
   </ItemGroup>

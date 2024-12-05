@@ -26,13 +26,13 @@
   <Import Project="..\ShTempCode\ShTempCode.projitems" Label="Shared" />
 
   <ItemGroup>
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs" Link=".Referenced\CsExtensions.cs" />
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsFloatOps.cs" Link=".Referenced\CsFloatOps.cs" />
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsStringUtil.cs" Link=".Referenced\CsStringUtil.cs" />
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsUtilities.cs" Link=".Referenced\CsUtilities.cs" />
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsWindowsHelpers.cs" Link=".Referenced\CsWindowsHelpers.cs" />
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\CsXmlUtilities.cs" Link=".Referenced\CsXmlUtilities.cs" />
-    <Compile Include="..\..\..\UtilityLibrary\UtilityLibrary\FilePath\V3.1\CsFilePath.cs" Link=".Referenced\CsFilePath.cs" />
+    <Compile Include="..\ManageData\.Referenced\CsExtensions.cs" Link=".Referenced\CsExtensions.cs" />
+    <Compile Include="..\ManageData\.Referenced\CsFloatOps.cs" Link=".Referenced\CsFloatOps.cs" />
+    <Compile Include="..\ManageData\.Referenced\CsStringUtil.cs" Link=".Referenced\CsStringUtil.cs" />
+    <Compile Include="..\ManageData\.Referenced\CsUtilities.cs" Link=".Referenced\CsUtilities.cs" />
+    <Compile Include="..\ManageData\.Referenced\CsWindowsHelpers.cs" Link=".Referenced\CsWindowsHelpers.cs" />
+    <Compile Include="..\ManageData\.Referenced\CsXmlUtilities.cs" Link=".Referenced\CsXmlUtilities.cs" />
+    <Compile Include="..\ManageData\.Referenced\CsFilePath.cs" Link=".Referenced\CsFilePath.cs" />
   </ItemGroup>
 
   <ItemGroup>
