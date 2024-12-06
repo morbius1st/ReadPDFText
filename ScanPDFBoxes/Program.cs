@@ -864,15 +864,9 @@ namespace ScanPDFBoxes
 		{
 			PdfShowInfo.StartMsg("Add Files F", DateTime.Now.ToString());
 
-
 			DM.Start0("*** start | processAdd_F_Alt ***");
 
-			// DM.DbxSetIdx(0, 2);
-			// DM.DbxLineEx(0, "start");
-
 			proceedAdd2();
-
-			// DM.DbxLineEx(0, "end", 0, -1);
 
 			DM.End0("*** end | processAdd_F_Alt ***");
 		}

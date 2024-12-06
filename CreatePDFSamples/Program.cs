@@ -39,8 +39,8 @@ namespace CreatePDFSamples
 			// p.begin(choice);
 
 			p.select();
-			// p.beginNewPage();
-			p.beginExistPage();
+			p.beginNewPage();
+			// p.beginExistPage();
 
 			Console.Write("Waiting| ");
 
@@ -100,7 +100,7 @@ namespace CreatePDFSamples
 			if (samp.SelectScanSample(-1, false) !=true) return;
 
 			DataFilePath = samp.Selected.DataFilePath.FullFilePath;
-			SampleTitleBlock = samp.Selected.BlankSamplesFilePath.FullFilePath;
+			SampleTitleBlock = samp.Selected.BlankSamplesFilePath?.FullFilePath ?? null;
 			SamplePdfFilePath = samp.Selected.CreatePdfFilePath.FullFilePath;
 
 			Sample a = samp.Selected;

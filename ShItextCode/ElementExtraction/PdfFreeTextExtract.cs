@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using iText.Commons.Utils;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Annot;
@@ -116,7 +118,9 @@ namespace ShItextCode.ElementExtraction
 		private void getTextData()
 		{
 			DM.Start0();
+
 			getExtraText();
+			
 			getTextSettings();
 
 			DM.End0("end");
@@ -194,6 +198,13 @@ namespace ShItextCode.ElementExtraction
 			if (pos2 - pos1 > 2) tsx.InfoText = subType.Substring(pos1 + 1, pos2 - pos1 - 1);
 		}
 
+
+		// regex: (?<!<p\s*)(?<foo>style="").*?(?<style-foo>"")
+		//(?<!<p\s*)style=\"\"(?<style>.*?)\"\"
+
+		private Regex style = new Regex(@"(?<!<p\s*)style=""(?<style>.*?)""");
+
+
 		public void getTextSettings()
 		{
 			DM.Start0();
@@ -202,9 +213,22 @@ namespace ShItextCode.ElementExtraction
 
 			PdfString ps = pfa.GetPdfObject().GetAsString(PdfName.RC);
 
-			DM.Stat0($"text info string| {ps.GetValue()}");
+			DM.Stat0($"text info string | {ps.GetValue()}");
 
-			string[] ss = ps.GetValue().Split(new [] { '"', '<', '>', '=', ';' });
+			Match m = style.Match(ps.GetValue());
+
+			if (!m.Success)
+			{
+				DM.Stat0($"get style match failed {ps.GetValue()}");
+				return;
+			}
+
+			string s = m.Groups["style"].Value;
+			
+			DM.Stat0($"text style string| {s}");
+
+			// string[] ss = ps.GetValue().Split(new [] { '"', '<', '>', '=', ';' });
+			string[] ss = s.Split(new [] { '"', '<', '>', '=', ';' });
 			string[] s2;
 
 			foreach (string s1 in ss)
@@ -250,6 +274,7 @@ namespace ShItextCode.ElementExtraction
 				}
 			case "color":
 				{
+					DM.InOut0("get color");
 					tsx.TextColor = pSupport.makeColor(s2[1]);
 					break;
 				}
@@ -265,11 +290,13 @@ namespace ShItextCode.ElementExtraction
 				}
 			case "font-weight":
 				{
+					DM.InOut0("get font-weight");
 					if (s2[1] == "bold") tsx.TextWeight = iText.IO.Font.Constants.FontWeights.BOLD;
 					break;
 				}
 			case "font-style":
 				{
+					DM.InOut0("get font-style");
 					if (s2[1] == "italic") tsx.FontStyle = iText.IO.Font.Constants.FontStyles.ITALIC;
 					break;
 				}
@@ -353,6 +380,8 @@ namespace ShItextCode.ElementExtraction
 				{
 					tsx.FontFamily = s2.Substring(pos1 + 1, pos2 - pos1 - 1);
 				}
+
+				
 			}
 
 			if (fontSize > tsx.TextSize)

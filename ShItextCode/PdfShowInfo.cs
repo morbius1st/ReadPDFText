@@ -34,12 +34,13 @@ namespace ShItextCode
 	public static class PdfShowInfo
 	{
 		private const int TITLE_WIDTH = 36;
-		private static readonly  string SEPARATOR = "*".Repeat(TITLE_WIDTH);
 
 		private static ShowWhere showWhere;
 
 		private const int TYPE_WIDTH = -20;
-		private const int START_MSG_WIDTH = 30;
+		private const int START_MSG_WIDTH = 50;
+
+		private static readonly  string SEPARATOR = "*".Repeat(START_MSG_WIDTH);
 
 		private const int LABLE_WIDTH = 28;
 		private const string TAB_S = "    ";

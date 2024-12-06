@@ -52,115 +52,115 @@ namespace ShItextCode.ElementCreation
 			this.pdfCanvas = pdfCanvas;
 		}
 
-		// public void CreateSrdText(Document doc, int pageNum,
-		// 	SheetRectData<SheetRectId> srd)
-		// {
-		// 	rectname = srd.Id.ToString();
-		//
-		// 	float rotation;
-		//
-		// 	rotation = FloatOps.ToRad(srd.TextBoxRotation);
-		// 	rotation = srd.GetAdjTextRotation(srd.SheetRotation);
-		//
-		// 	float x ;
-		// 	float y ;
-		//
-		// 	// x & y = box's LB corner (which for NEWS boxes, may not be its "origin")
-		// 	PdfCalcTbOrigin.show = false;
-		// 	PdfCalcTbOrigin.GetTextBoxOrigin(srd.Rect, srd.TextBoxRotation, srd.SheetRotation, out x, out y);
-		//
-		// 	srd.TbOriginX = x;
-		// 	srd.TbOriginY = y;
-		//
-		//
-		// 	// if (rectname.Equals("SM_OPT7") || rectname.Equals("SM_OPT1") || rectname.Equals("SM_OPT2"))
-		// 	// if (rectname.Equals("SM_OPT2"))
-		// 	if (rectname.Equals("SM_OPT10"))
-		// 	{
-		// 		// correct answer is: 500.50 x 499.50
-		// 		PdfCalcTxOrigin.GetTextOrigin(srd, out x, out y);
-		// 	}
-		// 	else
-		// 	{
-		// 		PdfCalcTxOrigin.GetTextOrigin(srd, out x, out y);
-		// 	}
-		//
-		// 	string text = $"{srd.Id.ToString()} @ {x:F2} {y:F2} | {srd.TextBoxRotation:F2} | {srd.TextHorizAlignment.ToString()[0]}-{srd.TextVertAlignment.ToString()[0]}";
-		//
-		// 	CreateTextRaw(text, doc, pageNum, srd, x, y, rotation);
-		// }
-		//
-		// public void CreateTextRaw(string text, 
-		// 	Document doc, int pageNum, SheetRectData<SheetRectId> srd, 
-		// 	float x, float y, float rotation)
-		// {
-		// 	Style s = setTextStyle(srd);
-		//
-		// 	TextAlignment ta = (TextAlignment) (int) srd.TextHorizAlignment;
-		// 	VerticalAlignment va = srd.TextVertAlignment;
-		//
-		// 	CreateElement.PlaceDatum(x, y, pdfCanvas, 3);
-		//
-		// 	Paragraph p1 = new Paragraph(text);
-		//
-		// 	p1.AddStyle(s);
-		//
-		// 	doc.ShowTextAligned(p1, x, y, pageNum,
-		// 		ta, va, rotation);
-		// }
-		//
-		// private Style setTextStyle(SheetRectData<SheetRectId> srd)
-		// {
-		// 	PdfFont pf = getPdfFont(srd);
-		//
-		// 	Style s = new Style();
-		//
-		// 	s.SetFont(pf);
-		// 	s.SetOpacity(srd.TextOpacity);
-		// 	s.SetFontColor(srd.TextColor);
-		// 	s.SetWidth(srd.TextWeight * 72);
-		// 	s.SetFontSize(srd.TextSize /2 );
-		//
-		// 	if (srd.FontStyle == 1 || srd.FontStyle == 3)
-		// 	{
-		// 		s.SetBold();
-		// 	}
-		// 	else if (srd.FontStyle == 2 || srd.FontStyle == 3)
-		// 	{
-		// 		s.SetItalic();
-		// 	}
-		//
-		// 	if (TextDecorations.HasLinethrough(srd.TextDecoration) )
-		// 	{
-		// 		s.SetLineThrough();
-		// 	}
-		//
-		// 	if (TextDecorations.HasUnderline(srd.TextDecoration))
-		// 	{
-		// 		s.SetUnderline();
-		// 	}
-		//
-		// 	return s;
-		// }
-		//
-		// private PdfFont getPdfFont(SheetRectData<SheetRectId> srd)
-		// {
-		// 	string fontPath;
-		// 	PdfFont pf ;
-		//
-		// 	if (srd.FontFamily.IsVoid() ||
-		// 		srd.FontFamily.Equals("default"))
-		// 	{
-		// 		pf = CreateSupport.DefaultFont;
-		// 	}
-		// 	else
-		// 	{
-		// 		fontPath = CsWindowHelpers.GetFontFilePath(srd.FontFamily);
-		// 		pf = PdfFontFactory.CreateFont(fontPath);
-		// 	}
-		//
-		// 	return pf;
-		// }
+		public void CreateSrdText(Document doc, int pageNum,
+			SheetRectData<SheetRectId> srd)
+		{
+			rectname = srd.Id.ToString();
+		
+			float rotation;
+		
+			rotation = FloatOps.ToRad(srd.TextBoxRotation);
+			rotation = srd.GetAdjTextRotation(srd.SheetRotation);
+		
+			float x ;
+			float y ;
+		
+			// x & y = box's LB corner (which for NEWS boxes, may not be its "origin")
+			PdfCalcTbOrigin.show = false;
+			PdfCalcTbOrigin.GetTextBoxOrigin(srd.Rect, srd.TextBoxRotation, srd.SheetRotation, out x, out y);
+		
+			srd.TbOriginX = x;
+			srd.TbOriginY = y;
+		
+		
+			// if (rectname.Equals("SM_OPT7") || rectname.Equals("SM_OPT1") || rectname.Equals("SM_OPT2"))
+			// if (rectname.Equals("SM_OPT2"))
+			if (rectname.Equals("SM_OPT10"))
+			{
+				// correct answer is: 500.50 x 499.50
+				PdfCalcTxOrigin.GetTextOrigin(srd, out x, out y);
+			}
+			else
+			{
+				PdfCalcTxOrigin.GetTextOrigin(srd, out x, out y);
+			}
+		
+			string text = $"{srd.Id.ToString()} @ {x:F2} {y:F2} | {srd.TextBoxRotation:F2} | {srd.TextHorizAlignment.ToString()[0]}-{srd.TextVertAlignment.ToString()[0]}";
+		
+			CreateTextRaw(text, doc, pageNum, srd, x, y, rotation);
+		}
+		
+		public void CreateTextRaw(string text, 
+			Document doc, int pageNum, SheetRectData<SheetRectId> srd, 
+			float x, float y, float rotation)
+		{
+			Style s = setTextStyle(srd);
+		
+			TextAlignment ta = (TextAlignment) (int) srd.TextHorizAlignment;
+			VerticalAlignment va = srd.TextVertAlignment;
+		
+			CreateElement.PlaceDatum(x, y, pdfCanvas, 3);
+		
+			Paragraph p1 = new Paragraph(text);
+		
+			p1.AddStyle(s);
+		
+			doc.ShowTextAligned(p1, x, y, pageNum,
+				ta, va, rotation);
+		}
+		
+		private Style setTextStyle(SheetRectData<SheetRectId> srd)
+		{
+			PdfFont pf = getPdfFont(srd);
+		
+			Style s = new Style();
+		
+			s.SetFont(pf);
+			s.SetOpacity(srd.TextOpacity);
+			s.SetFontColor(srd.TextColor);
+			s.SetWidth(srd.TextWeight * 72);
+			s.SetFontSize(srd.TextSize /2 );
+		
+			if (srd.FontStyle == 1 || srd.FontStyle == 3)
+			{
+				s.SetBold();
+			}
+			else if (srd.FontStyle == 2 || srd.FontStyle == 3)
+			{
+				s.SetItalic();
+			}
+		
+			if (TextDecorations.HasLinethrough(srd.TextDecoration) )
+			{
+				s.SetLineThrough();
+			}
+		
+			if (TextDecorations.HasUnderline(srd.TextDecoration))
+			{
+				s.SetUnderline();
+			}
+		
+			return s;
+		}
+		
+		private PdfFont getPdfFont(SheetRectData<SheetRectId> srd)
+		{
+			string fontPath;
+			PdfFont pf ;
+		
+			if (srd.FontFamily.IsVoid() ||
+				srd.FontFamily.Equals("default"))
+			{
+				pf = CreateSupport.DefaultFont;
+			}
+			else
+			{
+				fontPath = CsWindowHelpers.GetFontFilePath(srd.FontFamily);
+				pf = PdfFontFactory.CreateFont(fontPath);
+			}
+		
+			return pf;
+		}
 
 
 	}

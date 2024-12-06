@@ -1,5 +1,6 @@
 ﻿#region + Using Directives
 
+using System;
 using iText.Kernel.Colors;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
@@ -22,7 +23,7 @@ namespace ShItextCode.ElementCreation
 		private string rectname;
 
 
-		/*
+		
 		public void PlaceSheetRectangle(PdfCanvas pdfCanvas,
 			SheetRectData<SheetRectId> srd, bool rotate = false)
 		{
@@ -74,7 +75,7 @@ namespace ShItextCode.ElementCreation
 
 			pdfCanvas.RestoreState();
 		}
-		*/
+		
 
 		private Vector getRectCenter(Rectangle r)
 		{
@@ -147,40 +148,40 @@ namespace ShItextCode.ElementCreation
 		//
 		// 	pdfCanvas.RestoreState();
 		// }
-		//
-		// public void PlaceRectangleDirect(SheetRectData<SheetRectId> srd, PdfCanvas pdfCanvas, 
-		// 	float bWidth, Color bColor, float bOpacity, Color fColor, float fOpacity)
-		// {
-		// 	pdfCanvas.SaveState();
-		//
-		// 	PdfExtGState gs = new PdfExtGState();
-		// 	if (fOpacity>0) gs.SetFillOpacity(fOpacity);
-		// 	if (bOpacity>0) gs.SetStrokeOpacity(bOpacity);
-		//
-		// 	float x = srd.Rect.GetX();
-		// 	float y = srd.Rect.GetY();
-		// 	float w = srd.Rect.GetWidth();
-		// 	float h = srd.Rect.GetHeight();
-		//
-		//
-		// 	PdfCalcTbOrigin.show = true;
-		// 	PdfCalcTbOrigin.GetTextBoxOrigin(srd.Rect, srd.TextBoxRotation, srd.SheetRotation, out x, out y);
-		//
-		//
-		// 	CreateElement.PlaceDatum(x, y, pdfCanvas, 10, DeviceRgb.RED);
-		//
-		// 	Rectangle r = new Rectangle(x, y, w, h);
-		//
-		// 	pdfCanvas.Rectangle(r);
-		// 	pdfCanvas.SetExtGState(gs);
-		// 	if (bWidth>0) pdfCanvas.SetLineWidth(bWidth);
-		// 	if (bColor!= null) pdfCanvas.SetStrokeColor(bColor);
-		// 	if (fColor != null) pdfCanvas.SetFillColor(fColor);
-		//
-		// 	pdfCanvas.FillStroke();
-		//
-		// 	pdfCanvas.RestoreState();
-		// }
+		
+		public void PlaceRectangleDirect(SheetRectData<SheetRectId> srd, PdfCanvas pdfCanvas, 
+			float bWidth, Color bColor, float bOpacity, Color fColor, float fOpacity)
+		{
+			pdfCanvas.SaveState();
+		
+			PdfExtGState gs = new PdfExtGState();
+			if (fOpacity>0) gs.SetFillOpacity(fOpacity);
+			if (bOpacity>0) gs.SetStrokeOpacity(bOpacity);
+		
+			float x = srd.Rect.GetX();
+			float y = srd.Rect.GetY();
+			float w = srd.Rect.GetWidth();
+			float h = srd.Rect.GetHeight();
+		
+		
+			PdfCalcTbOrigin.show = true;
+			PdfCalcTbOrigin.GetTextBoxOrigin(srd.Rect, srd.TextBoxRotation, srd.SheetRotation, out x, out y);
+		
+		
+			CreateElement.PlaceDatum(x, y, pdfCanvas, 10, DeviceRgb.RED);
+		
+			Rectangle r = new Rectangle(x, y, w, h);
+		
+			pdfCanvas.Rectangle(r);
+			pdfCanvas.SetExtGState(gs);
+			if (bWidth>0) pdfCanvas.SetLineWidth(bWidth);
+			if (bColor!= null) pdfCanvas.SetStrokeColor(bColor);
+			if (fColor != null) pdfCanvas.SetFillColor(fColor);
+		
+			pdfCanvas.FillStroke();
+		
+			pdfCanvas.RestoreState();
+		}
 
 		public override string ToString()
 		{

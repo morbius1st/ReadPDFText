@@ -32,16 +32,31 @@ ScanPDFBoxes		|	x	|			|	x	 |		x	  |		x		 |		x	 |
 
 
 
+PRIMARY
+
+ScanPDFBoxes
+* scan's a pdf with location boxes and saves the information to an xml file (used by CreatePDFBoxes and others)
+	> use "IS" / "7" / "8" / "A2" to create a valid set of sample boxes
+
+CreatePDFSamples 
+* uses the saved box information(v2) to create sample sheets
+	used to validate the rect information scanned
+	> use "7" to make boxes from the above scaned boxes
+
+
+ScanPDF
+* in progress: to scan Pdf and create the information needed to create PDF boxes.  Same as ScanPDFBoxes except that
+	no "shared" code will be used so that 
+
+
+support projects
+
 CreatePDFBoxes 
 * uses the saved box information to create sample sheets
 	used to validate the rect information scanned
 
 CreatePDFElements
 * test routines to develope PDF element creation
-
-CreatePDFSamples 
-* uses the saved box information(v2) to create sample sheets
-	used to validate the rect information scanned
 
 ExtractPdfText
 * tests how to extract text from a pdf
@@ -55,11 +70,9 @@ ReadPDFText
 ReadPDFTextTests
 * test how to extract text from a pdf / scan boxes / save data to the file (data saved to file may be in the wrong format)
 
-ScanPDFBoxes
-* scan's a pdf with location boxes and saves the information to an xml file (used by CreatePDFBoxes and others)
 
 ManagePDFSheetDwg
-* nothing
+* nothing - not used
 
 
 TO DO
